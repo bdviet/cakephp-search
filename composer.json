@@ -1,5 +1,5 @@
 {
-    "name": "your-name-here/Search",
+    "name": "qobo/cakephp-search",
     "description": "Search plugin for CakePHP",
     "type": "cakephp-plugin",
     "require": {
