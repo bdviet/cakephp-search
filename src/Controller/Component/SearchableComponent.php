@@ -4,6 +4,7 @@ namespace Search\Controller\Component;
 use Cake\Controller\Component;
 use Cake\Controller\ComponentRegistry;
 use Cake\Core\Plugin;
+use Cake\ORM\TableRegistry;
 use \FileSystemIterator;
 use \RuntimeException;
 
@@ -25,17 +26,18 @@ class SearchableComponent extends Component
      *
      * @return array
      */
-    protected function _getSearchableTables()
+    public function getSearchableTables()
     {
         $tables = $this->_getAllTables();
+
         foreach ($tables as $container => $containerTables) {
             foreach ($containerTables as $key => $table) {
                 if ($container === 'app') {
-                    $this->loadModel($table);
+                    $table = TableRegistry::get($table);
                 } else {
-                    $this->loadModel($container . '.' . $table);
+                    $table = TableRegistry::get($container . '.' . $table);
                 }
-                if (!method_exists($this->{$table}, 'getSearchableFields')) {
+                if (!method_exists($table, 'getSearchableFields')) {
                     unset($tables[$container][$key]);
                 }
             }
