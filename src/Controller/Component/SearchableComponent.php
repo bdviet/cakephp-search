@@ -3,6 +3,8 @@ namespace Search\Controller\Component;
 
 use Cake\Controller\Component;
 use Cake\Controller\ComponentRegistry;
+use Cake\Core\Plugin;
+use \FileSystemIterator;
 use \RuntimeException;
 
 /**
