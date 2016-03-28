@@ -29,7 +29,6 @@ class SearchableComponent extends Component
     public function getSearchableTables()
     {
         $tables = $this->_getAllTables();
-
         foreach ($tables as $container => $containerTables) {
             foreach ($containerTables as $key => $table) {
                 if ($container === 'app') {
@@ -53,10 +52,10 @@ class SearchableComponent extends Component
      */
     protected function _getAllTables()
     {
-        $result['app'] = $this->_getTables(APP);
+        $result['app'] = $this->_getTables(APP. 'Model' . DS . 'Table');
         $plugins = Plugin::loaded();
         foreach ($plugins as $plugin) {
-            $result[$plugin] = $this->_getTables(Plugin::path($plugin));
+            $result[$plugin] = $this->_getTables(Plugin::path($plugin) . 'src' . DS . 'Model' . DS . 'Table');
         }
 
         return array_filter($result);
@@ -77,7 +76,6 @@ class SearchableComponent extends Component
             throw new RuntimeException('Please provide path of Tables to proceed.');
         }
 
-        $path = $path . 'src' . DS . 'Model' . DS . 'Table';
         if (!file_exists($path)) {
             return $result;
         }
