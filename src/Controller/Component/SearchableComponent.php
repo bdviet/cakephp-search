@@ -73,7 +73,7 @@ class SearchableComponent extends Component
                 if (method_exists($modelTable, 'isSearchable')) {
                     $table['searchable'] = $modelTable->isSearchable();
                 } else {
-                    //By Default, table is not searchable.
+                    //By default, table is not searchable.
                     $table['searchable'] = false;
                 }
             }
