@@ -4,6 +4,7 @@ namespace Search\Controller\Component;
 use Cake\Controller\Component;
 use Cake\Controller\ComponentRegistry;
 use Cake\Core\Plugin;
+use Cake\Datasource\ConnectionManager;
 use Cake\ORM\TableRegistry;
 use \FileSystemIterator;
 use \RuntimeException;
@@ -20,6 +21,39 @@ class SearchableComponent extends Component
      * @var array
      */
     protected $_defaultConfig = [];
+
+    /**
+     * This functions constructs the searachable tables and also append the fields which
+     * can be searched.
+     *
+     * @return array All tables with their searchable columns.
+     */
+    public function getSearchableFields()
+    {
+        $db = ConnectionManager::get('default');
+        $collection = $db->schemaCollection();
+        $dbTables = $collection->listTables();
+        $tables = $this->getSearchableTables();
+        foreach ($tables as $container => &$containerTables) {
+            foreach ($containerTables as $tableName => &$table) {
+                if (in_array($tableName, $dbTables) && $table['searchable']) {
+                    if ($container === 'app') {
+                        $modelTable = TableRegistry::get($table['name']);
+                    } else {
+                        $modelTable = TableRegistry::get($container . '.' . $table['name']);
+                    }
+                    if (method_exists($modelTable, 'getSearchableFields')) {
+                        $table['fields'] = $modelTable->getSearchableFields();
+                    } else {
+                        //By defeault, all schema fields can be searched.
+                        $table['fields'] = $collection->describe($table['name'])->columns();
+                    }
+                }
+            }
+        }
+
+        return $tables;
+    }
 
     /**
      * Get all the tables with Searchable fields functionallity.
