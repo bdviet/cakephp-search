@@ -36,8 +36,11 @@ class SearchableComponent extends Component
                 } else {
                     $modelTable = TableRegistry::get($container . '.' . $table['name']);
                 }
-                if (!method_exists($table, 'getSearchableFields')) {
-                    unset($tables[$container][$key]);
+                if (method_exists($modelTable, 'isSearchable')) {
+                    $table['searchable'] = $modelTable->isSearchable();
+                } else {
+                    //By Default, table is not searchable.
+                    $table['searchable'] = false;
                 }
             }
         }
