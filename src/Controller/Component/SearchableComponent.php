@@ -29,12 +29,12 @@ class SearchableComponent extends Component
     public function getSearchableTables()
     {
         $tables = $this->_getAllTables();
-        foreach ($tables as $container => $containerTables) {
-            foreach ($containerTables as $key => $table) {
+        foreach ($tables as $container => &$containerTables) {
+            foreach ($containerTables as $key => &$table) {
                 if ($container === 'app') {
-                    $table = TableRegistry::get($table);
+                    $modelTable = TableRegistry::get($table['name']);
                 } else {
-                    $table = TableRegistry::get($container . '.' . $table);
+                    $modelTable = TableRegistry::get($container . '.' . $table['name']);
                 }
                 if (!method_exists($table, 'getSearchableFields')) {
                     unset($tables[$container][$key]);
@@ -86,8 +86,8 @@ class SearchableComponent extends Component
             if (!strpos($file->getFilename(), 'Table.php')) {
                 continue;
             }
-            $table = $file->getBasename('Table.php');
-            array_push($result, $table);
+            $table = strtolower($file->getBasename('Table.php'));
+            $result[$table]['name'] = $table;
         }
 
         return $result;
