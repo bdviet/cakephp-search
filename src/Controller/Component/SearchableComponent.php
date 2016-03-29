@@ -55,7 +55,8 @@ class SearchableComponent extends Component
      */
     protected function _getAllTables()
     {
-        $result['app'] = $this->_getTables(APP. 'Model' . DS . 'Table');
+        $result = [];
+        $result['app'] = $this->_getTables(APP . 'Model' . DS . 'Table');
         $plugins = Plugin::loaded();
         foreach ($plugins as $plugin) {
             $result[$plugin] = $this->_getTables(Plugin::path($plugin) . 'src' . DS . 'Model' . DS . 'Table');
