@@ -124,7 +124,7 @@ class SearchableComponent extends Component
             if (!strpos($file->getFilename(), 'Table.php')) {
                 continue;
             }
-            $table = strtolower($file->getBasename('Table.php'));
+            $table = $file->getBasename('Table.php');
             $result[$table]['name'] = $table;
         }
 
