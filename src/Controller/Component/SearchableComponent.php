@@ -5,6 +5,7 @@ use Cake\Controller\Component;
 use Cake\Controller\ComponentRegistry;
 use Cake\Core\Plugin;
 use Cake\Datasource\ConnectionManager;
+use Cake\ORM\Table;
 use Cake\ORM\TableRegistry;
 use \FileSystemIterator;
 use \RuntimeException;
@@ -28,7 +29,7 @@ class SearchableComponent extends Component
      *
      * @return array All tables with their searchable columns.
      */
-    public function getSearchableFields()
+    public function getSearchableTablesFields()
     {
         $db = ConnectionManager::get('default');
         $collection = $db->schemaCollection();
@@ -42,17 +43,39 @@ class SearchableComponent extends Component
                     } else {
                         $modelTable = TableRegistry::get($container . '.' . $table['name']);
                     }
-                    if (method_exists($modelTable, 'getSearchableFields')) {
-                        $table['fields'] = $modelTable->getSearchableFields();
-                    } else {
-                        //By defeault, all schema fields can be searched.
-                        $table['fields'] = $collection->describe($table['name'])->columns();
-                    }
+
+                    $table['fields'] = $this->getSearchableFields($modelTable);
                 }
             }
         }
 
         return $tables;
+    }
+
+    /**
+     * Return Table's searchable fields.
+     *
+     * @param  \Cake\ORM\Table|string $table Table object or name.
+     * @return array
+     */
+    public function getSearchableFields($table)
+    {
+        $result = [];
+        /*
+        get Table instance
+         */
+        if (is_string($table)) {
+            $table = TableRegistry::get($table);
+        }
+
+        if (is_callable([$table, 'getSearchableFields'])) {
+            $result = $table->getSearchableFields();
+        } else {
+            //By defeault, all schema fields can be searched.
+            $result = $collection->describe($table->alias())->columns();
+        }
+
+        return $result;
     }
 
     /**
