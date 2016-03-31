@@ -93,16 +93,37 @@ class SearchableComponent extends Component
                 } else {
                     $modelTable = TableRegistry::get($container . '.' . $table['name']);
                 }
-                if (method_exists($modelTable, 'isSearchable')) {
-                    $table['searchable'] = $modelTable->isSearchable();
-                } else {
-                    //By default, table is not searchable.
-                    $table['searchable'] = false;
-                }
+                $table['searchable'] = $this->isSearchable($modelTable);
             }
         }
 
         return array_filter($tables);
+    }
+
+    /**
+     * Returns true if table is searchable, false otherwise.
+     *
+     * @param  \Cake\ORM\Table|string $table Table object or name.
+     * @return bool
+     */
+    public function isSearchable($table)
+    {
+        $result = false;
+        /*
+        get Table instance
+         */
+        if (is_string($table)) {
+            $table = TableRegistry::get($table);
+        }
+
+        /*
+        check if is searchable
+         */
+        if (is_callable([$table, 'isSearchable'])) {
+            $result = $table->isSearchable();
+        }
+
+        return $result;
     }
 
     /**
