@@ -56,6 +56,64 @@ class SearchableComponent extends Component
     ];
 
     /**
+     * Operators to SQL operator
+     * @var array
+     */
+    protected $_sqlOperators = [
+        'uuid' => ['is'],
+        'boolean' => [
+            'is' => ['operator' => 'IS'],
+            'is_not' => ['operator' => 'IS NOT']
+        ],
+        'list' => [
+            'is' => ['operator' => '='],
+            'is_not' => ['operator' => '!=']
+        ],
+        'string' => [
+            'contains' => ['operator' => 'LIKE', 'pattern' => '%{{value}}%'],
+            'not_contains' => ['operator' => 'NOT LIKE', 'pattern' => '%{{value}}%'],
+            'starts_with' => ['operator' => 'LIKE', 'pattern' => '{{value}}%'],
+            'ends_with' => ['operator' => 'LIKE', 'pattern' => '%{{value}}']
+        ],
+        'text' => [
+            'contains' => ['operator' => 'LIKE', 'pattern' => '%{{value}}%'],
+            'not_contains' => ['operator' => 'NOT LIKE', 'pattern' => '%{{value}}%'],
+            'starts_with' => ['operator' => 'LIKE', 'pattern' => '{{value}}%'],
+            'ends_with' => ['operator' => 'LIKE', 'pattern' => '%{{value}}']
+        ],
+        'textarea' => [
+            'contains' => ['operator' => 'LIKE', 'pattern' => '%{{value}}%'],
+            'not_contains' => ['operator' => 'NOT LIKE', 'pattern' => '%{{value}}%'],
+            'starts_with' => ['operator' => 'LIKE', 'pattern' => '{{value}}%'],
+            'ends_with' => ['operator' => 'LIKE', 'pattern' => '%{{value}}']
+        ],
+        'integer' => [
+            'is' => ['operator' => '='],
+            'is_not' => ['operator' => '!='],
+            'greater' => ['operator' => '>'],
+            'less' => ['operator' => '<']
+        ],
+        'datetime' => [
+            'is' => ['operator' => '='],
+            'is_not' => ['operator' => '<>'],
+            'greater' => ['operator' => '>'],
+            'less' => ['operator' => '<']
+        ],
+        'date' => [
+            'is' => ['operator' => '='],
+            'is_not' => ['operator' => '<>'],
+            'greater' => ['operator' => '>'],
+            'less' => ['operator' => '<']
+        ],
+        'time' => [
+            'is' => ['operator' => '='],
+            'is_not' => ['operator' => '<>'],
+            'greater' => ['operator' => '>'],
+            'less' => ['operator' => '<']
+        ]
+    ];
+
+    /**
      * This functions constructs the searachable tables and also append the fields which
      * can be searched.
      *
@@ -214,5 +272,38 @@ class SearchableComponent extends Component
     public function getFieldTypeOperators()
     {
         return $this->_fieldTypeOperators;
+    }
+
+    /**
+     * Prepare search query's where statement
+     * @param  array  $data  search fields
+     * @param  string $model model name
+     * @return array
+     */
+    public function prepareWhereStatement(array $data, $model)
+    {
+        $result = [];
+        foreach ($data as $fieldName => $criterias) {
+            if (!empty($criterias)) {
+                foreach ($criterias as $criteria) {
+                    $type = $criteria['type'];
+                    $value = $criteria['value'];
+                    if ('' === trim($value)) {
+                        continue;
+                    }
+                    $operator = $criteria['operator'];
+                    if (isset($this->_sqlOperators[$type][$operator]['pattern'])) {
+                        $value = str_replace(
+                            '{{value}}',
+                            $value,
+                            $this->_sqlOperators[$type][$operator]['pattern']
+                        );
+                    }
+                    $result[$model . '.' . $fieldName . ' ' . $this->_sqlOperators[$type][$operator]['operator']] = $value;
+                }
+            }
+        }
+
+        return $result;
     }
 }
