@@ -157,7 +157,7 @@ class SearchableComponent extends Component
             $table = TableRegistry::get($table);
         }
 
-        if (is_callable([$table, 'getSearchableFields'])) {
+        if (method_exists($table, 'getSearchableFields') && is_callable([$table, 'getSearchableFields'])) {
             $result = $table->getSearchableFields();
         } else {
             //By defeault, all schema fields can be searched.
@@ -208,7 +208,7 @@ class SearchableComponent extends Component
         /*
         check if is searchable
          */
-        if (is_callable([$table, 'isSearchable'])) {
+        if (method_exists($table, 'isSearchable') && is_callable([$table, 'isSearchable'])) {
             $result = $table->isSearchable();
         }
 
