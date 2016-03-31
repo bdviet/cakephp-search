@@ -123,11 +123,10 @@ class SearchableComponent extends Component
     {
         $db = ConnectionManager::get('default');
         $collection = $db->schemaCollection();
-        $dbTables = $collection->listTables();
         $tables = $this->getSearchableTables();
         foreach ($tables as $container => &$containerTables) {
-            foreach ($containerTables as $tableName => &$table) {
-                if (in_array($tableName, $dbTables) && $table['searchable']) {
+            foreach ($containerTables as &$table) {
+                if ($table['searchable']) {
                     if ($container === 'app') {
                         $modelTable = TableRegistry::get($table['name']);
                     } else {
