@@ -24,6 +24,38 @@ class SearchableComponent extends Component
     protected $_defaultConfig = [];
 
     /**
+     * Per field type operators
+     * @var array
+     */
+    protected $_fieldTypeOperators = [
+        'uuid' => ['is' => 'Is'],
+        'boolean' => ['is' => 'Is', 'is_not' => 'Is not'],
+        'list' => ['is' => 'Is', 'is_not' => 'Is not'],
+        'string' => [
+            'contains' => 'Contains',
+            'not_contains' => 'Does not contain',
+            'starts_with' => 'Starts with',
+            'ends_with' => 'Ends with'
+        ],
+        'text' => [
+            'contains' => 'Contains',
+            'not_contains' => 'Does not contain',
+            'starts_with' => 'Starts with',
+            'ends_with' => 'Ends with'
+        ],
+        'textarea' => [
+            'contains' => 'Contains',
+            'not_contains' => 'Does not contain',
+            'starts_with' => 'Starts with',
+            'ends_with' => 'Ends with'
+        ],
+        'integer' => ['is' => 'Is', 'is_not' => 'Is not', 'greater' => 'Greater', 'less' => 'Less'],
+        'datetime' => ['is' => 'Is', 'is_not' => 'Is not', 'greater' => 'Greater', 'less' => 'Less'],
+        'date' => ['is' => 'Is', 'is_not' => 'Is not', 'greater' => 'Greater', 'less' => 'Less'],
+        'time' => ['is' => 'Is', 'is_not' => 'Is not', 'greater' => 'Greater', 'less' => 'Less']
+    ];
+
+    /**
      * This functions constructs the searachable tables and also append the fields which
      * can be searched.
      *
@@ -173,5 +205,14 @@ class SearchableComponent extends Component
         }
 
         return $result;
+    }
+
+    /**
+     * Return list of operators grouped by field type
+     * @return array
+     */
+    public function getFieldTypeOperators()
+    {
+        return $this->_fieldTypeOperators;
     }
 }
