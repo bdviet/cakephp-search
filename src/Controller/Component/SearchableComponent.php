@@ -321,11 +321,55 @@ class SearchableComponent extends Component
 
     /**
      * Prepare search query's where statement
+     *
+     * @param  array  $data     search fields
+     * @param  string $model    model name
+     * @param  bool   $advanced advanced search flag
+     * @return array
+     */
+    public function prepareWhereStatement(array $data, $model, $advanced = false)
+    {
+        $result = [];
+
+        if (!$advanced) {
+            $result = $this->_basicWhereStatement($data, $model);
+        } else {
+            $result = $this->_advancedWhereStatement($data, $model);
+        }
+
+        return $result;
+    }
+
+    /**
+     * Prepare basic search query's where statement
+     *
      * @param  array  $data  search fields
      * @param  string $model model name
      * @return array
      */
-    public function prepareWhereStatement(array $data, $model)
+    protected function _basicWhereStatement(array $data, $model)
+    {
+        $result = [];
+        if (!empty($data['query'])) {
+            $fields = $this->getSearchableFields($model);
+            foreach ($fields as $field => $properties) {
+                if (in_array($properties['type'], $this->_basicSearchFieldTypes)) {
+                    $result['OR'][$model . '.' . $field . ' LIKE'] = '%' . $data['query'] . '%';
+                }
+            }
+        }
+
+        return $result;
+    }
+
+    /**
+     * Prepare advanced search query's where statement
+     *
+     * @param  array  $data  search fields
+     * @param  string $model model name
+     * @return array
+     */
+    protected function _advancedWhereStatement(array $data, $model)
     {
         $result = [];
         foreach ($data as $fieldName => $criterias) {
@@ -344,7 +388,57 @@ class SearchableComponent extends Component
                             $this->_sqlOperators[$type][$operator]['pattern']
                         );
                     }
-                    $result[$model . '.' . $fieldName . ' ' . $this->_sqlOperators[$type][$operator]['operator']] = $value;
+                    $sqlOperator = $this->_sqlOperators[$type][$operator]['operator'];
+                    $key = $model . '.' . $fieldName . ' ' . $sqlOperator;
+
+                    if (array_key_exists($key, $result)) {
+                        switch ($type) {
+                            case 'uuid':
+                            case 'list':
+                                if (is_array($result[$key])) {
+                                    array_push($result[$key], $value);
+                                } else {
+                                    $result[$key] = [$result[$key], $value];
+                                }
+                                break;
+
+                            case 'integer':
+                            case 'datetime':
+                            case 'date':
+                            case 'time':
+                                switch ($operator) {
+                                    case 'greater':
+                                    case 'less':
+                                        if (is_array($result[$key])) {
+                                            array_push($result[$key]['AND'], $value);
+                                        } else {
+                                            $result[$key] = ['AND' => [$result[$key], $value]];
+                                        }
+                                        break;
+
+                                    default:
+                                        if (is_array($result[$key])) {
+                                            array_push($result[$key], $value);
+                                        } else {
+                                            $result[$key] = [$result[$key], $value];
+                                        }
+                                        break;
+                                }
+                                break;
+
+                            case 'string':
+                            case 'text':
+                            case 'textarea':
+                                if (is_array($result[$key])) {
+                                    array_push($result[$key]['OR'], $value);
+                                } else {
+                                    $result[$key] = ['OR' => [$result[$key], $value]];
+                                }
+                                break;
+                        }
+                    } else {
+                        $result[$key] = $value;
+                    }
                 }
             }
         }
