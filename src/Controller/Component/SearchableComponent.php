@@ -187,8 +187,36 @@ class SearchableComponent extends Component
         } else {
             $db = ConnectionManager::get('default');
             $collection = $db->schemaCollection();
-            //By defeault, all schema fields can be searched.
+            // by default, all fields are searchable
             $result = $collection->describe($table->table())->columns();
+        }
+
+        return $result;
+    }
+
+    /**
+     * Method responsible for retrieving specified fields properties.
+     *
+     * @param  mixed  $table  name or instance of the Table
+     * @param  array  $fields fields
+     * @return string         field input
+     */
+    public function getSearchableFieldProperties($table, array $fields)
+    {
+        $result = [];
+        if (!empty($fields)) {
+            /*
+            get Table instance
+             */
+            if (is_string($table)) {
+                $table = TableRegistry::get($table);
+            }
+            $db = ConnectionManager::get('default');
+            $collection = $db->schemaCollection();
+
+            foreach ($fields as $field) {
+                $result[$field] = $collection->describe($table->table())->column($field);
+            }
         }
 
         return $result;
@@ -364,6 +392,7 @@ class SearchableComponent extends Component
         $result = [];
         if (!empty($data['query'])) {
             $fields = $this->getSearchableFields($model);
+            $fields = $this->getSearchableFieldProperties($model, $fields);
             foreach ($fields as $field => $properties) {
                 if (in_array($properties['type'], $this->_basicSearchFieldTypes)) {
                     $result['OR'][$model . '.' . $field . ' LIKE'] = '%' . $data['query'] . '%';

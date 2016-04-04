@@ -55,6 +55,7 @@ class SearchController extends AppController
         $searchFields = [];
         if ($this->Searchable->isSearchable($model)) {
             $searchFields = $this->Searchable->getSearchableFields($model);
+            $searchFields = $this->Searchable->getSearchableFieldProperties($model, $searchFields);
         }
 
         $searchOperators = [];
