@@ -95,7 +95,8 @@ var search = search || {};
                 result += '</select>';
                 break;
             case 'boolean':
-                result += '<input type="checkbox" name="' + field + '[' + timestamp + '][value]">';
+                result += '<input type="hidden" name="' + field + '[' + timestamp + '][value]" value="0">';
+                result += '<input type="checkbox" name="' + field + '[' + timestamp + '][value]" = value="1">';
                 break;
             default:
                 result += '<input type="' + properties.type + '" name="' + field + '[' + timestamp + '][value]" class="form-control input-sm">';
