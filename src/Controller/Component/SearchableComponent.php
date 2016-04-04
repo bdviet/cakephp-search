@@ -140,8 +140,6 @@ class SearchableComponent extends Component
      */
     public function getSearchableTablesFields()
     {
-        $db = ConnectionManager::get('default');
-        $collection = $db->schemaCollection();
         $tables = $this->getSearchableTables();
         foreach ($tables as $container => &$containerTables) {
             foreach ($containerTables as &$table) {
@@ -179,8 +177,37 @@ class SearchableComponent extends Component
         if (method_exists($table, 'getSearchableFields') && is_callable([$table, 'getSearchableFields'])) {
             $result = $table->getSearchableFields();
         } else {
+            $db = ConnectionManager::get('default');
+            $collection = $db->schemaCollection();
             //By defeault, all schema fields can be searched.
-            $result = $collection->describe($table->alias())->columns();
+            $result = $collection->describe($table->table())->columns();
+        }
+
+        return $result;
+    }
+
+    /**
+     * Return Table's listing fields.
+     *
+     * @param  \Cake\ORM\Table|string $table Table object or name.
+     * @return array
+     */
+    public function getListingFields($table)
+    {
+        $result = [];
+        /*
+        get Table instance
+         */
+        if (is_string($table)) {
+            $table = TableRegistry::get($table);
+        }
+
+        if (method_exists($table, 'getListingFields') && is_callable([$table, 'getListingFields'])) {
+            $result = $table->getListingFields();
+        } else {
+            $db = ConnectionManager::get('default');
+            $collection = $db->schemaCollection();
+            $result = array_slice($collection->describe($table->table())->columns(), 0, static::LISTING_FIELDS_LIMIT);
         }
 
         return $result;
