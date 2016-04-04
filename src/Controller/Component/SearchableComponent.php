@@ -15,7 +15,6 @@ use \RuntimeException;
  */
 class SearchableComponent extends Component
 {
-
     /**
      * Default configuration.
      *
@@ -54,6 +53,15 @@ class SearchableComponent extends Component
         'datetime' => ['is' => 'Is', 'is_not' => 'Is not', 'greater' => 'Greater', 'less' => 'Less'],
         'date' => ['is' => 'Is', 'is_not' => 'Is not', 'greater' => 'Greater', 'less' => 'Less'],
         'time' => ['is' => 'Is', 'is_not' => 'Is not', 'greater' => 'Greater', 'less' => 'Less']
+    ];
+
+    /**
+     * Basic search default fields
+     * @var array
+     */
+    protected $_basicSearchDefaultFields = [
+        'modified',
+        'created'
     ];
 
     /**
@@ -205,9 +213,13 @@ class SearchableComponent extends Component
         if (method_exists($table, 'getListingFields') && is_callable([$table, 'getListingFields'])) {
             $result = $table->getListingFields();
         } else {
-            $db = ConnectionManager::get('default');
-            $collection = $db->schemaCollection();
-            $result = array_slice($collection->describe($table->table())->columns(), 0, static::LISTING_FIELDS_LIMIT);
+            $result[] = $table->primaryKey();
+            $result[] = $table->displayField();
+            foreach ($this->_basicSearchDefaultFields as $field) {
+                if ($table->hasField($field)) {
+                    $result[] = $field;
+                }
+            }
         }
 
         return $result;
