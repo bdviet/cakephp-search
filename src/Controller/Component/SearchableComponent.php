@@ -79,14 +79,14 @@ class SearchableComponent extends Component
      * @var array
      */
     protected $_sqlOperators = [
-        'uuid' => ['is'],
+        'uuid' => ['operator' => 'IN'],
         'boolean' => [
             'is' => ['operator' => 'IS'],
             'is_not' => ['operator' => 'IS NOT']
         ],
         'list' => [
-            'is' => ['operator' => '='],
-            'is_not' => ['operator' => '!=']
+            'is' => ['operator' => 'IN'],
+            'is_not' => ['operator' => 'NOT IN']
         ],
         'string' => [
             'contains' => ['operator' => 'LIKE', 'pattern' => '%{{value}}%'],
@@ -107,26 +107,26 @@ class SearchableComponent extends Component
             'ends_with' => ['operator' => 'LIKE', 'pattern' => '%{{value}}']
         ],
         'integer' => [
-            'is' => ['operator' => '='],
-            'is_not' => ['operator' => '!='],
+            'is' => ['operator' => 'IN'],
+            'is_not' => ['operator' => 'NOT IN'],
             'greater' => ['operator' => '>'],
             'less' => ['operator' => '<']
         ],
         'datetime' => [
-            'is' => ['operator' => '='],
-            'is_not' => ['operator' => '<>'],
+            'is' => ['operator' => 'IN'],
+            'is_not' => ['operator' => 'NOT IN'],
             'greater' => ['operator' => '>'],
             'less' => ['operator' => '<']
         ],
         'date' => [
-            'is' => ['operator' => '='],
-            'is_not' => ['operator' => '<>'],
+            'is' => ['operator' => 'IN'],
+            'is_not' => ['operator' => 'NOT IN'],
             'greater' => ['operator' => '>'],
             'less' => ['operator' => '<']
         ],
         'time' => [
-            'is' => ['operator' => '='],
-            'is_not' => ['operator' => '<>'],
+            'is' => ['operator' => 'IN'],
+            'is_not' => ['operator' => 'NOT IN'],
             'greater' => ['operator' => '>'],
             'less' => ['operator' => '<']
         ]
