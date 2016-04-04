@@ -25,6 +25,7 @@ class SearchableComponent extends Component
 
     /**
      * Per field type operators
+     *
      * @var array
      */
     protected $_fieldTypeOperators = [
@@ -56,7 +57,25 @@ class SearchableComponent extends Component
     ];
 
     /**
+     * Filter basic search allowed field types
+     *
+     * @var array
+     */
+    protected $_basicSearchFieldTypes = [
+        'uuid',
+        'list',
+        'string',
+        'text',
+        'textarea',
+        'integer',
+        'datetime',
+        'date',
+        'time'
+    ];
+
+    /**
      * Operators to SQL operator
+     *
      * @var array
      */
     protected $_sqlOperators = [
