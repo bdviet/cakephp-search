@@ -1,0 +1,1 @@
+<?= $this->element('search_results'); ?>

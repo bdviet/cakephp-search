@@ -7,6 +7,7 @@ use Cake\Core\Plugin;
 use Cake\Datasource\ConnectionManager;
 use Cake\ORM\Table;
 use Cake\ORM\TableRegistry;
+use Cake\Utility\Inflector;
 use \FileSystemIterator;
 use \RuntimeException;
 
@@ -223,6 +224,21 @@ class SearchableComponent extends Component
     }
 
     /**
+     * Generates and returns searchable fields labels.
+     *
+     * @param  array  $fields searchable fields
+     * @return array
+     */
+    public function getSearchableFieldLabels(array $fields)
+    {
+        foreach ($fields as $fieldName => &$fieldProperties) {
+            $fieldProperties['label'] = Inflector::humanize($fieldName);
+        }
+
+        return $fields;
+    }
+
+    /**
      * Return Table's listing fields.
      *
      * @param  \Cake\ORM\Table|string $table Table object or name.
@@ -299,6 +315,36 @@ class SearchableComponent extends Component
         }
 
         return $result;
+    }
+
+    /**
+     * Returns saved searches filtered by users and models.
+     *
+     * @param  array  $users  users ids
+     * @param  array  $models models names
+     * @return Cake\ORM\ResultSet
+     */
+    public function getSavedSearches(array $users = [], array $models = [])
+    {
+        $savedSearches = TableRegistry::get('Search.SavedSearches');
+
+        $conditions = [
+            'SavedSearches.name IS NOT' => null
+        ];
+
+        if (!empty($users)) {
+            $conditions['SavedSearches.user_id IN'] = $users;
+        }
+
+        if (!empty($models)) {
+            $conditions['SavedSearches.model IN'] = $models;
+        }
+
+        $query = $savedSearches->find('all', [
+            'conditions' => $conditions
+        ]);
+
+        return $query->toArray();
     }
 
     /**
