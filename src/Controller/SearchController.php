@@ -1,6 +1,7 @@
 <?php
 namespace Search\Controller;
 
+use Cake\Event\Event;
 use Cake\Network\Exception\BadRequestException;
 use Cake\ORM\Query;
 use Cake\ORM\TableRegistry;
@@ -9,6 +10,17 @@ use Search\Controller\AppController;
 
 class SearchController extends AppController
 {
+    /**
+     * Before filter
+     *
+     * @param  Event  $event Event object
+     * @return void
+     */
+    public function beforeFilter(Event $event)
+    {
+        $this->loadModel('Search.SavedSearches');
+    }
+
     /**
      * Advanced search action
      *
@@ -41,7 +53,6 @@ class SearchController extends AppController
     public function save($id = null)
     {
         $this->request->allowMethod(['patch', 'post', 'put']);
-        $this->loadModel('Search.SavedSearches');
         $search = $this->SavedSearches->get($id);
         $search = $this->SavedSearches->patchEntity($search, $this->request->data);
         if ($this->SavedSearches->save($search)) {
@@ -61,7 +72,6 @@ class SearchController extends AppController
      */
     public function savedResult($model, $id)
     {
-        $this->loadModel('Search.SavedSearches');
         $search = $this->SavedSearches->get($id);
         $this->set('entities', json_decode($search->content));
         $this->set('fields', $this->Searchable->getListingFields($model));
@@ -82,7 +92,8 @@ class SearchController extends AppController
         $modelName = Inflector::pluralize(Inflector::classify($model));
 
         if ($this->request->is('post')) {
-            $where = $this->Searchable->prepareWhereStatement($this->request->data, $modelName, $advanced);
+            $data = $this->request->data;
+            $where = $this->Searchable->prepareWhereStatement($data, $modelName, $advanced);
             $table = TableRegistry::get($modelName);
             $query = $table->find('all')->where($where);
 
@@ -90,7 +101,14 @@ class SearchController extends AppController
             if in advanced mode, pre-save search criteria and results
              */
             if ($advanced) {
-                $this->_preSaveSearchCriteriaAndResults($model, $query);
+                $preSaveIds = $this->SavedSearches->preSaveSearchCriteriaAndResults(
+                    $model,
+                    $query,
+                    $data,
+                    $this->Auth->user('id')
+                );
+                $this->set('saveSearchCriteriaId', $preSaveIds['saveSearchCriteriaId']);
+                $this->set('saveSearchResultsId', $preSaveIds['saveSearchResultsId']);
             }
             $this->set('entities', $this->paginate($query));
             $this->set('fields', $this->Searchable->getListingFields($model));
@@ -111,62 +129,5 @@ class SearchController extends AppController
         $savedSearches = $this->Searchable->getSavedSearches([$this->Auth->user('id')], [$model]);
 
         $this->set(compact('searchFields', 'searchOperators', 'savedSearches'));
-    }
-
-    /**
-     * Method for pre-saving search criteria and results.
-     *
-     * @param  string $model model name
-     * @param  Query  $query results query
-     * @return void
-     */
-    protected function _preSaveSearchCriteriaAndResults($model, Query $query)
-    {
-        $this->loadModel('Search.SavedSearches');
-        $this->SavedSearches->deleteOldPreSavedSearches();
-        $this->_preSaveSearchCriteria($model);
-        $this->_preSaveSearchResults($model, $query);
-    }
-
-    /**
-     * Pre-save search criteria.
-     *
-     * @param  string $model model name
-     * @return void
-     */
-    protected function _preSaveSearchCriteria($model)
-    {
-        $search = $this->SavedSearches->newEntity();
-        $search->type = $this->SavedSearches->getCriteriaType();
-        $search->user_id = $this->Auth->user('id');
-        $search->model = $model;
-        $search->shared = $this->SavedSearches->getPrivateSharedStatus();
-        $search->content = json_encode($this->request->data);
-        /*
-        save search criteria
-         */
-        $this->SavedSearches->save($search);
-        $this->set('saveSearchCriteriaId', $search->id);
-    }
-
-    /**
-     * Pre-save search results.
-     * @param  string $model model name
-     * @param  Query  $query results query
-     * @return void
-     */
-    protected function _preSaveSearchResults($model, Query $query)
-    {
-        $search = $this->SavedSearches->newEntity();
-        $search->type = $this->SavedSearches->getResultType();
-        $search->user_id = $this->Auth->user('id');
-        $search->model = $model;
-        $search->shared = $this->SavedSearches->getPrivateSharedStatus();
-        $search->content = json_encode($query);
-        /*
-        save search results
-         */
-        $this->SavedSearches->save($search);
-        $this->set('saveSearchResultsId', $search->id);
     }
 }
