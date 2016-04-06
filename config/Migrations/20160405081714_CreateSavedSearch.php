@@ -50,6 +50,14 @@ class CreateSavedSearch extends AbstractMigration
             'limit' => MysqlAdapter::TEXT_LONG,
             'null' => false,
         ]);
+        $table->addColumn('created', 'datetime', [
+            'default' => null,
+            'null' => false,
+        ]);
+        $table->addColumn('modified', 'datetime', [
+            'default' => null,
+            'null' => false,
+        ]);
         $table->addPrimaryKey([
             'id',
         ]);
