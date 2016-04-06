@@ -23,24 +23,23 @@
                     $this->request->params['pass'][0]
                 ]
             ]) ?>
-            <fieldset>
-                <legend><?= __('Filters') ?></legend>
-                <div class="row">
-                    <div class="col-xs-6">
-                        <div class="body"></div>
-                    </div>
-                    <div class="col-xs-offset-3 col-xs-3">
-                        <?= $this->Form->label(__('Add Filter')) ?>
-                        <?= $this->Form->select('fields', array_combine(array_keys($searchFields), array_keys($searchFields)), [
-                            'class' => 'form-control',
-                            'id' => 'addFilter',
-                            'empty' => true
-                        ]) ?>
-                    </div>
-                </div>
-            </fieldset>
+            <fieldset></fieldset>
             <?= $this->Form->button(__('Submit'), ['class' => 'btn btn-primary']) ?>
             <?= $this->Form->end() ?>
         </div>
+        <div class="col-xs-3">
+            <?= $this->Form->label(__('Add Filter')) ?>
+            <?php
+            $selectOptions = array_combine(array_keys($searchFields), array_map(function ($v) {return $v['label'];}, $searchFields));
+            echo $this->Form->select(
+                'fields',
+                 $selectOptions, [
+                    'class' => 'form-control input-sm',
+                    'id' => 'addFilter',
+                    'empty' => true
+                ]
+            ) ?>
+        </div>
     </div>
+</div>
 <?php endif; ?>

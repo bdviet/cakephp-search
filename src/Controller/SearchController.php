@@ -2,6 +2,7 @@
 namespace Search\Controller;
 
 use Cake\Network\Exception\BadRequestException;
+use Cake\ORM\Query;
 use Cake\ORM\TableRegistry;
 use Cake\Utility\Inflector;
 use Search\Controller\AppController;
@@ -42,20 +43,24 @@ class SearchController extends AppController
         if (is_null($model)) {
             throw new BadRequestException();
         }
-        $model = Inflector::pluralize(Inflector::classify($model));
+        $modelName = Inflector::pluralize(Inflector::classify($model));
 
         if ($this->request->is('post')) {
-            $where = $this->Searchable->prepareWhereStatement($this->request->data, $model, $advanced);
-            $table = TableRegistry::get($model);
+            $where = $this->Searchable->prepareWhereStatement($this->request->data, $modelName, $advanced);
+            $table = TableRegistry::get($modelName);
             $query = $table->find('all')->where($where);
+            if ($advanced) {
+                $this->_preSaveSearchCriteriaAndResults($model, $query);
+            }
             $this->set('entities', $this->paginate($query));
             $this->set('fields', $this->Searchable->getListingFields($model));
         }
 
         $searchFields = [];
-        if ($this->Searchable->isSearchable($model)) {
-            $searchFields = $this->Searchable->getSearchableFields($model);
-            $searchFields = $this->Searchable->getSearchableFieldProperties($model, $searchFields);
+        if ($this->Searchable->isSearchable($modelName)) {
+            $searchFields = $this->Searchable->getSearchableFields($modelName);
+            $searchFields = $this->Searchable->getSearchableFieldProperties($modelName, $searchFields);
+            $searchFields = $this->Searchable->getSearchableFieldLabels($searchFields);
         }
 
         $searchOperators = [];
@@ -63,6 +68,64 @@ class SearchController extends AppController
             $searchOperators = $this->Searchable->getFieldTypeOperators();
         }
 
-        $this->set(compact('searchFields', 'searchOperators'));
+        $savedSearches = $this->Searchable->getSavedSearches([$this->Auth->user('id')], [$model]);
+
+        $this->set(compact('searchFields', 'searchOperators', 'savedSearches'));
+    }
+
+    /**
+     * Method for pre-saving search criteria and results.
+     *
+     * @param  string $model model name
+     * @param  Query  $query results query
+     * @return void
+     */
+    protected function _preSaveSearchCriteriaAndResults($model, Query $query)
+    {
+        $this->loadModel('Search.SavedSearches');
+        $this->_preSaveSearchCriteria($model);
+        $this->_preSaveSearchResults($model, $query);
+    }
+
+    /**
+     * Pre-save search criteria.
+     *
+     * @param  string $model model name
+     * @return void
+     */
+    protected function _preSaveSearchCriteria($model)
+    {
+        $search = $this->SavedSearches->newEntity();
+        $search->type = $this->SavedSearches->getCriteriaType();
+        $search->user_id = $this->Auth->user('id');
+        $search->model = $model;
+        $search->shared = $this->SavedSearches->getPrivateSharedStatus();
+        $search->content = json_encode($this->request->data);
+        /*
+        save search criteria
+         */
+        $this->SavedSearches->save($search);
+        $this->set('saveSearchCriteriaId', $search->id);
+    }
+
+    /**
+     * Pre-save search results.
+     * @param  string $model model name
+     * @param  Query  $query results query
+     * @return void
+     */
+    protected function _preSaveSearchResults($model, Query $query)
+    {
+        $search = $this->SavedSearches->newEntity();
+        $search->type = $this->SavedSearches->getResultType();
+        $search->user_id = $this->Auth->user('id');
+        $search->model = $model;
+        $search->shared = $this->SavedSearches->getPrivateSharedStatus();
+        $search->content = json_encode($query);
+        /*
+        save search results
+         */
+        $this->SavedSearches->save($search);
+        $this->set('saveSearchResultsId', $search->id);
     }
 }
