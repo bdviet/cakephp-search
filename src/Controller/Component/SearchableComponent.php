@@ -7,6 +7,7 @@ use Cake\Core\Plugin;
 use Cake\Datasource\ConnectionManager;
 use Cake\ORM\Table;
 use Cake\ORM\TableRegistry;
+use Cake\Utility\Inflector;
 use \FileSystemIterator;
 use \RuntimeException;
 
@@ -220,6 +221,21 @@ class SearchableComponent extends Component
         }
 
         return $result;
+    }
+
+    /**
+     * Generates and returns searchable fields labels.
+     *
+     * @param  array  $fields searchable fields
+     * @return array
+     */
+    public function getSearchableFieldLabels(array $fields)
+    {
+        foreach ($fields as $fieldName => &$fieldProperties) {
+            $fieldProperties['label'] = Inflector::humanize($fieldName);
+        }
+
+        return $fields;
     }
 
     /**
