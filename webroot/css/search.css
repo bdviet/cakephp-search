@@ -1,0 +1,7 @@
+.save-search-form + .save-search-form {
+    margin-right: 5px;
+}
+
+.saved-searches samp + samp {
+    margin-left: 5px;
+}
