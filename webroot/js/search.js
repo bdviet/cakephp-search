@@ -20,6 +20,17 @@ var search = search || {};
         this._onfieldSelect();
     };
 
+    Search.prototype.generateCriteriaFields = function(criteriaFields) {
+        if (!$.isEmptyObject(criteriaFields)) {
+            $.each(criteriaFields, function(k, v) {
+                if ('object' === typeof v) {
+                    data = v[Object.keys(v)[0]];
+                    that._generateField(k, that.fieldProperties[k], data.value, data.operator);
+                }
+            });
+        }
+    };
+
     Search.prototype.setFieldProperties = function(fieldProperties) {
         this.fieldProperties = fieldProperties;
     };
@@ -30,7 +41,7 @@ var search = search || {};
 
     Search.prototype._onfieldSelect = function() {
         that = this;
-        $(this.formId + ' ' + this.addFieldId).change(function() {
+        $(this.addFieldId).change(function() {
             if ('' !== this.value) {
                 var props = that.fieldProperties[this.value];
                 that._generateField(this.value, props);
@@ -39,26 +50,27 @@ var search = search || {};
         });
     };
 
-    Search.prototype._generateField = function(field, properties) {
+    Search.prototype._generateField = function(field, properties, value, operator) {
         var timestamp = new Date().getUTCMilliseconds();
-        var inputHtml = '<div class="row">';
-            inputHtml += '<div class="col-xs-3">';
-                inputHtml += this._generateFieldLabel(field);
-                inputHtml += this._generateFieldType(field, properties.type, timestamp);
-            inputHtml += '</div>';
-            inputHtml += '<div class="col-xs-3">';
-                inputHtml += this._generateFieldOperator(field, properties.type, timestamp);
-            inputHtml += '</div>';
-            inputHtml += '<div class="col-xs-4">';
-                inputHtml += this._generateFieldInput(field, properties, timestamp);
+        var inputHtml = '';
+        inputHtml += '<div class="form-group">';
+            inputHtml += this._generateFieldLabel(properties);
+            inputHtml += this._generateFieldType(field, properties.type, timestamp);
+            inputHtml += '<div class="row">';
+                inputHtml += '<div class="col-xs-3">';
+                    inputHtml += this._generateFieldOperator(field, properties.type, timestamp, operator);
+                inputHtml += '</div>';
+                inputHtml += '<div class="col-xs-4">';
+                    inputHtml += this._generateFieldInput(field, properties, timestamp, value);
+                inputHtml += '</div>';
             inputHtml += '</div>';
         inputHtml += '</div>';
-        $(this.formId + ' .body').append(inputHtml);
+        $(this.formId + ' fieldset').append(inputHtml);
     };
 
-    Search.prototype._generateFieldLabel = function(field) {
+    Search.prototype._generateFieldLabel = function(properties) {
         var result = '';
-        result += '<p class="form-control-static">' + field + '</p>';
+        result += '<label>' + properties.label + '</label>';
 
         return result;
     };
@@ -70,12 +82,16 @@ var search = search || {};
         return result;
     };
 
-    Search.prototype._generateFieldOperator = function(field, type, timestamp) {
+    Search.prototype._generateFieldOperator = function(field, type, timestamp, operator) {
         var result = '';
         if (this.fieldTypeOperators.hasOwnProperty(type)) {
             result += '<select name="' + field + '[' + timestamp + '][operator]" class="form-control input-sm">';
             $.each(this.fieldTypeOperators[type], function(k, v) {
-                result += '<option value="' + k + '">';
+                result += '<option value="' + k + '"';
+                if (operator === k) {
+                    result += ' selected';
+                }
+                result += '>';
                 result += v + '</option>';
             });
             result += '</select>';
@@ -84,8 +100,11 @@ var search = search || {};
         return result;
     };
 
-    Search.prototype._generateFieldInput = function(field, properties, timestamp) {
+    Search.prototype._generateFieldInput = function(field, properties, timestamp, value) {
         var result = '';
+        if ('undefined' === typeof value) {
+            value = '';
+        }
         switch (properties.type) {
             case 'list':
                 result += '<select name="' + field + '[' + timestamp + '][value]" class="form-control input-sm">';
@@ -99,7 +118,8 @@ var search = search || {};
                 result += '<input type="checkbox" name="' + field + '[' + timestamp + '][value]" = value="1">';
                 break;
             default:
-                result += '<input type="' + properties.type + '" name="' + field + '[' + timestamp + '][value]" class="form-control input-sm">';
+                result += '<input type="' + properties.type + '" name="' + field + '[' + timestamp + '][value]"';
+                result += ' class="form-control input-sm" value="' + value + '">';
         }
 
         return result;
