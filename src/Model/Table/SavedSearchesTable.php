@@ -15,6 +15,21 @@ use Search\Model\Entity\SavedSearch;
 class SavedSearchesTable extends Table
 {
     /**
+     * Criteria type value
+     */
+    const TYPE_CRITERIA = 'criteria';
+
+    /**
+     * Result type value
+     */
+    const TYPE_RESULT = 'result';
+
+    /**
+     * Private shared status value
+     */
+    const SHARED_STATUS_PRIVATE = 'private';
+
+    /**
      * Initialize method
      *
      * @param array $config The configuration for the Table.
@@ -82,5 +97,35 @@ class SavedSearchesTable extends Table
     {
         $rules->add($rules->existsIn(['user_id'], 'Users'));
         return $rules;
+    }
+
+    /**
+     * Returns criteria type.
+     *
+     * @return string
+     */
+    public function getCriteriaType()
+    {
+        return static::TYPE_CRITERIA;
+    }
+
+    /**
+     * Returns result type.
+     *
+     * @return string
+     */
+    public function getResultType()
+    {
+        return static::TYPE_RESULT;
+    }
+
+    /**
+     * Returns private shared status.
+     *
+     * @return string
+     */
+    public function getPrivateSharedStatus()
+    {
+        return static::SHARED_STATUS_PRIVATE;
     }
 }
