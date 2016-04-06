@@ -30,6 +30,11 @@ class SavedSearchesTable extends Table
     const SHARED_STATUS_PRIVATE = 'private';
 
     /**
+     * Delete older than value
+     */
+    const DELETE_OLDER_THAN = '-3 hours';
+
+    /**
      * Initialize method
      *
      * @param array $config The configuration for the Table.
@@ -42,6 +47,7 @@ class SavedSearchesTable extends Table
         $this->table('saved_searches');
         $this->displayField('name');
         $this->primaryKey('id');
+        $this->addBehavior('Timestamp');
 
         $this->belongsTo('Users', [
             'foreignKey' => 'user_id',
@@ -127,5 +133,18 @@ class SavedSearchesTable extends Table
     public function getPrivateSharedStatus()
     {
         return static::SHARED_STATUS_PRIVATE;
+    }
+
+    /**
+     * Method that deletes old pre-save search records.
+     *
+     * @return void
+     */
+    public function deleteOldPreSavedSearches()
+    {
+        $this->deleteAll([
+            'modified <' => new \DateTime(static::DELETE_OLDER_THAN),
+            'name IS' => null
+        ]);
     }
 }

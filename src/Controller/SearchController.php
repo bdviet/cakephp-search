@@ -123,6 +123,7 @@ class SearchController extends AppController
     protected function _preSaveSearchCriteriaAndResults($model, Query $query)
     {
         $this->loadModel('Search.SavedSearches');
+        $this->SavedSearches->deleteOldPreSavedSearches();
         $this->_preSaveSearchCriteria($model);
         $this->_preSaveSearchResults($model, $query);
     }
