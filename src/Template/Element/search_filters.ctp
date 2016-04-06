@@ -1,5 +1,6 @@
 <?php if (!empty($searchFields) && !empty($searchOperators)) : ?>
 
+    <?= $this->Html->css('Search.search', ['block' => true]); ?>
     <?= $this->Html->script('Search.search', ['block' => 'scriptBottom']); ?>
 
     <?= $this->Html->scriptBlock(
