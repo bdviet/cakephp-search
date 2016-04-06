@@ -318,6 +318,36 @@ class SearchableComponent extends Component
     }
 
     /**
+     * Returns saved searches filtered by users and models.
+     *
+     * @param  array  $users  users ids
+     * @param  array  $models models names
+     * @return Cake\ORM\ResultSet
+     */
+    public function getSavedSearches(array $users = [], array $models = [])
+    {
+        $savedSearches = TableRegistry::get('Search.SavedSearches');
+
+        $conditions = [
+            'SavedSearches.name IS NOT' => null
+        ];
+
+        if (!empty($users)) {
+            $conditions['SavedSearches.user_id IN'] = $users;
+        }
+
+        if (!empty($models)) {
+            $conditions['SavedSearches.model IN'] = $models;
+        }
+
+        $query = $savedSearches->find('all', [
+            'conditions' => $conditions
+        ]);
+
+        return $query->toArray();
+    }
+
+    /**
      * Get all the tables from application and plugins.
      *
      * @return [type]                [description]
