@@ -53,6 +53,21 @@ class SearchController extends AppController
     }
 
     /**
+     * Saved result action
+     *
+     * @param  string $model model name
+     * @param  string $id    record id
+     * @return void
+     */
+    public function savedResult($model, $id)
+    {
+        $this->loadModel('Search.SavedSearches');
+        $search = $this->SavedSearches->get($id);
+        $this->set('entities', json_decode($search->content));
+        $this->set('fields', $this->Searchable->getListingFields($model));
+    }
+
+    /**
      * Search action
      *
      * @param  string $model model name
