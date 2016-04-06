@@ -12,8 +12,15 @@
         ['block' => 'scriptBottom']
     ); ?>
 
+    <?= $this->Html->scriptBlock(
+        'search.generateCriteriaFields(' . json_encode($this->request->data) . ');',
+        ['block' => 'scriptBottom']
+    ); ?>
+<div class="well">
+    <h4><?= __('Filters') ?></h4>
+    <hr />
     <div class="row">
-        <div class="col-xs-12">
+        <div class="col-xs-9">
             <?= $this->Form->create(null, [
                 'id' => 'SearchFilterForm',
                 'url' => [
