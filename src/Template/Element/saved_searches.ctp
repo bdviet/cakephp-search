@@ -4,32 +4,71 @@
     <hr />
     <div class="row">
         <div class="col-xs-12 col-sm-6">
-            <?php if (!empty($savedSearches)) : ?>
-                <div class="row">
-                <?php
-                $groupedSavedSearches = [];
-                foreach ($savedSearches as $savedSearch) {
-                    $groupedSavedSearches[$savedSearch->type][] = $savedSearch;
-                }
-                ksort($groupedSavedSearches);
-                ?>
-                <?php foreach ($groupedSavedSearches as $type => $searches) : $count = 12 / count($groupedSavedSearches) ?>
-                    <div class="col-xs-<?= $count ?> saved-searches">
-                        <strong><?= Inflector::pluralize(Inflector::humanize($type)) ?>:</strong>
-                        <?php foreach ($searches as $search) : ?>
-                            <samp>
-                            <?php if ('result' === $type) {
-                                echo $this->Html->link($search->name, ['action' => 'saved_result', $search->model, $search->id]);
-                            } else {
-                                echo $this->Html->link($search->name, ['action' => 'advanced', $search->model, $search->id]);
-                            }
-                            ?>
-                            </samp>
-                        <?php endforeach; ?>
-                    </div>
-                <?php endforeach; ?>
+        <?php if (!empty($savedSearches)) : ?>
+            <div class="row">
+            <?php
+            $groupedSavedSearches = [];
+            foreach ($savedSearches as $savedSearch) {
+                $groupedSavedSearches[$savedSearch->type][] = $savedSearch;
+            }
+            ksort($groupedSavedSearches);
+            ?>
+            <?php foreach ($groupedSavedSearches as $type => $searches) : $count = 12 / count($groupedSavedSearches) ?>
+                <div class="col-xs-<?= $count ?> saved-searches">
+                    <strong><?= Inflector::pluralize(Inflector::humanize($type)) ?>:</strong>
+                    <?php foreach ($searches as $search) : ?>
+                        <samp>
+                        <?php
+                        switch ($type) {
+                            case 'result':
+                                echo $this->Html->link($search->name, [
+                                    'action' => 'saved_result',
+                                    $search->model,
+                                    $search->id
+                                ]);
+                                break;
+
+                            case 'criteria':
+                                $savedSearchContent = json_decode($search->content);
+                                echo $this->Form->create(null, [
+                                    'class' => 'saved-criteria-form',
+                                    'url' => [
+                                        'plugin' => 'Search',
+                                        'controller' => 'Search',
+                                        'action' => 'advanced',
+                                        $search->model
+                                    ]
+                                ]);
+
+                                foreach ($savedSearchContent as $fieldName => $properties) {
+                                    foreach ($properties as $k => $property) {
+                                        echo $this->Form->hidden($fieldName . '[' . $k . '][type]', [
+                                            'value' => $property->type,
+                                        ]);
+                                        echo $this->Form->hidden($fieldName . '[' . $k . '][operator]', [
+                                            'value' => $property->operator,
+                                        ]);
+                                        echo $this->Form->hidden($fieldName . '[' . $k . '][value]', [
+                                            'value' => $property->value,
+                                        ]);
+                                    }
+                                }
+
+                                echo $this->Form->button(
+                                    $search->name,
+                                    ['class' => 'btn btn-link']
+                                );
+
+                                echo $this->Form->end();
+                                break;
+                        }
+                        ?>
+                        </samp>
+                    <?php endforeach; ?>
                 </div>
-            <?php endif; ?>
+            <?php endforeach; ?>
+            </div>
+        <?php endif; ?>
         </div>
         <div class="col-xs-12 col-sm-6">
             <?php if (isset($saveSearchCriteriaId) && isset($saveSearchResultsId)) : ?>
