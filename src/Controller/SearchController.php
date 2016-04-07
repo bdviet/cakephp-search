@@ -111,7 +111,7 @@ class SearchController extends AppController
                 $this->set('saveSearchResultsId', $preSaveIds['saveSearchResultsId']);
             }
             $this->set('entities', $this->paginate($query));
-            $this->set('fields', $this->Searchable->getListingFields($model));
+            $this->set('fields', $this->Searchable->getListingFields($table));
         }
 
         $searchFields = [];
