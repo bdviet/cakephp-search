@@ -136,13 +136,13 @@ class SavedSearchesTable extends Table
     }
 
     /**
-     * Method for pre-saving search criteria and results.
+     * Method that pre-saves search criteria and results and returns saved records ids.
      *
      * @param  string $model  model name
      * @param  Query  $query  results query
      * @param  array  $data   request data
      * @param  string $userId user id
-     * @return void
+     * @return array
      */
     public function preSaveSearchCriteriaAndResults($model, Query $query, $data, $userId)
     {
@@ -150,7 +150,7 @@ class SavedSearchesTable extends Table
         /*
         delete old pre-saved searches
          */
-        $this->deleteOldPreSavedSearches();
+        $this->_deleteOldPreSavedSearches();
 
         /*
         pre-save search criteria
@@ -160,6 +160,8 @@ class SavedSearchesTable extends Table
         pre-save search results
          */
         $result['saveSearchResultsId'] = $this->_preSaveSearchResults($model, $query, $userId);
+
+        return $result;
     }
 
     /**
@@ -167,7 +169,7 @@ class SavedSearchesTable extends Table
      *
      * @return void
      */
-    public function deleteOldPreSavedSearches()
+    protected function _deleteOldPreSavedSearches()
     {
         $this->deleteAll([
             'modified <' => new \DateTime(static::DELETE_OLDER_THAN),
