@@ -62,6 +62,19 @@
                                 echo $this->Form->end();
                                 break;
                         }
+                        echo $this->Form->postLink(
+                            '<span class="glyphicon glyphicon-minus"></span>',
+                            [
+                                'action' => 'delete',
+                                $search->id
+                            ],
+                            [
+                                'confirm' => __('Are you sure you want to delete {0}?', $search->name),
+                                'title' => __('Delete'),
+                                'class' => 'saved-search-delete-form',
+                                'escape' => false
+                            ]
+                        );
                         ?>
                         </samp>
                     <?php endforeach; ?>

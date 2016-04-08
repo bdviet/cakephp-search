@@ -2,6 +2,10 @@
     margin-right: 5px;
 }
 
+.saved-search-delete-form {
+    margin-left: 3px;
+}
+
 .saved-criteria-form {
     display: inline;
 }
