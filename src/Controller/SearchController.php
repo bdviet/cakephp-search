@@ -130,4 +130,23 @@ class SearchController extends AppController
 
         $this->set(compact('searchFields', 'searchOperators', 'savedSearches'));
     }
+
+    /**
+     * Delete method
+     *
+     * @param string|null $id Saved search id.
+     * @return \Cake\Network\Response|null Redirects to referer.
+     * @throws \Cake\Network\Exception\NotFoundException When record not found.
+     */
+    public function delete($id = null)
+    {
+        $this->request->allowMethod(['post', 'delete']);
+        $savedSearch = $this->SavedSearches->get($id);
+        if ($this->SavedSearches->delete($savedSearch)) {
+            $this->Flash->success(__('The saved search has been deleted.'));
+        } else {
+            $this->Flash->error(__('The saved search could not be deleted. Please, try again.'));
+        }
+        return $this->redirect($this->referer());
+    }
 }
