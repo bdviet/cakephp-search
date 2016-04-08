@@ -78,16 +78,16 @@
                         'plugin' => 'Search',
                         'controller' => 'Search',
                         'action' => 'save',
-                        $saveSearchCriteriaId
+                        $saveSearchResultsId
                     ]
                 ]); ?>
                 <div class="input-group">
                     <?= $this->Form->input('name', [
                         'label' => false,
                         'class' => 'form-control input-sm',
-                        'placeholder' => 'Save criteria name',
+                        'placeholder' => 'Save results name',
                         'required' => true,
-                        'value' => ''
+                        'value' => false
                     ]); ?>
                     <span class="input-group-btn">
                         <?= $this->Form->button(
@@ -104,16 +104,16 @@
                         'plugin' => 'Search',
                         'controller' => 'Search',
                         'action' => 'save',
-                        $saveSearchResultsId
+                        $saveSearchCriteriaId
                     ]
                 ]); ?>
                 <div class="input-group">
                     <?= $this->Form->input('name', [
                         'label' => false,
                         'class' => 'form-control input-sm',
-                        'placeholder' => 'Save results name',
+                        'placeholder' => 'Save criteria name',
                         'required' => true,
-                        'value' => false
+                        'value' => ''
                     ]); ?>
                     <span class="input-group-btn">
                         <?= $this->Form->button(
