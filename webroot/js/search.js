@@ -73,6 +73,18 @@ var search = search || {};
     };
 
     /**
+     * Remove button click logic.
+     * @param  {string} id button id
+     * @return {undefined}
+     */
+    Search.prototype._onRemoveBtnClick = function(id) {
+        $('#' + id).on('click', 'a', function(event) {
+            event.preventDefault();
+            $('#' + $(this).data('element-id')).remove();
+        });
+    };
+
+    /**
      * Method that generates form field.
      *
      * @param  {string}    field       field name
@@ -83,8 +95,9 @@ var search = search || {};
      */
     Search.prototype._generateField = function(field, properties, value, setOperator) {
         var timestamp = new Date().getUTCMilliseconds();
+        var del_id = field + '_' + timestamp;
         var inputHtml = '';
-        inputHtml += '<div class="form-group">';
+        inputHtml += '<div class="form-group" id="' + del_id + '">';
             inputHtml += this._generateFieldLabel(properties.label);
             inputHtml += this._generateFieldType(field, properties.type, timestamp);
             inputHtml += '<div class="row">';
@@ -94,9 +107,14 @@ var search = search || {};
                 inputHtml += '<div class="col-xs-4">';
                     inputHtml += this._generateFieldInput(field, properties, timestamp, value);
                 inputHtml += '</div>';
+                inputHtml += '<div class="col-xs-1">';
+                    inputHtml += this._generateDeleteButton(del_id);
+                inputHtml += '</div>';
             inputHtml += '</div>';
         inputHtml += '</div>';
         $(this.formId + ' fieldset').append(inputHtml);
+
+        this._onRemoveBtnClick(del_id);
     };
 
     /**
@@ -184,6 +202,23 @@ var search = search || {};
                 result += '<input type="' + properties.type + '" name="' + field + '[' + timestamp + '][value]"';
                 result += ' class="form-control input-sm" value="' + value + '">';
         }
+
+        return result;
+    };
+
+    /**
+     * Generates and returns field delete button html.
+     *
+     * @param  {string} id field id
+     * @return {string}
+     */
+    Search.prototype._generateDeleteButton = function(id) {
+        var result = '';
+        result += '<div class="input-sm">';
+            result += '<a href="#" data-element-id="' + id + '">';
+                result += '<span class="glyphicon glyphicon-minus"></span>';
+            result += '</a>';
+        result += '</div>';
 
         return result;
     };
