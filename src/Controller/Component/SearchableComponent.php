@@ -58,6 +58,7 @@ class SearchableComponent extends Component
 
     /**
      * Basic search default fields
+     *
      * @var array
      */
     protected $_basicSearchDefaultFields = [
@@ -350,7 +351,7 @@ class SearchableComponent extends Component
     /**
      * Get all the tables from application and plugins.
      *
-     * @return [type]                [description]
+     * @return array
      */
     protected function _getAllTables()
     {
@@ -398,6 +399,7 @@ class SearchableComponent extends Component
 
     /**
      * Return list of operators grouped by field type
+     *
      * @return array
      */
     public function getFieldTypeOperators()
