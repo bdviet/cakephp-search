@@ -441,7 +441,7 @@ class SearchableComponent extends Component
             $fields = $this->getSearchableFieldProperties($model, $fields);
             foreach ($fields as $field => $properties) {
                 if (in_array($properties['type'], $this->_basicSearchFieldTypes)) {
-                    $result['OR'][$model . '.' . $field . ' LIKE'] = '%' . $data['query'] . '%';
+                    $result['OR'][$field . ' LIKE'] = '%' . $data['query'] . '%';
                 }
             }
         }
@@ -476,7 +476,7 @@ class SearchableComponent extends Component
                         );
                     }
                     $sqlOperator = $this->_sqlOperators[$type][$operator]['operator'];
-                    $key = $model . '.' . $fieldName . ' ' . $sqlOperator;
+                    $key = $fieldName . ' ' . $sqlOperator;
 
                     if (array_key_exists($key, $result)) {
                         switch ($type) {
