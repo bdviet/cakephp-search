@@ -58,6 +58,7 @@ class SearchableComponent extends Component
 
     /**
      * Basic search default fields
+     *
      * @var array
      */
     protected $_basicSearchDefaultFields = [
@@ -350,7 +351,7 @@ class SearchableComponent extends Component
     /**
      * Get all the tables from application and plugins.
      *
-     * @return [type]                [description]
+     * @return array
      */
     protected function _getAllTables()
     {
@@ -398,6 +399,7 @@ class SearchableComponent extends Component
 
     /**
      * Return list of operators grouped by field type
+     *
      * @return array
      */
     public function getFieldTypeOperators()
@@ -441,7 +443,7 @@ class SearchableComponent extends Component
             $fields = $this->getSearchableFieldProperties($model, $fields);
             foreach ($fields as $field => $properties) {
                 if (in_array($properties['type'], $this->_basicSearchFieldTypes)) {
-                    $result['OR'][$model . '.' . $field . ' LIKE'] = '%' . $data['query'] . '%';
+                    $result['OR'][$field . ' LIKE'] = '%' . $data['query'] . '%';
                 }
             }
         }
@@ -476,7 +478,7 @@ class SearchableComponent extends Component
                         );
                     }
                     $sqlOperator = $this->_sqlOperators[$type][$operator]['operator'];
-                    $key = $model . '.' . $fieldName . ' ' . $sqlOperator;
+                    $key = $fieldName . ' ' . $sqlOperator;
 
                     if (array_key_exists($key, $result)) {
                         switch ($type) {

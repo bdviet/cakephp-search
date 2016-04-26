@@ -89,12 +89,11 @@ class SearchController extends AppController
         if (is_null($model)) {
             throw new BadRequestException();
         }
-        $modelName = Inflector::pluralize(Inflector::classify($model));
 
         if ($this->request->is('post')) {
             $data = $this->request->data;
-            $where = $this->Searchable->prepareWhereStatement($data, $modelName, $advanced);
-            $table = TableRegistry::get($modelName);
+            $where = $this->Searchable->prepareWhereStatement($data, $model, $advanced);
+            $table = TableRegistry::get($model);
             $query = $table->find('all')->where($where);
 
             /*
@@ -115,13 +114,19 @@ class SearchController extends AppController
         }
 
         $searchFields = [];
-        if ($this->Searchable->isSearchable($modelName)) {
-            $searchFields = $this->Searchable->getSearchableFields($modelName);
-            $searchFields = $this->Searchable->getSearchableFieldProperties($modelName, $searchFields);
+        /*
+        get searchable fields
+         */
+        if ($this->Searchable->isSearchable($model)) {
+            $searchFields = $this->Searchable->getSearchableFields($model);
+            $searchFields = $this->Searchable->getSearchableFieldProperties($model, $searchFields);
             $searchFields = $this->Searchable->getSearchableFieldLabels($searchFields);
         }
 
         $searchOperators = [];
+        /*
+        get search operators based on searchable fields
+         */
         if (!empty($searchFields)) {
             $searchOperators = $this->Searchable->getFieldTypeOperators();
         }

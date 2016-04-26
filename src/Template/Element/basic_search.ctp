@@ -6,7 +6,11 @@ use Cake\Utility\Inflector;
 if ('Search' === $this->request->params['plugin']) {
     $lookInModel = $this->request->params['pass'][0];
 } else {
-    $lookInModel = Inflector::tableize($this->request->params['controller']);
+    $modelName = $this->request->params['controller'];
+    if (!is_null($this->request->params['plugin'])) {
+        $modelName = $this->request->params['plugin'] . '.' . $modelName;
+    }
+    $lookInModel = $modelName;
 }
 ?>
 
