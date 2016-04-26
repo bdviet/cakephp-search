@@ -2,10 +2,13 @@
 use Cake\Utility\Inflector;
 ?>
 
-<?php if (!empty($entities)) : ?>
+<?php
+if (!empty($entities)) :
+    list($plugin, $name) = pluginSplit($this->request->params['pass'][0]);
+?>
 <div class="row">
     <div class="col-xs-12">
-        <h3><strong><?= Inflector::humanize($this->request->params['pass'][0]); ?></strong> <?= __('search results'); ?>:</h3>
+        <h3><strong><?= $name ?></strong> <?= __('search results'); ?>:</h3>
         <table class="table table-hover">
             <thead>
                 <tr>
