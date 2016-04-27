@@ -40,6 +40,32 @@ class DashboardsController extends AppController
             'contain' => ['Roles', 'SavedSearches']
         ]);
 
+        $savedSearches = [];
+        foreach ($dashboard->saved_searches as $savedSearch) {
+            switch ($savedSearch->type) {
+                case $this->Dashboards->SavedSearches->getCriteriaType():
+                    $entities = $this->Dashboards->SavedSearches->search(
+                        $savedSearch->model,
+                        $this->Auth->user(),
+                        json_decode($savedSearch->content, true),
+                        true
+                    );
+                    break;
+
+                case $this->Dashboards->SavedSearches->getResultType():
+                    $search = $this->Dashboards->SavedSearches->get($savedSearch->id);
+                    $entities['entities'] = json_decode($search->content);
+                    break;
+            }
+
+            $savedSearches[] = [
+                'search_name' => $savedSearch->name,
+                'entities' => $entities['entities'],
+                'fields' => $this->Dashboards->SavedSearches->getListingFields($savedSearch->model)
+            ];
+        }
+
+        $this->set('savedSearches', $savedSearches);
         $this->set('dashboard', $dashboard);
         $this->set('_serialize', ['dashboard']);
     }
