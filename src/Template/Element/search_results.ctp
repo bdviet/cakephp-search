@@ -4,11 +4,15 @@ use Cake\Utility\Inflector;
 
 <?php
 if (!empty($entities)) :
-    list($plugin, $name) = pluginSplit($this->request->params['pass'][0]);
+    if (!isset($search_name)) {
+        $model_name = isset($model_name) ? $model_name : $this->request->params['pass'][0];
+        list($plugin, $name) = pluginSplit($model_name);
+        $search_name = '<strong' . $name . '</strong> ' . __('search results') . ':';
+    }
 ?>
 <div class="row">
     <div class="col-xs-12">
-        <h3><strong><?= $name ?></strong> <?= __('search results'); ?>:</h3>
+        <h3><?= $search_name ?></h3>
         <table class="table table-hover">
             <thead>
                 <tr>
