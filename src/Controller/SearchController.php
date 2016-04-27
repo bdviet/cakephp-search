@@ -74,7 +74,7 @@ class SearchController extends AppController
     {
         $search = $this->SavedSearches->get($id);
         $this->set('entities', json_decode($search->content));
-        $this->set('fields', $this->Searchable->getListingFields($model));
+        $this->set('fields', $this->SavedSearches->getListingFields($model));
     }
 
     /**
