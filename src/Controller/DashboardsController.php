@@ -61,7 +61,9 @@ class DashboardsController extends AppController
             $savedSearches[] = [
                 'search_name' => $savedSearch->name,
                 'entities' => $entities['entities'],
-                'fields' => $this->Dashboards->SavedSearches->getListingFields($savedSearch->model)
+                'fields' => $this->Dashboards->SavedSearches->getListingFields($savedSearch->model),
+                'row' => $savedSearch->_joinData->row,
+                'column' => $savedSearch->_joinData->column
             ];
         }
 
