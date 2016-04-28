@@ -18,7 +18,7 @@ foreach ($groupedAndSorted as &$r) {
         <div class="row">
             <?php foreach ($k as $savedSearch) : ?>
                 <div class="col-md-6">
-                    <?= $this->element('search_results', $savedSearch); ?>
+                    <?= $this->element('Search.search_results', $savedSearch); ?>
                 </div>
             <?php endforeach; ?>
         </div>
