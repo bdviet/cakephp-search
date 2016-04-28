@@ -75,4 +75,25 @@ class DashboardsTable extends Table
         $rules->add($rules->existsIn(['role_id'], 'Roles'));
         return $rules;
     }
+
+    /**
+     * Prepare associated saved searches data to be stored in the joined DB table.
+     *
+     * @param  array $savedSearches post request saved searches related data
+     * @return array
+     */
+    public function prepareSavedSearches($savedSearches)
+    {
+        $result = [];
+        foreach ($savedSearches['_ids'] as $k => $id) {
+            $result[] = ['id' => $id,
+                '_joinData' => [
+                    'row' => $savedSearches['_rows'][$k],
+                    'column' => $savedSearches['_columns'][$k]
+                ]
+            ];
+        }
+
+        return $result;
+    }
 }
