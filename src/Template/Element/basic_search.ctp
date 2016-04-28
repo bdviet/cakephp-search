@@ -3,7 +3,7 @@ use Cake\Utility\Inflector;
 ?>
 
 <?php
-if ('Search' === $this->request->params['plugin']) {
+if ('Search' === $this->request->params['plugin'] && 'Search' === $this->request->params['controller']) {
     $lookInModel = $this->request->params['pass'][0];
 } else {
     $modelName = $this->request->params['controller'];

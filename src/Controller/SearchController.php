@@ -29,7 +29,7 @@ class SearchController extends AppController
      */
     public function advanced($model = null)
     {
-        $this->_searchAction($model, true);
+        $this->_searchAction($model, true, true);
     }
 
     /**
@@ -74,7 +74,7 @@ class SearchController extends AppController
     {
         $search = $this->SavedSearches->get($id);
         $this->set('entities', json_decode($search->content));
-        $this->set('fields', $this->Searchable->getListingFields($model));
+        $this->set('fields', $this->SavedSearches->getListingFields($model));
     }
 
     /**
@@ -84,33 +84,24 @@ class SearchController extends AppController
      * @param  bool   $advanced advanced search flag
      * @return void
      */
-    protected function _searchAction($model, $advanced = false)
+    protected function _searchAction($model, $advanced = false, $preSave = false)
     {
         if (is_null($model)) {
             throw new BadRequestException();
         }
 
         if ($this->request->is('post')) {
-            $data = $this->request->data;
-            $where = $this->Searchable->prepareWhereStatement($data, $model, $advanced);
-            $table = TableRegistry::get($model);
-            $query = $table->find('all')->where($where);
+            $search = $this->SavedSearches->search($model, $this->Auth->user(), $this->request->data, $advanced, $preSave);
 
             /*
             if in advanced mode, pre-save search criteria and results
              */
             if ($advanced) {
-                $preSaveIds = $this->SavedSearches->preSaveSearchCriteriaAndResults(
-                    $model,
-                    $query,
-                    $data,
-                    $this->Auth->user('id')
-                );
-                $this->set('saveSearchCriteriaId', $preSaveIds['saveSearchCriteriaId']);
-                $this->set('saveSearchResultsId', $preSaveIds['saveSearchResultsId']);
+                $this->set('saveSearchCriteriaId', $search['saveSearchCriteriaId']);
+                $this->set('saveSearchResultsId', $search['saveSearchResultsId']);
             }
-            $this->set('entities', $this->paginate($query));
-            $this->set('fields', $this->Searchable->getListingFields($table));
+            $this->set('entities', $this->paginate($search['entities']));
+            $this->set('fields', $this->SavedSearches->getListingFields($model));
         }
 
         $searchFields = [];
@@ -118,9 +109,9 @@ class SearchController extends AppController
         get searchable fields
          */
         if ($this->Searchable->isSearchable($model)) {
-            $searchFields = $this->Searchable->getSearchableFields($model);
-            $searchFields = $this->Searchable->getSearchableFieldProperties($model, $searchFields);
-            $searchFields = $this->Searchable->getSearchableFieldLabels($searchFields);
+            $searchFields = $this->SavedSearches->getSearchableFields($model);
+            $searchFields = $this->SavedSearches->getSearchableFieldProperties($model, $searchFields);
+            $searchFields = $this->SavedSearches->getSearchableFieldLabels($searchFields);
         }
 
         $searchOperators = [];

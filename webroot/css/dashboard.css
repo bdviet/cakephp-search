@@ -1,0 +1,50 @@
+.dropable-area {
+    min-height: 100px;
+    list-style-type: none;
+    margin: 0;
+    float: left;
+    margin-right: 10px;
+    border: 2px dashed #aaa;
+    border-radius: 8px;
+    padding: 5px;
+    width: 100%;
+}
+
+.saved-searches-area {
+    margin: 50px 0;
+}
+
+.dropable-area li {
+    margin: 5px;
+    padding: 0 0 50px 0;
+    font-size: 14px;
+    width: auto;
+    background-color: #ccc;
+    color: #555;
+    border: 1px solid #666;
+    border-radius: 10px;
+    cursor: pointer;
+}
+
+.dropable-area li .header {
+    color: #fff;
+    text-shadow: #000 0 1px;
+    box-shadow: 5px;
+    padding: 5px;
+    background-color: #444;
+    border-bottom: 1px solid #ddd;
+    border-top-right-radius: 10px;
+    border-top-left-radius: 10px;
+}
+
+.saved-searches-area li {
+    text-align: center;
+    width: 100px;
+}
+
+.ui-sortable-helper {
+    opacity: 0.25;
+    background-color: #ccc !important;
+    color: #555 !important;
+    height: auto !important;
+}
