@@ -79,7 +79,14 @@ class DashboardsController extends AppController
     {
         $dashboard = $this->Dashboards->newEntity();
         if ($this->request->is('post')) {
-            $dashboard = $this->Dashboards->patchEntity($dashboard, $this->request->data);
+            $data = $this->request->data;
+
+            $data['saved_searches'] = $this->Dashboards->prepareSavedSearches($data['saved_searches']);
+
+            $dashboard = $this->Dashboards->patchEntity($dashboard, $data, [
+                'associated' => ['SavedSearches']
+            ]);
+
             if ($this->Dashboards->save($dashboard)) {
                 $this->Flash->success(__('The dashboard has been saved.'));
                 return $this->redirect(['action' => 'index']);
@@ -108,7 +115,13 @@ class DashboardsController extends AppController
             'contain' => ['SavedSearches']
         ]);
         if ($this->request->is(['patch', 'post', 'put'])) {
-            $dashboard = $this->Dashboards->patchEntity($dashboard, $this->request->data);
+            $data = $this->request->data;
+
+            $data['saved_searches'] = $this->Dashboards->prepareSavedSearches($data['saved_searches']);
+
+            $dashboard = $this->Dashboards->patchEntity($dashboard, $data, [
+                'associated' => ['SavedSearches']
+            ]);
             if ($this->Dashboards->save($dashboard)) {
                 $this->Flash->success(__('The dashboard has been saved.'));
                 return $this->redirect(['action' => 'index']);
