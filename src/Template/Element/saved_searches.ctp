@@ -1,4 +1,6 @@
 <?php use Cake\Utility\Inflector; ?>
+<?= $this->Html->script('Search.saved_searches', ['block' => 'scriptBottom']); ?>
+
 <div class="well">
     <h4><?= __('Saved Searches') ?></h4>
     <hr />
@@ -12,26 +14,34 @@
                 $groupedSavedSearches[$savedSearch->type][] = $savedSearch;
             }
             ksort($groupedSavedSearches);
+
+            foreach ($groupedSavedSearches as $type => $searches) :
+            $count = 12 / count($groupedSavedSearches);
             ?>
-            <?php foreach ($groupedSavedSearches as $type => $searches) : $count = 12 / count($groupedSavedSearches) ?>
                 <div class="col-xs-<?= $count ?> saved-searches">
                     <strong><?= Inflector::pluralize(Inflector::humanize($type)) ?>:</strong>
-                    <?php foreach ($searches as $search) : ?>
-                        <samp>
-                        <?php
+                    <?php
+                    $criterias = [];
+                    $results = [];
+                    foreach ($searches as $search) :
                         switch ($type) {
                             case 'result':
+                                $results[$search->id] = $search->name;
                                 echo $this->Html->link($search->name, [
                                     'action' => 'saved_result',
                                     $search->model,
                                     $search->id
+                                ], [
+                                    'id' => 'view_' . $search->id,
+                                    'class' => 'hidden'
                                 ]);
                                 break;
 
                             case 'criteria':
-                                $savedSearchContent = json_decode($search->content);
+                                $criterias[$search->id] = $search->name;
                                 echo $this->Form->create(null, [
-                                    'class' => 'saved-criteria-form',
+                                    'id' => 'view_' . $search->id,
+                                    'class' => 'saved-criteria-form hidden',
                                     'url' => [
                                         'plugin' => 'Search',
                                         'controller' => 'Search',
@@ -40,6 +50,7 @@
                                     ]
                                 ]);
 
+                                $savedSearchContent = json_decode($search->content);
                                 foreach ($savedSearchContent as $fieldName => $properties) {
                                     foreach ($properties as $k => $property) {
                                         echo $this->Form->hidden($fieldName . '[' . $k . '][type]', [
@@ -69,15 +80,52 @@
                                 $search->id
                             ],
                             [
+                                'id' => 'delete_' . $search->id,
                                 'confirm' => __('Are you sure you want to delete {0}?', $search->name),
                                 'title' => __('Delete'),
-                                'class' => 'saved-search-delete-form',
+                                'class' => 'saved-search-delete-form hidden',
                                 'escape' => false
                             ]
                         );
-                        ?>
-                        </samp>
+                    ?>
                     <?php endforeach; ?>
+                    <div class="input-group">
+                    <?php
+                    switch ($type) {
+                        case 'result':
+                            $selectFieldName = 'results';
+                            $selectFieldOptions = $results;
+                            $selectFieldId = 'savedResultsSelect';
+                            $buttonViewId = 'savedResultsView';
+                            $buttonDeleteId = 'savedResultsDelete';
+                            break;
+
+                        case 'criteria':
+                            $selectFieldName = 'criterias';
+                            $selectFieldOptions = $criterias;
+                            $selectFieldId = 'savedCriteriasSelect';
+                            $buttonViewId = 'savedCriteriasView';
+                            $buttonDeleteId = 'savedCriteriasDelete';
+                            break;
+                    }
+                    echo $this->Form->select($selectFieldName, $selectFieldOptions, [
+                        'id' => $selectFieldId,
+                        'class' => 'form-control input-sm'
+                    ]);
+                    ?>
+                        <span class="input-group-btn">
+                        <?php
+                        echo $this->Form->button('<span class=" glyphicon glyphicon-eye-open"></span>', [
+                            'id' => $buttonViewId,
+                            'class' => 'btn btn-default btn-sm'
+                        ]);
+                        echo $this->Form->button('<span class="glyphicon glyphicon-trash"></span>', [
+                            'id' => $buttonDeleteId,
+                            'class' => 'btn btn-danger btn-sm'
+                        ]);
+                        ?>
+                        </span>
+                    </div>
                 </div>
             <?php endforeach; ?>
             </div>
