@@ -1,5 +1,9 @@
-.save-search-form + .save-search-form {
-    margin-right: 5px;
+.save-search-form {
+    margin-top: 15px;
+}
+
+.save-search-form  + .save-search-form {
+    margin-top: 5px;
 }
 
 .saved-search-delete-form {

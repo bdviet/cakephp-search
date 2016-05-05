@@ -47,6 +47,8 @@
                     'empty' => true
                 ]
             ) ?>
+            <?= $this->element('save_search_criterias'); ?>
+            <?= $this->element('save_search_results'); ?>
         </div>
     </div>
 </div>
