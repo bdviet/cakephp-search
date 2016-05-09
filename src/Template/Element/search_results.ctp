@@ -26,7 +26,7 @@ if (!empty($entities)) :
                                     if (isset($sortable_fields)) {
                                         echo $this->Paginator->sort($field);
                                     } else {
-                                        echo $field;
+                                        echo Inflector::humanize($field);
                                     }
                                 ?></th>
                             <?php endforeach; ?>
