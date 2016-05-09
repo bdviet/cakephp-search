@@ -112,7 +112,11 @@ class SearchController extends AppController
                 $this->set('saveSearchCriteriaId', $search['saveSearchCriteriaId']);
                 $this->set('saveSearchResultsId', $search['saveSearchResultsId']);
             }
-            $this->set('entities', $this->paginate($search['entities']['result']));
+            /*
+            @todo find out how to do pagination without affecting limit
+             */
+            $entities = $search['entities']['result']->all();
+            $this->set('entities', $entities);
 
             /*
             set listing fields
