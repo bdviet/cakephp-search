@@ -98,7 +98,7 @@ class SearchController extends AppController
             /*
             if in advanced mode, pre-save search criteria and results
              */
-            if ($advanced) {
+            if ($advanced && !empty($this->request->data['criteria'])) {
                 $this->set('saveSearchCriteriaId', $search['saveSearchCriteriaId']);
                 $this->set('saveSearchResultsId', $search['saveSearchResultsId']);
             }

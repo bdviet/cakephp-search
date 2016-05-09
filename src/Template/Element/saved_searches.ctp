@@ -51,15 +51,18 @@
                                 ]);
 
                                 $savedSearchContent = json_decode($search->content);
-                                foreach ($savedSearchContent as $fieldName => $properties) {
+                                /*
+                                saved search criterias fields
+                                 */
+                                foreach ($savedSearchContent->criteria as $fieldName => $properties) {
                                     foreach ($properties as $k => $property) {
-                                        echo $this->Form->hidden($fieldName . '[' . $k . '][type]', [
+                                        echo $this->Form->hidden('criteria[' . $fieldName . '][' . $k . '][type]', [
                                             'value' => $property->type,
                                         ]);
-                                        echo $this->Form->hidden($fieldName . '[' . $k . '][operator]', [
+                                        echo $this->Form->hidden('criteria[' . $fieldName . '][' . $k . '][operator]', [
                                             'value' => $property->operator,
                                         ]);
-                                        echo $this->Form->hidden($fieldName . '[' . $k . '][value]', [
+                                        echo $this->Form->hidden('criteria[' . $fieldName . '][' . $k . '][value]', [
                                             'value' => $property->value,
                                         ]);
                                     }

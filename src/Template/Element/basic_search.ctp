@@ -24,7 +24,7 @@ if ('Search' === $this->request->params['plugin'] && 'Search' === $this->request
     ]
 ]); ?>
 
-    <?= $this->Form->input('query', [
+    <?= $this->Form->input('criteria[query]', [
         'label' => false,
         'class' => 'form-control',
         'placeholder' => 'Search'

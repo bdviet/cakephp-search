@@ -12,11 +12,14 @@
         'search.setFieldProperties(' . json_encode($searchFields) . ');',
         ['block' => 'scriptBottom']
     ); ?>
-
-    <?= $this->Html->scriptBlock(
-        'search.generateCriteriaFields(' . json_encode($this->request->data) . ');',
-        ['block' => 'scriptBottom']
-    ); ?>
+    <?php
+    if (isset($this->request->data['criteria'])) {
+        echo $this->Html->scriptBlock(
+            'search.generateCriteriaFields(' . json_encode($this->request->data['criteria']) . ');',
+            ['block' => 'scriptBottom']
+        );
+    }
+    ?>
 <div class="well">
     <h4><?= __('Filters') ?></h4>
     <hr />

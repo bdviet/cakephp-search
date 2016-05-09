@@ -233,14 +233,24 @@ class SavedSearchesTable extends Table
      */
     public function search($model, $user, $data, $advanced = false, $preSave = false)
     {
-        $where = $this->prepareWhereStatement($data, $model, $advanced);
+        $criteria = [];
+        if (isset($data['criteria'])) {
+            $criteria = $data['criteria'];
+        }
+        $where = $this->prepareWhereStatement($criteria, $model, $advanced);
         $table = TableRegistry::get($model);
-        $query = $table->find('all')->where($where);
+
+        $query = $data;
+        /*
+        do not include criteria when pre-saving search results
+         */
+        unset($query['criteria']);
+        $query['result'] = $table->find('all')->where($where);
 
         /*
         if in advanced mode, pre-save search criteria and results
          */
-        if ($preSave) {
+        if ($preSave && !empty($criteria)) {
             $preSaveIds = $this->preSaveSearchCriteriaAndResults(
                 $model,
                 $query,
@@ -489,12 +499,12 @@ class SavedSearchesTable extends Table
      * Method that pre-saves search criteria and results and returns saved records ids.
      *
      * @param  string $model  model name
-     * @param  Query  $query  results query
+     * @param  array  $query  results query
      * @param  array  $data   request data
      * @param  string $userId user id
      * @return array
      */
-    public function preSaveSearchCriteriaAndResults($model, Query $query, $data, $userId)
+    public function preSaveSearchCriteriaAndResults($model, array $query, $data, $userId)
     {
         $result = [];
         /*
@@ -555,11 +565,11 @@ class SavedSearchesTable extends Table
      * Pre-save search results and return record id.
      *
      * @param  string $model  model name
-     * @param  Query  $query  results query
+     * @param  array  $query  results query
      * @param  string $userId user id
      * @return string
      */
-    protected function _preSaveSearchResults($model, Query $query, $userId)
+    protected function _preSaveSearchResults($model, array $query, $userId)
     {
         $search = $this->newEntity();
         $search->type = $this->getResultType();
