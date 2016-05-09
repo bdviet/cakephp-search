@@ -39,29 +39,39 @@
                     'empty' => true
                 ]
             ) ?>
+        </div>
+        <?= $this->Form->create(null, [
+            'id' => 'SearchFilterForm',
+            'url' => [
+                'plugin' => 'Search',
+                'controller' => 'Search',
+                'action' => 'advanced',
+                $this->request->params['pass'][0]
+            ]
+        ]) ?>
+        <hr class="visible-xs visible-sm" />
+        <div class="col-md-8 col-md-pull-4 col-lg-9 col-lg-pull-3">
+            <fieldset></fieldset>
+        </div>
+    </div>
+    <h4><?= __('Options') ?></h4>
+    <hr />
+    <div class="row">
+        <div class="col-md-8 col-lg-9">
+            <?= $this->element('search_options'); ?>
+            <?= $this->Form->button(__('Submit'), ['class' => 'btn btn-primary']) ?>
+            <?= $this->Form->end() ?>
+        </div>
+        <div class="col-md-4 col-lg-3">
             <div class="row">
                 <div class="col-sm-6 col-md-12">
-                    <?= $this->element('save_search_criterias'); ?>
+                    <?= $this->Form->label(__('Save search')) ?>
                 </div>
                 <div class="col-sm-6 col-md-12">
+                    <?= $this->element('save_search_criterias'); ?>
                     <?= $this->element('save_search_results'); ?>
                 </div>
             </div>
-        </div>
-        <hr class="visible-xs visible-sm" />
-        <div class="col-md-8 col-md-pull-4 col-lg-9 col-lg-pull-3">
-            <?= $this->Form->create(null, [
-                'id' => 'SearchFilterForm',
-                'url' => [
-                    'plugin' => 'Search',
-                    'controller' => 'Search',
-                    'action' => 'advanced',
-                    $this->request->params['pass'][0]
-                ]
-            ]) ?>
-            <fieldset></fieldset>
-            <?= $this->Form->button(__('Submit'), ['class' => 'btn btn-primary']) ?>
-            <?= $this->Form->end() ?>
         </div>
     </div>
 </div>
