@@ -24,7 +24,10 @@
         <div class="col-md-4 col-md-push-8 col-lg-3 col-lg-push-9">
             <?= $this->Form->label(__('Add Filter')) ?>
             <?php
-            $selectOptions = array_combine(array_keys($searchFields), array_map(function ($v) {return $v['label'];}, $searchFields));
+            $selectOptions = array_combine(
+                array_keys($searchFields),
+                array_map(function ($v) { return $v['label']; }, $searchFields)
+            );
             echo $this->Form->select(
                 'fields',
                  $selectOptions, [
