@@ -75,6 +75,24 @@
                                         'value' => $display_column,
                                     ]);
                                 }
+                                /*
+                                saved search sort by field
+                                 */
+                                echo $this->Form->hidden('sort_by_field', [
+                                    'value' => $savedSearchContent->sort_by_field,
+                                ]);
+                                /*
+                                saved search sort by order
+                                 */
+                                echo $this->Form->hidden('sort_by_order', [
+                                    'value' => $savedSearchContent->sort_by_order,
+                                ]);
+                                /*
+                                saved search limit
+                                 */
+                                echo $this->Form->hidden('limit', [
+                                    'value' => $savedSearchContent->limit,
+                                ]);
 
                                 echo $this->Form->button(
                                     $search->name,
