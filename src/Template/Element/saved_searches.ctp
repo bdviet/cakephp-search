@@ -67,6 +67,14 @@
                                         ]);
                                     }
                                 }
+                                /*
+                                saved search display columns
+                                 */
+                                foreach ($savedSearchContent->display_columns as $k => $display_column) {
+                                    echo $this->Form->hidden('display_columns[' . $k . ']', [
+                                        'value' => $display_column,
+                                    ]);
+                                }
 
                                 echo $this->Form->button(
                                     $search->name,

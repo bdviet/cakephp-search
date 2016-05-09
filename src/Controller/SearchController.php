@@ -77,6 +77,16 @@ class SearchController extends AppController
 
         $content = json_decode($search->content);
         $this->set('entities', $content->result);
+
+        /*
+        get listing fields
+         */
+        if (isset($content->display_columns)) {
+            $listingFields = $content->display_columns;
+        } else {
+            $listingFields = $this->SavedSearches->getListingFields($model);
+        }
+        $this->set('listingFields', $listingFields);
     }
 
     /**
@@ -102,8 +112,17 @@ class SearchController extends AppController
                 $this->set('saveSearchCriteriaId', $search['saveSearchCriteriaId']);
                 $this->set('saveSearchResultsId', $search['saveSearchResultsId']);
             }
-            $this->set('fields', $this->SavedSearches->getListingFields($model));
             $this->set('entities', $this->paginate($search['entities']['result']));
+
+            /*
+            set listing fields
+             */
+            if (isset($this->request->data['display_columns'])) {
+                $listingFields = $this->request->data['display_columns'];
+            } else {
+                $listingFields = $this->SavedSearches->getListingFields($model);
+            }
+            $this->set('listingFields', $listingFields);
         }
 
         $searchFields = [];
