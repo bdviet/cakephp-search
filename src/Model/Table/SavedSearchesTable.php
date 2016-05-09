@@ -38,6 +38,16 @@ class SavedSearchesTable extends Table
     const DELETE_OLDER_THAN = '-3 hours';
 
     /**
+     * Search query default properties
+     * @var array
+     */
+    protected $_queryDefaults = [
+        'sort_by_field' => 'created',
+        'sort_by_order' => 'desc',
+        'limit' => 10
+    ];
+
+    /**
      * Operators to SQL operator
      *
      * @var array
@@ -245,7 +255,24 @@ class SavedSearchesTable extends Table
         do not include criteria when pre-saving search results
          */
         unset($query['criteria']);
-        $query['result'] = $table->find('all')->where($where);
+
+        /*
+        use query defaults if not set
+         */
+        $query = array_merge($this->_queryDefaults, $query);
+
+        $query['result'] = $table
+            ->find('all')
+            ->where($where)
+            ->order([$query['sort_by_field'] => $query['sort_by_order']])
+        ;
+
+        /*
+        set limit if not 0
+         */
+        if (0 < (int)$query['limit']) {
+            $query['result']->limit($query['limit']);
+        }
 
         /*
         if in advanced mode, pre-save search criteria and results
