@@ -74,8 +74,19 @@ class SearchController extends AppController
     {
         $search = $this->SavedSearches->get($id);
         $this->set('search_name', $search->name);
-        $this->set('entities', json_decode($search->content));
-        $this->set('fields', $this->SavedSearches->getListingFields($model));
+
+        $content = json_decode($search->content);
+        $this->set('entities', $content->result);
+
+        /*
+        get listing fields
+         */
+        if (isset($content->display_columns)) {
+            $listingFields = $content->display_columns;
+        } else {
+            $listingFields = $this->SavedSearches->getListingFields($model);
+        }
+        $this->set('listingFields', $listingFields);
     }
 
     /**
@@ -97,12 +108,25 @@ class SearchController extends AppController
             /*
             if in advanced mode, pre-save search criteria and results
              */
-            if ($advanced) {
+            if ($advanced && !empty($this->request->data['criteria'])) {
                 $this->set('saveSearchCriteriaId', $search['saveSearchCriteriaId']);
                 $this->set('saveSearchResultsId', $search['saveSearchResultsId']);
             }
-            $this->set('entities', $this->paginate($search['entities']));
-            $this->set('fields', $this->SavedSearches->getListingFields($model));
+            /*
+            @todo find out how to do pagination without affecting limit
+             */
+            $entities = $search['entities']['result']->all();
+            $this->set('entities', $entities);
+
+            /*
+            set listing fields
+             */
+            if (isset($this->request->data['display_columns'])) {
+                $listingFields = $this->request->data['display_columns'];
+            } else {
+                $listingFields = $this->SavedSearches->getListingFields($model);
+            }
+            $this->set('listingFields', $listingFields);
         }
 
         $searchFields = [];

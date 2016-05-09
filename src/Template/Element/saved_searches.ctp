@@ -51,19 +51,48 @@
                                 ]);
 
                                 $savedSearchContent = json_decode($search->content);
-                                foreach ($savedSearchContent as $fieldName => $properties) {
+                                /*
+                                saved search criterias fields
+                                 */
+                                foreach ($savedSearchContent->criteria as $fieldName => $properties) {
                                     foreach ($properties as $k => $property) {
-                                        echo $this->Form->hidden($fieldName . '[' . $k . '][type]', [
+                                        echo $this->Form->hidden('criteria[' . $fieldName . '][' . $k . '][type]', [
                                             'value' => $property->type,
                                         ]);
-                                        echo $this->Form->hidden($fieldName . '[' . $k . '][operator]', [
+                                        echo $this->Form->hidden('criteria[' . $fieldName . '][' . $k . '][operator]', [
                                             'value' => $property->operator,
                                         ]);
-                                        echo $this->Form->hidden($fieldName . '[' . $k . '][value]', [
+                                        echo $this->Form->hidden('criteria[' . $fieldName . '][' . $k . '][value]', [
                                             'value' => $property->value,
                                         ]);
                                     }
                                 }
+                                /*
+                                saved search display columns
+                                 */
+                                foreach ($savedSearchContent->display_columns as $k => $display_column) {
+                                    echo $this->Form->hidden('display_columns[' . $k . ']', [
+                                        'value' => $display_column,
+                                    ]);
+                                }
+                                /*
+                                saved search sort by field
+                                 */
+                                echo $this->Form->hidden('sort_by_field', [
+                                    'value' => $savedSearchContent->sort_by_field,
+                                ]);
+                                /*
+                                saved search sort by order
+                                 */
+                                echo $this->Form->hidden('sort_by_order', [
+                                    'value' => $savedSearchContent->sort_by_order,
+                                ]);
+                                /*
+                                saved search limit
+                                 */
+                                echo $this->Form->hidden('limit', [
+                                    'value' => $savedSearchContent->limit,
+                                ]);
 
                                 echo $this->Form->button(
                                     $search->name,

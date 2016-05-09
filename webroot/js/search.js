@@ -29,6 +29,7 @@ var search = search || {};
      * @return {undefined}
      */
     Search.prototype.generateCriteriaFields = function(criteriaFields) {
+        var that = this;
         if (!$.isEmptyObject(criteriaFields)) {
             $.each(criteriaFields, function(k, v) {
                 if ('object' === typeof v) {
@@ -63,7 +64,7 @@ var search = search || {};
      * @return {undefined}
      */
     Search.prototype._onfieldSelect = function() {
-        that = this;
+        var that = this;
         $(this.addFieldId).change(function() {
             if ('' !== this.value) {
                 that._generateField(this.value, that.fieldProperties[this.value]);
@@ -140,7 +141,7 @@ var search = search || {};
      */
     Search.prototype._generateFieldType = function(field, type, timestamp) {
         var result = '';
-        result += '<input type="hidden" name="' + field + '[' + timestamp + '][type]" value="' + type + '">';
+        result += '<input type="hidden" name="criteria[' + field + '][' + timestamp + '][type]" value="' + type + '">';
 
         return result;
     };
@@ -157,7 +158,7 @@ var search = search || {};
     Search.prototype._generateFieldOperator = function(field, type, timestamp, setOperator) {
         var result = '';
         if (this.fieldTypeOperators.hasOwnProperty(type)) {
-            result += '<select name="' + field + '[' + timestamp + '][operator]" class="form-control input-sm">';
+            result += '<select name="criteria[' + field + '][' + timestamp + '][operator]" class="form-control input-sm">';
             $.each(this.fieldTypeOperators[type], function(k, v) {
                 result += '<option value="' + k + '"';
                 if (setOperator === k) {
@@ -188,18 +189,18 @@ var search = search || {};
         }
         switch (properties.type) {
             case 'list':
-                result += '<select name="' + field + '[' + timestamp + '][value]" class="form-control input-sm">';
+                result += '<select name="criteria[' + field + '][' + timestamp + '][value]" class="form-control input-sm">';
                 $.each(properties.fieldOptions, function(k, v) {
                     result += '<option value="' + k + '">' + v + '</option>';
                 });
                 result += '</select>';
                 break;
             case 'boolean':
-                result += '<input type="hidden" name="' + field + '[' + timestamp + '][value]" value="0">';
-                result += '<input type="checkbox" name="' + field + '[' + timestamp + '][value]" = value="1">';
+                result += '<input type="hidden" name="criteria[' + field + '][' + timestamp + '][value]" value="0">';
+                result += '<input type="checkbox" name="criteria[' + field + '][' + timestamp + '][value]" = value="1">';
                 break;
             default:
-                result += '<input type="' + properties.type + '" name="' + field + '[' + timestamp + '][value]"';
+                result += '<input type="' + properties.type + '" name="criteria[' + field + '][' + timestamp + '][value]"';
                 result += ' class="form-control input-sm" value="' + value + '">';
         }
 

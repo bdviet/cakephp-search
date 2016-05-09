@@ -44,24 +44,24 @@ class DashboardsController extends AppController
         foreach ($dashboard->saved_searches as $savedSearch) {
             switch ($savedSearch->type) {
                 case $this->Dashboards->SavedSearches->getCriteriaType():
-                    $entities = $this->Dashboards->SavedSearches->search(
+                    $search = $this->Dashboards->SavedSearches->search(
                         $savedSearch->model,
                         $this->Auth->user(),
                         json_decode($savedSearch->content, true),
                         true
                     );
+                    $search['entities'] = (object)$search['entities'];
                     break;
 
                 case $this->Dashboards->SavedSearches->getResultType():
                     $search = $this->Dashboards->SavedSearches->get($savedSearch->id);
-                    $entities['entities'] = json_decode($search->content);
+                    $search['entities'] = json_decode($search->content);
                     break;
             }
 
             $savedSearches[] = [
                 'search_name' => $savedSearch->name,
-                'entities' => $entities['entities'],
-                'fields' => $this->Dashboards->SavedSearches->getListingFields($savedSearch->model),
+                'entities' => $search['entities'],
                 'row' => $savedSearch->_joinData->row,
                 'column' => $savedSearch->_joinData->column
             ];

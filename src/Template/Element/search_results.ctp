@@ -21,15 +21,21 @@ if (!empty($entities)) :
                     <table class="table table-hover">
                         <thead>
                             <tr>
-                            <?php foreach ($fields as $field) : ?>
-                                <th><?= $this->Paginator->sort($field); ?></th>
+                            <?php foreach ($listingFields as $field) : ?>
+                                <th><?php
+                                    if (isset($sortable_fields)) {
+                                        echo $this->Paginator->sort($field);
+                                    } else {
+                                        echo Inflector::humanize($field);
+                                    }
+                                ?></th>
                             <?php endforeach; ?>
                             </tr>
                         </thead>
                         <tbody>
                             <?php foreach ($entities as $entity) : ?>
                             <tr>
-                                <?php foreach ($fields as $field) : ?>
+                                <?php foreach ($listingFields as $field) : ?>
                                     <td><?= $entity->{$field} ?></td>
                                 <?php endforeach; ?>
                             </tr>
