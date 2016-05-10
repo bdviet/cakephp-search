@@ -32,7 +32,7 @@ foreach ($groupedAndSorted as $rowSearches) {
         <?php for ($x = 0; $x < $gridColumns; $x++) : ?>
             <div class="col-md-6">
             <?php if (!empty($groupedAndSorted[$i][$x])) : ?>
-                <?= $this->element('Search.search_results', [
+                <?= $this->element('Search.dashboard_search_results', [
                     'search_name' => $groupedAndSorted[$i][$x]['search_name'],
                     'entities' => $groupedAndSorted[$i][$x]['entities']->result,
                     'listingFields' => $groupedAndSorted[$i][$x]['entities']->display_columns
