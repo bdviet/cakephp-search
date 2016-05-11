@@ -18,12 +18,21 @@
     margin: 5px;
     padding: 0 0 50px 0;
     font-size: 14px;
-    width: auto;
     background-color: #ccc;
     color: #555;
     border: 1px solid #666;
     border-radius: 10px;
     cursor: pointer;
+}
+
+.dropable-area.savetrue li {
+    float: none;
+    width: auto;
+}
+
+.dropable-area.savetrue li .header,
+.dropable-area.savetrue li .content {
+    padding-left: 15px;
 }
 
 .dropable-area li .header {
@@ -39,7 +48,6 @@
 
 .saved-searches-area li {
     text-align: center;
-    width: 100px;
 }
 
 .ui-sortable-helper {
