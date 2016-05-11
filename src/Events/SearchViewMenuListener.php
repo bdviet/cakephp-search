@@ -80,12 +80,6 @@ class SearchViewMenuListener implements EventListenerInterface
     {
         $appView = new AppView();
 
-        $controllerName = $request->controller;
-        if (!empty($request->plugin)) {
-            $controllerName = $request->plugin . '.' . $controllerName;
-        }
-
-        $displayField = TableRegistry::get($controllerName)->displayField();
 
         $repository = '';
         if (method_exists($options, 'source')) {
