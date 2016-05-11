@@ -61,6 +61,7 @@ class DashboardsController extends AppController
 
             $savedSearches[] = [
                 'search_name' => $savedSearch->name,
+                'model' => $savedSearch->model,
                 'entities' => $search['entities'],
                 'row' => $savedSearch->_joinData->row,
                 'column' => $savedSearch->_joinData->column
@@ -97,10 +98,7 @@ class DashboardsController extends AppController
             }
         }
         $roles = $this->Dashboards->Roles->find('list', ['limit' => 200]);
-        $savedSearches = $this->Dashboards->SavedSearches->find('list')
-            ->where(['SavedSearches.name IS NOT' => null])
-            ->limit(200);
-        $this->set(compact('dashboard', 'roles', 'savedSearches'));
+        $this->set(compact('dashboard', 'roles'));
         $this->set('_serialize', ['dashboard']);
     }
 
@@ -132,8 +130,9 @@ class DashboardsController extends AppController
             }
         }
         $roles = $this->Dashboards->Roles->find('list', ['limit' => 200]);
-        $savedSearches = $this->Dashboards->SavedSearches->find('list')
+        $savedSearches = $this->Dashboards->SavedSearches->find('all')
             ->where(['SavedSearches.name IS NOT' => null])
+            ->order(['SavedSearches.model', 'SavedSearches.name'])
             ->limit(200);
         $this->set(compact('dashboard', 'roles', 'savedSearches'));
         $this->set('_serialize', ['dashboard']);
