@@ -31,6 +31,7 @@ if (!empty($entities)) :
                                     }
                                 ?></th>
                             <?php endforeach; ?>
+                            <th class="actions"><?= __('Actions') ?></th>
                             </tr>
                         </thead>
                         <tbody>
@@ -39,6 +40,21 @@ if (!empty($entities)) :
                                 <?php foreach ($listingFields as $field) : ?>
                                     <td><?= $entity->{$field} ?></td>
                                 <?php endforeach; ?>
+                                <td class="actions">
+                                    <?php
+                                        $event = new Event('Search.View.View.Menu.Actions', $this, [
+                                            'request' => $this->request,
+                                            'options' => [
+                                                'model' => $model,
+                                                'entity' => $entity
+                                            ]
+                                        ]);
+                                        $this->eventManager()->dispatch($event);
+                                        if (!empty($event->result)) {
+                                            echo $event->result;
+                                        }
+                                    ?>
+                                </td>
                             </tr>
                             <?php endforeach; ?>
                         </tbody>
