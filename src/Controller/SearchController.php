@@ -75,6 +75,8 @@ class SearchController extends AppController
         $search = $this->SavedSearches->get($id);
         $this->set('search_name', $search->name);
 
+        $this->set('model', $search->model);
+
         $content = json_decode($search->content);
         $this->set('entities', $content->result);
 
@@ -149,7 +151,7 @@ class SearchController extends AppController
 
         $savedSearches = $this->Searchable->getSavedSearches([$this->Auth->user('id')], [$model]);
 
-        $this->set(compact('searchFields', 'searchOperators', 'savedSearches'));
+        $this->set(compact('searchFields', 'searchOperators', 'savedSearches', 'model'));
     }
 
     /**
