@@ -1,3 +1,6 @@
+<?= $this->Html->css('Search.dashboard', ['block' => 'cssBottom']) ?>
+<?= $this->Html->script('Search.dashboard', ['block' => 'scriptBottom']) ?>
+
 <div class="row">
     <div class="col-xs-12">
         <?= $this->Form->create($dashboard, ['id' => 'dashboardForm']) ?>
@@ -18,7 +21,7 @@
                     </div>
                 </div>
             </div>
-            <?= $this->element('Search.dashboard_saved_searches') ?>
+            <?= $this->cell('Search.Dashboard::saved_searches', [$dashboard]); ?>
         </fieldset>
         <?= $this->Form->button(__('Submit'), ['class' => 'btn btn-primary']) ?>
         <?= $this->Form->end() ?>
