@@ -38,7 +38,7 @@ if (!empty($entities)) :
                             <?php foreach ($entities as $entity) : ?>
                             <tr>
                                 <?php foreach ($listingFields as $field) : ?>
-                                    <td><?= $entity->{$field} ?></td>
+                                    <td><?= $entity[$field] ?></td>
                                 <?php endforeach; ?>
                                 <td class="actions">
                                     <?php

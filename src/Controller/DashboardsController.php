@@ -50,12 +50,12 @@ class DashboardsController extends AppController
                         json_decode($savedSearch->content, true),
                         true
                     );
-                    $search['entities'] = (object)$search['entities'];
+                    $search['entities'] = $search['entities'];
                     break;
 
                 case $this->Dashboards->SavedSearches->getResultType():
                     $search = $this->Dashboards->SavedSearches->get($savedSearch->id);
-                    $search['entities'] = json_decode($search->content);
+                    $search['entities'] = json_decode($search->content, true);
                     break;
             }
 

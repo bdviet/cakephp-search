@@ -77,14 +77,14 @@ class SearchController extends AppController
 
         $this->set('model', $search->model);
 
-        $content = json_decode($search->content);
-        $this->set('entities', $content->result);
+        $content = json_decode($search->content, true);
+        $this->set('entities', $content['result']);
 
         /*
         get listing fields
          */
-        if (isset($content->display_columns)) {
-            $listingFields = $content->display_columns;
+        if (isset($content['display_columns'])) {
+            $listingFields = $content['display_columns'];
         } else {
             $listingFields = $this->SavedSearches->getListingFields($model);
         }

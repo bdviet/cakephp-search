@@ -84,7 +84,7 @@ class SearchViewMenuListener implements EventListenerInterface
 
         $btnView = $appView->Html->link(
             '',
-            ['plugin' => $plugin, 'controller' => $controller, 'action' => 'view', $options['entity']->id],
+            ['plugin' => $plugin, 'controller' => $controller, 'action' => 'view', $options['entity']['id']],
             ['title' => __('View'), 'class' => 'btn btn-default glyphicon glyphicon-eye-open']
         );
 
@@ -95,7 +95,7 @@ class SearchViewMenuListener implements EventListenerInterface
                     'plugin' => $plugin,
                     'controller' => $controller,
                     'action' => 'view',
-                    $options['entity']->id
+                    $options['entity']['id']
                 ],
                 'capabilities' => 'fromUrl'
             ]
