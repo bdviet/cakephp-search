@@ -25,6 +25,7 @@
     </div>
     <div class="row">
         <div class="col-xs-12">
+            <p class="h3 text-center saved-searches-title"><?= __('Saved Searches') ?></p>
             <ul class="list-inline dropable-area saved-searches-area">
                 <?php foreach ($allSavedSearches as $savedSearch) : ?>
                 <li class="dropable col-xs-1" data-id="<?= $savedSearch['id'] ?>">
