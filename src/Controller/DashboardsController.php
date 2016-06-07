@@ -40,6 +40,8 @@ class DashboardsController extends AppController
             'contain' => ['Roles', 'SavedSearches']
         ]);
 
+        $this->_checkRoleAccess($dashboard->role_id);
+
         $savedSearches = [];
         foreach ($dashboard->saved_searches as $savedSearch) {
             switch ($savedSearch->type) {
