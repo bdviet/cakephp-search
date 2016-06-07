@@ -18,13 +18,12 @@ class DashboardsController extends AppController
      */
     public function index()
     {
-        $this->paginate = [
-            'contain' => ['Roles']
-        ];
-        $dashboards = $this->paginate($this->Dashboards);
+        $query = $this->Dashboards->getUserDashboards($this->Auth->user());
+        $dashboards = $query->all();
 
-        $this->set(compact('dashboards'));
-        $this->set('_serialize', ['dashboards']);
+        if (0 < $dashboards->count()) {
+            return $this->redirect(['action' => 'view', $dashboards->first()->id]);
+        }
     }
 
     /**
