@@ -106,12 +106,13 @@ class DashboardsTable extends Table
      */
     public function getUserDashboards($user)
     {
+        $groupsTable = TableRegistry::get('Groups.Groups');
         $capsTable = TableRegistry::get('RolesCapabilities.Capabilities');
 
         $query = $this->find('all')->order('name');
 
         if (!$user['is_superuser']) {
-            $userGroups = $capsTable->getUserGroups($user['id']);
+            $userGroups = $groupsTable->getUserGroups($user['id']);
 
             $userRoles = [];
             if (!empty($userGroups)) {
