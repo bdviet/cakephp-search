@@ -11,7 +11,11 @@
 }
 
 .saved-searches-area {
-    margin: 50px 0;
+    margin-bottom: 50px;
+}
+
+.saved-searches-title {
+    margin-top: 50px;
 }
 
 .dropable-area li {

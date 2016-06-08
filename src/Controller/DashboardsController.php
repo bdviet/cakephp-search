@@ -18,13 +18,12 @@ class DashboardsController extends AppController
      */
     public function index()
     {
-        $this->paginate = [
-            'contain' => ['Roles']
-        ];
-        $dashboards = $this->paginate($this->Dashboards);
+        $query = $this->Dashboards->getUserDashboards($this->Auth->user());
+        $dashboards = $query->all();
 
-        $this->set(compact('dashboards'));
-        $this->set('_serialize', ['dashboards']);
+        if (0 < $dashboards->count()) {
+            return $this->redirect(['action' => 'view', $dashboards->first()->id]);
+        }
     }
 
     /**
@@ -39,6 +38,8 @@ class DashboardsController extends AppController
         $dashboard = $this->Dashboards->get($id, [
             'contain' => ['Roles', 'SavedSearches']
         ]);
+
+        $this->_checkRoleAccess($dashboard->role_id);
 
         $savedSearches = [];
         foreach ($dashboard->saved_searches as $savedSearch) {
@@ -92,7 +93,7 @@ class DashboardsController extends AppController
 
             if ($this->Dashboards->save($dashboard)) {
                 $this->Flash->success(__('The dashboard has been saved.'));
-                return $this->redirect(['action' => 'index']);
+                return $this->redirect(['action' => 'view', $dashboard->id]);
             } else {
                 $this->Flash->error(__('The dashboard could not be saved. Please, try again.'));
             }
@@ -124,7 +125,7 @@ class DashboardsController extends AppController
             ]);
             if ($this->Dashboards->save($dashboard)) {
                 $this->Flash->success(__('The dashboard has been saved.'));
-                return $this->redirect(['action' => 'index']);
+                return $this->redirect(['action' => 'view', $id]);
             } else {
                 $this->Flash->error(__('The dashboard could not be saved. Please, try again.'));
             }

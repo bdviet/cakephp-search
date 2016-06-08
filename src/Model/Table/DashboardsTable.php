@@ -4,6 +4,7 @@ namespace Search\Model\Table;
 use Cake\ORM\Query;
 use Cake\ORM\RulesChecker;
 use Cake\ORM\Table;
+use Cake\ORM\TableRegistry;
 use Cake\Validation\Validator;
 use Search\Model\Entity\Dashboard;
 
@@ -95,5 +96,36 @@ class DashboardsTable extends Table
         }
 
         return $result;
+    }
+
+    /**
+     * Get specified user accessible dashboards.
+     *
+     * @param  array $user user details
+     * @return \Cake\ORM\Query
+     */
+    public function getUserDashboards($user)
+    {
+        $capsTable = TableRegistry::get('RolesCapabilities.Capabilities');
+
+        $query = $this->find('all')->order('name');
+
+        if (!$user['is_superuser']) {
+            $userGroups = $capsTable->getUserGroups($user['id']);
+
+            $userRoles = [];
+            if (!empty($userGroups)) {
+                $userRoles = $capsTable->getGroupsRoles($userGroups);
+            }
+
+            $query = $query->where([
+                'OR' => [
+                    'Dashboards.role_id IN' => array_keys($userRoles),
+                    'Dashboards.role_id IS NULL'
+                ]
+            ]);
+        }
+
+        return $query;
     }
 }
