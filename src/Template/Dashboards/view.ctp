@@ -21,4 +21,6 @@ use Cake\Event\Event;
     </div>
 </div>
 
-<?= $this->cell('Search.Dashboard', [$savedSearches]); ?>
+<div class="row">
+    <?= $this->cell('Search.Dashboard', [$savedSearches]); ?>
+</div>

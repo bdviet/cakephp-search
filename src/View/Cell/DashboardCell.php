@@ -15,16 +15,21 @@ class DashboardCell extends Cell
      */
     public function display(array $savedSearches)
     {
+        $gridRows = 0;
+        $gridColumns = count(Configure::read('Search.dashboard.columns'));
         $result = [];
         foreach ($savedSearches as $savedSearch) {
-            $result[$savedSearch['row']][$savedSearch['column']] = $savedSearch;
-            ksort($result[$savedSearch['row']]);
+            if ($savedSearch['row'] + 1 > $gridRows) {
+                $gridRows = $savedSearch['row'] + 1;
+            }
+            $result[$savedSearch['column']][$savedSearch['row']] = $savedSearch;
+            ksort($result[$savedSearch['column']]);
         }
         ksort($result);
 
         $this->set('savedSearches', $result);
-        $this->set('gridRows', count($result));
-        $this->set('gridColumns', count(Configure::read('Search.dashboard.columns')));
+        $this->set('gridRows', $gridRows);
+        $this->set('gridColumns', $gridColumns);
     }
 
     /**
