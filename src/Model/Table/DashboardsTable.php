@@ -83,7 +83,7 @@ class DashboardsTable extends Table
      * @param  array $savedSearches post request saved searches related data
      * @return array
      */
-    public function prepareSavedSearches($savedSearches)
+    public function prepareToSaveSavedSearches($savedSearches)
     {
         $result = [];
         foreach ($savedSearches['_ids'] as $k => $id) {

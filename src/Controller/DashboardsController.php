@@ -85,7 +85,7 @@ class DashboardsController extends AppController
         if ($this->request->is('post')) {
             $data = $this->request->data;
 
-            $data['saved_searches'] = $this->Dashboards->prepareSavedSearches($data['saved_searches']);
+            $data['saved_searches'] = $this->Dashboards->prepareToSaveSavedSearches($data['saved_searches']);
 
             $dashboard = $this->Dashboards->patchEntity($dashboard, $data, [
                 'associated' => ['SavedSearches']
@@ -118,7 +118,7 @@ class DashboardsController extends AppController
         if ($this->request->is(['patch', 'post', 'put'])) {
             $data = $this->request->data;
 
-            $data['saved_searches'] = $this->Dashboards->prepareSavedSearches($data['saved_searches']);
+            $data['saved_searches'] = $this->Dashboards->prepareToSaveSavedSearches($data['saved_searches']);
 
             $dashboard = $this->Dashboards->patchEntity($dashboard, $data, [
                 'associated' => ['SavedSearches']
