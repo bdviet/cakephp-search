@@ -105,6 +105,14 @@ class DashboardsTable extends Table
                     break;
             }
 
+            /**
+             * filter out skipped display fields
+             */
+            $search['entities']['display_columns'] = array_diff(
+                $search['entities']['display_columns'],
+                $this->SavedSearches->getSkippedDisplayFields()
+            );
+
             $result[] = [
                 'search_name' => $savedSearch->name,
                 'model' => $savedSearch->model,
