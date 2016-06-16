@@ -41,33 +41,7 @@ class DashboardsController extends AppController
 
         $this->_checkRoleAccess($dashboard->role_id);
 
-        $savedSearches = [];
-        foreach ($dashboard->saved_searches as $savedSearch) {
-            switch ($savedSearch->type) {
-                case $this->Dashboards->SavedSearches->getCriteriaType():
-                    $search = $this->Dashboards->SavedSearches->search(
-                        $savedSearch->model,
-                        $this->Auth->user(),
-                        json_decode($savedSearch->content, true),
-                        true
-                    );
-                    $search['entities'] = $search['entities'];
-                    break;
-
-                case $this->Dashboards->SavedSearches->getResultType():
-                    $search = $this->Dashboards->SavedSearches->get($savedSearch->id);
-                    $search['entities'] = json_decode($search->content, true);
-                    break;
-            }
-
-            $savedSearches[] = [
-                'search_name' => $savedSearch->name,
-                'model' => $savedSearch->model,
-                'entities' => $search['entities'],
-                'row' => $savedSearch->_joinData->row,
-                'column' => $savedSearch->_joinData->column
-            ];
-        }
+        $savedSearches = $this->Dashboards->prepareSavedSearches($dashboard->saved_searches, $this->Auth->user());
 
         $this->set('savedSearches', $savedSearches);
         $this->set('dashboard', $dashboard);
