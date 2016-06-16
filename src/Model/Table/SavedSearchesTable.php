@@ -38,7 +38,15 @@ class SavedSearchesTable extends Table
     const DELETE_OLDER_THAN = '-3 hours';
 
     /**
+     * List of display fields to be skipped.
+     *
+     * @var array
+     */
+    protected $_skipDisplayFields = ['id'];
+
+    /**
      * Search query default properties
+     *
      * @var array
      */
     protected $_queryDefaults = [
@@ -235,6 +243,16 @@ class SavedSearchesTable extends Table
     }
 
     /**
+     * Returns a list of display fields to be skipped.
+     *
+     * @return array
+     */
+    public function getSkippedDisplayFields()
+    {
+        return $this->_skipDisplayFields;
+    }
+
+    /**
      * Search method
      *
      * @param  string $model model name
@@ -316,6 +334,10 @@ class SavedSearchesTable extends Table
             // by default, all fields are searchable
             $result = $collection->describe($table->table())->columns();
         }
+        /*
+        skip display fields
+         */
+        $result = array_diff($result, $this->_skipDisplayFields);
 
         return $result;
     }
@@ -390,6 +412,10 @@ class SavedSearchesTable extends Table
                 }
             }
         }
+        /*
+        skip display fields
+         */
+        $result = array_diff($result, $this->_skipDisplayFields);
 
         return $result;
     }

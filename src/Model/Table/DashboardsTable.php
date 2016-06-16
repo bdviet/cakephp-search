@@ -78,12 +78,60 @@ class DashboardsTable extends Table
     }
 
     /**
+     * Prepare saved searches to be passed to the View.
+     *
+     * @param  array  $savedSearches Dashboard's saved searches
+     * @return array
+     */
+    public function prepareSavedSearches(array $savedSearches, array $user)
+    {
+        $result = [];
+
+        foreach ($savedSearches as $savedSearch) {
+            switch ($savedSearch->type) {
+                case $this->SavedSearches->getCriteriaType():
+                    $search = $this->SavedSearches->search(
+                        $savedSearch->model,
+                        $user,
+                        json_decode($savedSearch->content, true),
+                        true
+                    );
+                    $search['entities'] = $search['entities'];
+                    break;
+
+                case $this->SavedSearches->getResultType():
+                    $search = $this->SavedSearches->get($savedSearch->id);
+                    $search['entities'] = json_decode($search->content, true);
+                    break;
+            }
+
+            /**
+             * filter out skipped display fields
+             */
+            $search['entities']['display_columns'] = array_diff(
+                $search['entities']['display_columns'],
+                $this->SavedSearches->getSkippedDisplayFields()
+            );
+
+            $result[] = [
+                'search_name' => $savedSearch->name,
+                'model' => $savedSearch->model,
+                'entities' => $search['entities'],
+                'row' => $savedSearch->_joinData->row,
+                'column' => $savedSearch->_joinData->column
+            ];
+        }
+
+        return $result;
+    }
+
+    /**
      * Prepare associated saved searches data to be stored in the joined DB table.
      *
      * @param  array $savedSearches post request saved searches related data
      * @return array
      */
-    public function prepareSavedSearches($savedSearches)
+    public function prepareToSaveSavedSearches($savedSearches)
     {
         $result = [];
         foreach ($savedSearches['_ids'] as $k => $id) {
