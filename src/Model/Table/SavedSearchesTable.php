@@ -243,6 +243,16 @@ class SavedSearchesTable extends Table
     }
 
     /**
+     * Returns a list of display fields to be skipped.
+     *
+     * @return array
+     */
+    public function getSkippedDisplayFields()
+    {
+        return $this->_skipDisplayFields;
+    }
+
+    /**
      * Search method
      *
      * @param  string $model model name
