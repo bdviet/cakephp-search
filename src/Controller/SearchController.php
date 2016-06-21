@@ -104,6 +104,11 @@ class SearchController extends AppController
             throw new BadRequestException();
         }
 
+        if (!$this->Searchable->isSearchable($model)) {
+            list($plugin, $controller) = pluginSplit($model);
+            throw new BadRequestException('You cannot search in ' . $plugin . ' ' . $controller . '.');
+        }
+
         if ($this->request->is('post')) {
             $search = $this->SavedSearches->search($model, $this->Auth->user(), $this->request->data, $advanced, $preSave);
 
@@ -135,11 +140,9 @@ class SearchController extends AppController
         /*
         get searchable fields
          */
-        if ($this->Searchable->isSearchable($model)) {
-            $searchFields = $this->SavedSearches->getSearchableFields($model);
-            $searchFields = $this->SavedSearches->getSearchableFieldProperties($model, $searchFields);
-            $searchFields = $this->SavedSearches->getSearchableFieldLabels($searchFields);
-        }
+        $searchFields = $this->SavedSearches->getSearchableFields($model);
+        $searchFields = $this->SavedSearches->getSearchableFieldProperties($model, $searchFields);
+        $searchFields = $this->SavedSearches->getSearchableFieldLabels($searchFields);
 
         $searchOperators = [];
         /*
