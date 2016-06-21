@@ -24,3 +24,5 @@ use Cake\Event\Event;
 <div class="row">
     <?= $this->cell('Search.Dashboard', [$savedSearches]); ?>
 </div>
+
+<?= $this->element('Search.common_js_libs'); ?>
