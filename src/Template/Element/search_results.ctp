@@ -19,26 +19,20 @@ if (!empty($entities)) :
             </div>
             <div class="panel-body">
                 <div class="table-responsive">
-                    <table class="table table-hover">
+                    <table class="table table-hover table-datatable">
                         <thead>
                             <tr>
                             <?php foreach ($listingFields as $field) : ?>
-                                <th><?php
-                                    if (isset($sortable_fields)) {
-                                        echo $this->Paginator->sort($field);
-                                    } else {
-                                        echo Inflector::humanize($field);
-                                    }
-                                ?></th>
+                                <th><?= Inflector::humanize($field); ?></th>
                             <?php endforeach; ?>
-                            <th class="actions"><?= __('Actions') ?></th>
+                                <th class="actions"><?= __('Actions') ?></th>
                             </tr>
                         </thead>
                         <tbody>
                             <?php foreach ($entities as $entity) : ?>
                             <tr>
                                 <?php foreach ($listingFields as $field) : ?>
-                                    <td><?= $entity[$field] ?></td>
+                                    <td><?= isset($entity[$field]) ? $entity[$field] : null; ?></td>
                                 <?php endforeach; ?>
                                 <td class="actions">
                                     <?php
