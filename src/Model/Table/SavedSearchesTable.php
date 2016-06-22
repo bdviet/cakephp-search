@@ -352,13 +352,22 @@ class SavedSearchesTable extends Table
     public function getSearchableFieldProperties($table, array $fields)
     {
         $result = [];
-        if (!empty($fields)) {
-            /*
-            get Table instance
-             */
-            if (is_string($table)) {
-                $table = TableRegistry::get($table);
-            }
+        if (empty($fields)) {
+            return $result;
+        }
+        /*
+        get Table instance
+         */
+        if (is_string($table)) {
+            $table = TableRegistry::get($table);
+        }
+
+        if (
+            method_exists($table, 'getSearchableFieldProperties') &&
+            is_callable([$table, 'getSearchableFieldProperties'])
+        ) {
+            $result = $table->getSearchableFieldProperties($fields);
+        } else {
             $db = ConnectionManager::get('default');
             $collection = $db->schemaCollection();
 

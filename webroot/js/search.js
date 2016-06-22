@@ -191,7 +191,8 @@ var search = search || {};
             case 'list':
                 result += '<select name="criteria[' + field + '][' + timestamp + '][value]" class="form-control input-sm">';
                 $.each(properties.fieldOptions, function(k, v) {
-                    result += '<option value="' + k + '">' + v + '</option>';
+                    selected = k === value ? ' selected' : null;
+                    result += '<option value="' + k + '"' + selected + '>' + v + '</option>';
                 });
                 result += '</select>';
                 break;
