@@ -25,7 +25,6 @@ class SavedSearchesTableTest extends TestCase
      */
     public $fixtures = [
         'plugin.search.saved_searches',
-        'plugin.search.users'
     ];
 
     /**

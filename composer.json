@@ -9,7 +9,8 @@
         "qobo/cakephp-roles-capabilities": "~2.0"
     },
     "require-dev": {
-        "phpunit/phpunit": "*"
+        "phpunit/phpunit": "*",
+        "cakephp/cakephp-codesniffer": "dev-master"
     },
     "autoload": {
         "psr-4": {

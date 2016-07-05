@@ -6,9 +6,9 @@ use Cake\Controller\ComponentRegistry;
 use Cake\Core\Plugin;
 use Cake\ORM\Table;
 use Cake\ORM\TableRegistry;
+use Search\Controller\Traits\SearchableTrait;
 use \FileSystemIterator;
 use \RuntimeException;
-use Search\Controller\Traits\SearchableTrait;
 
 /**
  * Searchable component

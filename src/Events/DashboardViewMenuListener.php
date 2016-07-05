@@ -33,7 +33,7 @@ class DashboardViewMenuListener implements EventListenerInterface
      * @param  Cake\Event\Event     $event   Event object
      * @param  Cake\Network\Request $request Request object
      * @param  Cake\ORM\Entity      $entity  Entity object
-     * @return void
+     * @return mixed
      */
     public function getViewMenuTop(Event $event, Request $request, Entity $entity)
     {

@@ -256,8 +256,11 @@ class SavedSearchesTable extends Table
      * Search method
      *
      * @param  string $model model name
+     * @param  array  $user user
+     * @param  array  $data data
      * @param  bool   $advanced advanced search flag
-     * @return void
+     * @param  bool   $preSave pre-save
+     * @return array
      */
     public function search($model, $user, $data, $advanced = false, $preSave = false)
     {
@@ -282,8 +285,7 @@ class SavedSearchesTable extends Table
         $query['result'] = $table
             ->find('all')
             ->where($where)
-            ->order([$query['sort_by_field'] => $query['sort_by_order']])
-        ;
+            ->order([$query['sort_by_field'] => $query['sort_by_order']]);
 
         /*
         set limit if not 0
@@ -362,8 +364,7 @@ class SavedSearchesTable extends Table
             $table = TableRegistry::get($table);
         }
 
-        if (
-            method_exists($table, 'getSearchableFieldProperties') &&
+        if (method_exists($table, 'getSearchableFieldProperties') &&
             is_callable([$table, 'getSearchableFieldProperties'])
         ) {
             $result = $table->getSearchableFieldProperties($fields);

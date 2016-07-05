@@ -3,7 +3,8 @@ namespace Search\Controller\Traits;
 
 use Cake\ORM\TableRegistry;
 
-trait SearchableTrait {
+trait SearchableTrait
+{
     /**
      * Returns true if table is searchable, false otherwise.
      *

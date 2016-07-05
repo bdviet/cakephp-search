@@ -47,7 +47,7 @@ class SearchController extends AppController
      * Save action
      *
      * @param string|null $id Search id.
-     * @return void Redirects to advanced action.
+     * @return \Cake\Network\Response|null
      * @throws \Cake\Network\Exception\NotFoundException When record not found.
      */
     public function save($id = null)
@@ -96,6 +96,7 @@ class SearchController extends AppController
      *
      * @param  string $model model name
      * @param  bool   $advanced advanced search flag
+     * @param  bool   $preSave pre-save
      * @return void
      */
     protected function _searchAction($model, $advanced = false, $preSave = false)

@@ -2,8 +2,8 @@
 namespace Search\View\Cell;
 
 use Cake\Core\Configure;
-use Search\Model\Entity\Dashboard;
 use Cake\View\Cell;
+use Search\Model\Entity\Dashboard;
 
 class DashboardCell extends Cell
 {
@@ -11,7 +11,7 @@ class DashboardCell extends Cell
      * Cell for dashboard viewing.
      *
      * @param  array  $savedSearches dashboard's saved searches
-     * @return undefined
+     * @return void
      */
     public function display(array $savedSearches)
     {
@@ -36,7 +36,7 @@ class DashboardCell extends Cell
      * Cell for dashboard saved searches.
      *
      * @param  Search\Model\Entity\Dashboard $dashboard Dashboard Entity
-     * @return undefined
+     * @return void
      */
     public function saved_searches(Dashboard $dashboard)
     {
@@ -47,16 +47,14 @@ class DashboardCell extends Cell
          */
         $allSavedSearches = $this->Dashboards->SavedSearches->find('all')
             ->where(['SavedSearches.name IS NOT' => null])
-            ->order(['SavedSearches.model', 'SavedSearches.name'])
-        ;
+            ->order(['SavedSearches.model', 'SavedSearches.name']);
         $allSavedSearches = $this->Dashboards->SavedSearches
             ->find()
             ->select()
             ->where(['SavedSearches.name IS NOT' => null])
             ->hydrate(false)
             ->indexBy('id')
-            ->toArray()
-        ;
+            ->toArray();
 
         /*
         get dashboard columns
@@ -92,7 +90,8 @@ class DashboardCell extends Cell
      * @param  array $dashboardSavedSearches dashboard's saved searches
      * @return array                         filtered saved searches
      */
-    protected function _filterOutDashboardSavedSearches(array $allSavedSearches, array $dashboardSavedSearches) {
+    protected function _filterOutDashboardSavedSearches(array $allSavedSearches, array $dashboardSavedSearches)
+    {
         foreach ($dashboardSavedSearches as $search) {
             unset($allSavedSearches[$search->id]);
         }
@@ -103,6 +102,7 @@ class DashboardCell extends Cell
     /**
      * Generate's dashboard layout based on pre-defined dashboard columns.
      *
+     * @param array $columns Columns
      * @return array
      */
     protected function _getDashboardLayout($columns)
@@ -110,7 +110,8 @@ class DashboardCell extends Cell
         $result = [];
 
         $count = 0;
-        while ($count < count($columns)) {
+        $totalColumns = count($columns);
+        while ($count < $totalColumns) {
             $result[$count] = [];
             $count++;
         }

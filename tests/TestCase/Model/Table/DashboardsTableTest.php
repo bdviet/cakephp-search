@@ -25,10 +25,6 @@ class DashboardsTableTest extends TestCase
      */
     public $fixtures = [
         'plugin.search.dashboards',
-        'plugin.search.roles',
-        'plugin.search.saved_searches',
-        'plugin.search.users',
-        'plugin.search.dashboards_saved_searches'
     ];
 
     /**
