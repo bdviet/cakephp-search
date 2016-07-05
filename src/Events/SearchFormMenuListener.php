@@ -35,8 +35,7 @@ class SearchFormMenuListener implements EventListenerInterface
      * Method that adds elements to index View top menu.
      *
      * @param  Cake\Event\Event     $event   Event object
-     * @param  Cake\Network\Request $request Request object
-     * @return void
+     * @return Cake\Event\Event
      */
     public function getElementNavbarMenuTop(Event $event)
     {

@@ -81,6 +81,7 @@ class DashboardsTable extends Table
      * Prepare saved searches to be passed to the View.
      *
      * @param  array  $savedSearches Dashboard's saved searches
+     * @param  array  $user          User
      * @return array
      */
     public function prepareSavedSearches(array $savedSearches, array $user)
@@ -105,7 +106,7 @@ class DashboardsTable extends Table
                     break;
             }
 
-            /**
+            /*
              * filter out skipped display fields
              */
             $search['entities']['display_columns'] = array_diff(

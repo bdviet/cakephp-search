@@ -30,7 +30,7 @@ class DashboardsController extends AppController
      * View method
      *
      * @param string|null $id Dashboard id.
-     * @return \Cake\Network\Response|null
+     * @return void
      * @throws \Cake\Datasource\Exception\RecordNotFoundException When record not found.
      */
     public function view($id = null)
