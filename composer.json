@@ -5,8 +5,7 @@
     "license": "GPL-2.0",
     "require": {
         "php": ">=5.4.16",
-        "cakephp/cakephp": "~3.0",
-        "qobo/cakephp-roles-capabilities": "~2.0"
+        "cakephp/cakephp": "~3.0"
     },
     "require-dev": {
         "phpunit/phpunit": "*",
