@@ -39,7 +39,9 @@ class DashboardsController extends AppController
             'contain' => ['Roles', 'SavedSearches']
         ]);
 
-        $this->_checkRoleAccess($dashboard->role_id);
+        if (method_exists($this, '_checkRoleAccess')) {
+            $this->_checkRoleAccess($dashboard->role_id);
+        }
 
         $savedSearches = $this->Dashboards->prepareSavedSearches($dashboard->saved_searches, $this->Auth->user());
 
