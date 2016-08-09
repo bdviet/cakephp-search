@@ -159,23 +159,31 @@ class DashboardsTable extends Table
         $groupsTable = TableRegistry::get('Groups.Groups');
         $capsTable = TableRegistry::get('RolesCapabilities.Capabilities');
 
+        // get all dashboards
         $query = $this->find('all')->order('name');
 
-        if (!$user['is_superuser']) {
-            $userGroups = $groupsTable->getUserGroups($user['id']);
-
-            $userRoles = [];
-            if (!empty($userGroups)) {
-                $userRoles = $capsTable->getGroupsRoles($userGroups);
-            }
-
-            $query = $query->where([
-                'OR' => [
-                    'Dashboards.role_id IN' => array_keys($userRoles),
-                    'Dashboards.role_id IS NULL'
-                ]
-            ]);
+        // return all dashboards if current user is superuser
+        if (isset($user['is_superuser']) && $user['is_superuser']) {
+            return $query;
         }
+
+        $userGroups = [];
+        if (method_exists($groupsTable, 'getUserGroups')) {
+            $userGroups = $groupsTable->getUserGroups($user['id']);
+        }
+
+        $userRoles = [];
+        if (!empty($userGroups) && method_exists($capsTable, 'getGroupsRoles')) {
+            $userRoles = $capsTable->getGroupsRoles($userGroups);
+        }
+
+        // get role(s) dashboards
+        if (!empty($userRoles)) {
+             $query = $query->where(['Dashboards.role_id IN' => array_keys($userRoles)]);
+        }
+
+        // get all dashboards not assigned to any role
+        $query = $query->orWhere(['Dashboards.role_id IS NULL']);
 
         return $query;
     }
