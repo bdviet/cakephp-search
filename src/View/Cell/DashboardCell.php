@@ -38,7 +38,7 @@ class DashboardCell extends Cell
      * @param  Search\Model\Entity\Dashboard $dashboard Dashboard Entity
      * @return void
      */
-    public function saved_searches(Dashboard $dashboard)
+    public function savedSearches(Dashboard $dashboard)
     {
         $this->loadModel('Search.Dashboards');
 
