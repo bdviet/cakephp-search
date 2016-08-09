@@ -58,7 +58,7 @@
     <hr />
     <div class="row">
         <div class="col-md-8 col-lg-9">
-            <?= $this->element('search_options'); ?>
+            <?= $this->element('Search.search_options'); ?>
             <?= $this->Form->button(__('Submit'), ['class' => 'btn btn-primary']) ?>
             <?= $this->Form->end() ?>
         </div>
@@ -68,8 +68,8 @@
                     <?= $this->Form->label(__('Save search')) ?>
                 </div>
                 <div class="col-sm-6 col-md-12">
-                    <?= $this->element('save_search_criterias'); ?>
-                    <?= $this->element('save_search_results'); ?>
+                    <?= $this->element('Search.save_search_criterias'); ?>
+                    <?= $this->element('Search.save_search_results'); ?>
                 </div>
             </div>
         </div>
