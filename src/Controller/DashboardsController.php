@@ -67,6 +67,7 @@ class DashboardsController extends AppController
 
             if ($this->Dashboards->save($dashboard)) {
                 $this->Flash->success(__('The dashboard has been saved.'));
+
                 return $this->redirect(['action' => 'view', $dashboard->id]);
             } else {
                 $this->Flash->error(__('The dashboard could not be saved. Please, try again.'));
@@ -99,6 +100,7 @@ class DashboardsController extends AppController
             ]);
             if ($this->Dashboards->save($dashboard)) {
                 $this->Flash->success(__('The dashboard has been saved.'));
+
                 return $this->redirect(['action' => 'view', $id]);
             } else {
                 $this->Flash->error(__('The dashboard could not be saved. Please, try again.'));
@@ -129,6 +131,7 @@ class DashboardsController extends AppController
         } else {
             $this->Flash->error(__('The dashboard could not be deleted. Please, try again.'));
         }
+
         return $this->redirect(['action' => 'index']);
     }
 }

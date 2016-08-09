@@ -60,6 +60,7 @@ class SearchController extends AppController
         } else {
             $this->Flash->error(__('The search could not be saved. Please, try again.'));
         }
+
         return $this->redirect(['action' => 'advanced', $search->model]);
     }
 
@@ -174,6 +175,7 @@ class SearchController extends AppController
         } else {
             $this->Flash->error(__('The saved search could not be deleted. Please, try again.'));
         }
+
         return $this->redirect($this->referer());
     }
 }
