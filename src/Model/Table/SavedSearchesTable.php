@@ -158,7 +158,6 @@ class SavedSearchesTable extends Table
 
         $this->belongsTo('Users', [
             'foreignKey' => 'user_id',
-            'joinType' => 'INNER',
             'className' => 'Search.Users'
         ]);
     }
@@ -208,7 +207,8 @@ class SavedSearchesTable extends Table
      */
     public function buildRules(RulesChecker $rules)
     {
-        $rules->add($rules->existsIn(['user_id'], 'Users'));
+        # TODO : Temporary disabled
+        #$rules->add($rules->existsIn(['user_id'], 'Users'));
 
         return $rules;
     }
