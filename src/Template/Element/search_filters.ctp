@@ -21,7 +21,7 @@
     }
     ?>
 <div class="well">
-    <h4><?= __('Filters') ?></h4>
+    <h4><?= __('Advanced Search Filters') ?></h4>
     <hr />
     <div class="row">
         <div class="col-md-4 col-md-push-8 col-lg-3 col-lg-push-9">
