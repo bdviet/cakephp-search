@@ -1,4 +1,5 @@
 <?php use Cake\Utility\Inflector; ?>
+<?php if (!empty($savedSearches)) : ?>
 <?= $this->Html->script('Search.saved_searches', ['block' => 'scriptBottom']); ?>
 
 <div class="well">
@@ -6,7 +7,6 @@
     <hr />
     <div class="row">
         <div class="col-md-8 col-lg-6">
-        <?php if (!empty($savedSearches)) : ?>
             <div class="row">
             <?php
             $groupedSavedSearches = [];
@@ -158,7 +158,7 @@
                 </div>
             <?php endforeach; ?>
             </div>
-        <?php endif; ?>
         </div>
     </div>
 </div>
+<?php endif; ?>
