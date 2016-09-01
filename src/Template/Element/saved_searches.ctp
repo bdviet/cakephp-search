@@ -7,7 +7,6 @@
     <hr />
     <div class="row">
         <div class="col-md-8 col-lg-6">
-        <?php if (!empty($savedSearches)) : ?>
             <div class="row">
             <?php
             $groupedSavedSearches = [];
@@ -159,7 +158,6 @@
                 </div>
             <?php endforeach; ?>
             </div>
-        <?php endif; ?>
         </div>
     </div>
 </div>
