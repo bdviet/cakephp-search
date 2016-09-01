@@ -1,4 +1,5 @@
 <?php use Cake\Utility\Inflector; ?>
+<?php if (!empty($savedSearches)) : ?>
 <?= $this->Html->script('Search.saved_searches', ['block' => 'scriptBottom']); ?>
 
 <div class="well">
@@ -162,3 +163,4 @@
         </div>
     </div>
 </div>
+<?php endif; ?>
