@@ -32,6 +32,7 @@ class DashboardsTable extends Table
         $this->primaryKey('id');
 
         $this->addBehavior('Timestamp');
+        $this->addBehavior('Muffin/Trash.Trash');
 
         $this->belongsTo('Roles', [
             'foreignKey' => 'role_id',
