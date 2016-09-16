@@ -18,6 +18,11 @@ Load plugin
 bin/cake plugin load Search
 ```
 
+Load required plugin(s)
+```
+bin/cake plugin load Muffin/Trash
+```
+
 Load Component
 
 In your AppController add the following:
