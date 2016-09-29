@@ -24,48 +24,8 @@ class SearchViewMenuListener implements EventListenerInterface
     public function implementedEvents()
     {
         return [
-            'View.Index.Menu.Top' => 'getIndexMenuTop',
             'Search.View.View.Menu.Actions' => 'getIndexMenuActions'
         ];
-    }
-
-    /**
-     * Method that adds elements to index View top menu.
-     *
-     * @param  Cake\Event\Event     $event   Event object
-     * @param  Cake\Network\Request $request Request object
-     * @param  array                $options Entity options
-     * @return undefined
-     */
-    public function getIndexMenuTop(Event $event, Request $request, array $options)
-    {
-        $appView = new AppView();
-
-        $btnAdd = $appView->Html->link(
-            __('Add {0}', Inflector::singularize($options['title'])),
-            ['plugin' => $request->plugin, 'controller' => $request->controller, 'action' => 'add'],
-            ['class' => 'btn btn-primary']
-        );
-
-        $menu = [
-            [
-                'label' => $btnAdd,
-                'url' => [
-                    'plugin' => $request->plugin,
-                    'controller' => $request->controller,
-                    'action' => 'add'
-                ],
-                'capabilities' => 'fromUrl'
-            ]
-        ];
-
-        if ($appView->elementExists(static::MENU_ELEMENT)) {
-            $result = $appView->element(static::MENU_ELEMENT, ['menu' => $menu, 'renderAs' => 'provided']);
-        } else {
-            $result = $btnAdd;
-        }
-
-        return $result;
     }
 
     /**
