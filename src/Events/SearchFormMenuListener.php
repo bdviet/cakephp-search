@@ -49,10 +49,8 @@ class SearchFormMenuListener implements EventListenerInterface
             return $event->result;
         }
 
-        $appView = new AppView();
-
-        if ($appView->elementExists(static::MENU_ELEMENT)) {
-            $event->result .= $appView->element(static::MENU_ELEMENT);
+        if ($event->subject()->elementExists(static::MENU_ELEMENT)) {
+            $event->result .= $event->subject()->element(static::MENU_ELEMENT);
         }
 
         return $event->result;

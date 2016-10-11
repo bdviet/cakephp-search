@@ -260,17 +260,15 @@ class SavedSearchesTable extends Table
      * @param  string $model model name
      * @param  array  $user user
      * @param  array  $data data
-     * @param  bool   $advanced advanced search flag
-     * @param  bool   $preSave pre-save
      * @return array
      */
-    public function search($model, $user, $data, $advanced = false, $preSave = false)
+    public function search($model, $user, $data)
     {
         $criteria = [];
         if (isset($data['criteria'])) {
             $criteria = $data['criteria'];
         }
-        $where = $this->prepareWhereStatement($criteria, $model, $advanced);
+        $where = $this->prepareWhereStatement($criteria, $model);
         $table = TableRegistry::get($model);
 
         $query = $data;
@@ -291,7 +289,7 @@ class SavedSearchesTable extends Table
         }
 
         // if in advanced mode, pre-save search criteria and results
-        if ($preSave && !empty($criteria)) {
+        if (!isset($criteria['query']) && !empty($criteria)) {
             $preSaveIds = $this->preSaveSearchCriteriaAndResults(
                 $model,
                 $query,
@@ -425,18 +423,44 @@ class SavedSearchesTable extends Table
     }
 
     /**
+     * Prepare basic search query's where statement
+     *
+     * @param  array  $data  search fields
+     * @param  string $model model name
+     * @return array
+     */
+    public function getSearchCriteria(array $data, $model)
+    {
+        $result = [];
+        if (!empty($data['query'])) {
+            $fields = $this->getSearchableFields($model);
+            $fields = $this->getSearchableFieldProperties($model, $fields);
+            foreach ($fields as $field => $properties) {
+                if (in_array($properties['type'], array_keys($this->_basicSearchFieldTypes))) {
+                    $result[$field][] = [
+                        'type' => $properties['type'],
+                        'operator' => $this->_basicSearchFieldTypes[$properties['type']],
+                        'value' => $data['query']
+                    ];
+                }
+            }
+        }
+
+        return $result;
+    }
+
+    /**
      * Prepare search query's where statement
      *
      * @param  array  $data     search fields
      * @param  string $model    model name
-     * @param  bool   $advanced advanced search flag
      * @return array
      */
-    public function prepareWhereStatement(array $data, $model, $advanced = false)
+    public function prepareWhereStatement(array $data, $model)
     {
         $result = [];
 
-        if (!$advanced) {
+        if (isset($data['query'])) {
             $result = $this->_basicWhereStatement($data, $model);
         } else {
             $result = $this->_advancedWhereStatement($data, $model);

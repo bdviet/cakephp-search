@@ -8,7 +8,7 @@ trait SearchTrait
 {
     protected $_tableSearch = 'Search.SavedSearches';
 
-    protected $_elementBasic = 'Search.Search/basic';
+    protected $_elementSearch = 'Search.Search/search';
 
     protected $_elementAdvanced = 'Search.Search/advanced';
 
@@ -35,28 +35,7 @@ trait SearchTrait
             $this->Flash->error(__('The search could not be saved. Please, try again.'));
         }
 
-        return $this->redirect(['action' => 'advanced']);
-    }
-
-    /**
-     * Advanced search action
-     *
-     * @param string $model model name
-     * @return void
-     */
-    public function advanced()
-    {
-        $this->_searchAction(true, true);
-    }
-
-    /**
-     * Basic search action
-     *
-     * @return void
-     */
-    public function basic()
-    {
-        $this->_searchAction();
+        return $this->redirect(['action' => 'search']);
     }
 
     /**
@@ -93,25 +72,25 @@ trait SearchTrait
     /**
      * Search action
      *
-     * @param  bool   $advanced advanced search flag
-     * @param  bool   $preSave pre-save
      * @return void
      */
-    protected function _searchAction($advanced = false, $preSave = false)
+    public function search()
     {
         $model = $this->modelClass;
-        if (!$this->isSearchable($model)) {
+        if (!$this->_isSearchable($model)) {
             throw new BadRequestException('You cannot search in ' . implode(' ', pluginSplit($model)) . '.');
         }
 
         $table = TableRegistry::get($this->_tableSearch);
 
         if ($this->request->is('post')) {
-            $search = $table->search($model, $this->Auth->user(), $this->request->data, $advanced, $preSave);
+            $search = $table->search($model, $this->Auth->user(), $this->request->data);
 
-            // if in advanced mode, pre-save search criteria and results
-            if ($advanced && !empty($this->request->data['criteria'])) {
+            if (isset($search['saveSearchCriteriaId'])) {
                 $this->set('saveSearchCriteriaId', $search['saveSearchCriteriaId']);
+            }
+
+            if (isset($search['saveSearchResultsId'])) {
                 $this->set('saveSearchResultsId', $search['saveSearchResultsId']);
             }
 
@@ -148,7 +127,7 @@ trait SearchTrait
 
         $this->set(compact('searchFields', 'searchOperators', 'savedSearches'));
 
-        $this->render($advanced ? $this->_elementAdvanced : $this->_elementBasic);
+        $this->render($this->_elementSearch);
     }
 
     /**
@@ -157,7 +136,7 @@ trait SearchTrait
      * @param  \Cake\ORM\Table|string $table Table object or name.
      * @return bool
      */
-    public function isSearchable($table)
+    protected function _isSearchable($table)
     {
         $result = false;
         // get Table instance

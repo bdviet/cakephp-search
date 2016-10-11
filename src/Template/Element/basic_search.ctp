@@ -19,7 +19,7 @@ if ('Search' === $this->request->params['plugin'] && 'Search' === $this->request
     'url' => [
         'plugin' => $this->request->plugin,
         'controller' => $this->request->controller,
-        'action' => 'basic'
+        'action' => 'search'
     ]
 ]); ?>
 

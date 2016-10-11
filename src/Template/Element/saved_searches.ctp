@@ -28,7 +28,7 @@
                             case 'result':
                                 $results[$search->id] = $search->name;
                                 echo $this->Html->link($search->name, [
-                                    'action' => 'saved_result',
+                                    'action' => 'search_saved_result',
                                     $search->id
                                 ], [
                                     'id' => 'view_' . $search->id,
@@ -44,7 +44,7 @@
                                     'url' => [
                                         'plugin' => $this->request->plugin,
                                         'controller' => $this->request->controller,
-                                        'action' => 'advanced',
+                                        'action' => 'search',
                                     ]
                                 ]);
 
