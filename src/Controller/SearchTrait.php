@@ -10,9 +10,7 @@ trait SearchTrait
 
     protected $_elementSearch = 'Search.Search/search';
 
-    protected $_elementAdvanced = 'Search.Search/advanced';
-
-    protected $_elementSavedResult = 'Search.Search/saved_result';
+    protected $_elementSavedResult = 'Search.Search/search_saved_result';
 
     /**
      * Save action
@@ -45,7 +43,7 @@ trait SearchTrait
      * @param  string $id    record id
      * @return void
      */
-    public function saved_result($id)
+    public function search_saved_result($id)
     {
         $model = $this->modelClass;
         $table = TableRegistry::get($this->_tableSearch);
