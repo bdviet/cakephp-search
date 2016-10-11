@@ -33,7 +33,7 @@ class SearchViewMenuListener implements EventListenerInterface
      *
      * @param  \Cake\Event\Event      $event   Event object
      * @param  \Cake\Network\Request  $request Request object
-     * @param  array|\Cake\ORM\Entity $options Entity options
+     * @param  \Cake\ORM\Entity|array $entity  Entity
      * @return void
      */
     public function getIndexMenuActions(Event $event, Request $request, $entity)
@@ -62,11 +62,9 @@ class SearchViewMenuListener implements EventListenerInterface
         ];
 
         if ($event->subject()->elementExists(static::MENU_ELEMENT)) {
-            $result = $event->subject()->element(static::MENU_ELEMENT, ['menu' => $menu, 'renderAs' => 'provided']);
+            $event->result .= $event->subject()->element(static::MENU_ELEMENT, ['menu' => $menu, 'renderAs' => 'provided']);
         } else {
-            $result = $btnView;
+            $event->result .= $btnView;
         }
-
-        return $result;
     }
 }

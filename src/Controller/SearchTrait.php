@@ -37,7 +37,7 @@ trait SearchTrait
      * @return \Cake\Network\Response|null
      * @throws \Cake\Network\Exception\NotFoundException When record not found.
      */
-    public function search_save($id = null)
+    public function searchSave($id = null)
     {
         $this->request->allowMethod(['patch', 'post', 'put']);
 
@@ -57,11 +57,10 @@ trait SearchTrait
     /**
      * Saved result action
      *
-     * @param  string $model model name
      * @param  string $id    record id
      * @return void
      */
-    public function search_saved_result($id)
+    public function searchSavedResult($id)
     {
         $model = $this->modelClass;
         $table = TableRegistry::get($this->_tableSearch);
@@ -153,7 +152,7 @@ trait SearchTrait
      * @return \Cake\Network\Response|null Redirects to referer.
      * @throws \Cake\Network\Exception\NotFoundException When record not found.
      */
-    public function search_delete($id = null)
+    public function searchDelete($id = null)
     {
         $this->request->allowMethod(['post', 'delete']);
 

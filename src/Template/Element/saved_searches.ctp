@@ -28,7 +28,7 @@
                             case 'result':
                                 $results[$search->id] = $search->name;
                                 echo $this->Html->link($search->name, [
-                                    'action' => 'search_saved_result',
+                                    'action' => 'search-saved-result',
                                     $search->id
                                 ], [
                                     'id' => 'view_' . $search->id,
@@ -103,7 +103,7 @@
                         echo $this->Form->postLink(
                             '<span class="glyphicon glyphicon-minus"></span>',
                             [
-                                'action' => 'search_delete',
+                                'action' => 'search-delete',
                                 $search->id
                             ],
                             [

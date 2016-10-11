@@ -4,7 +4,7 @@
         'url' => [
             'plugin' => $this->request->plugin,
             'controller' => $this->request->controller,
-            'action' => 'search_save',
+            'action' => 'search-save',
             $saveSearchCriteriaId
         ]
     ]); ?>

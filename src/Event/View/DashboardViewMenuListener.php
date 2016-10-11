@@ -32,7 +32,7 @@ class DashboardViewMenuListener implements EventListenerInterface
      * @param  Cake\Event\Event     $event   Event object
      * @param  Cake\Network\Request $request Request object
      * @param  Cake\ORM\Entity      $entity  Entity object
-     * @return mixed
+     * @return void
      */
     public function getViewMenuTop(Event $event, Request $request, Entity $entity)
     {
@@ -86,13 +86,10 @@ class DashboardViewMenuListener implements EventListenerInterface
             ]
         ];
 
-        $result = null;
         if ($event->subject()->elementExists(static::MENU_ELEMENT)) {
-            $result .= $event->subject()->element(static::MENU_ELEMENT, ['menu' => $menu, 'renderAs' => 'provided']);
+            $event->result .= $event->subject()->element(static::MENU_ELEMENT, ['menu' => $menu, 'renderAs' => 'provided']);
         } else {
-            $result .= $btnEdit . $btnDel;
+            $event->result .= $btnEdit . $btnDel;
         }
-
-        return $result;
     }
 }
