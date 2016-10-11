@@ -115,6 +115,39 @@ class SavedSearchesTable extends Table
     ];
 
     /**
+     * Per field type operators
+     *
+     * @var array
+     */
+    protected $_fieldTypeOperators = [
+        'uuid' => ['is' => 'Is'],
+        'boolean' => ['is' => 'Is', 'is_not' => 'Is not'],
+        'list' => ['is' => 'Is', 'is_not' => 'Is not'],
+        'string' => [
+            'contains' => 'Contains',
+            'not_contains' => 'Does not contain',
+            'starts_with' => 'Starts with',
+            'ends_with' => 'Ends with'
+        ],
+        'text' => [
+            'contains' => 'Contains',
+            'not_contains' => 'Does not contain',
+            'starts_with' => 'Starts with',
+            'ends_with' => 'Ends with'
+        ],
+        'textarea' => [
+            'contains' => 'Contains',
+            'not_contains' => 'Does not contain',
+            'starts_with' => 'Starts with',
+            'ends_with' => 'Ends with'
+        ],
+        'integer' => ['is' => 'Is', 'is_not' => 'Is not', 'greater' => 'Greater', 'less' => 'Less'],
+        'datetime' => ['is' => 'Is', 'is_not' => 'Is not', 'greater' => 'Greater', 'less' => 'Less'],
+        'date' => ['is' => 'Is', 'is_not' => 'Is not', 'greater' => 'Greater', 'less' => 'Less'],
+        'time' => ['is' => 'Is', 'is_not' => 'Is not', 'greater' => 'Greater', 'less' => 'Less']
+    ];
+
+    /**
      * Filter basic search allowed field types
      *
      * @var array
@@ -255,6 +288,16 @@ class SavedSearchesTable extends Table
     }
 
     /**
+     * Return list of operators grouped by field type
+     *
+     * @return array
+     */
+    public function getFieldTypeOperators()
+    {
+        return $this->_fieldTypeOperators;
+    }
+
+    /**
      * Search method
      *
      * @param  string $model model name
@@ -302,6 +345,34 @@ class SavedSearchesTable extends Table
         $result['entities'] = $query;
 
         return $result;
+    }
+
+    /**
+     * Returns saved searches filtered by users and models.
+     *
+     * @param  array  $users  users ids
+     * @param  array  $models models names
+     * @return Cake\ORM\ResultSet
+     */
+    public function getSavedSearches(array $users = [], array $models = [])
+    {
+        $conditions = [
+            'SavedSearches.name IS NOT' => null
+        ];
+
+        if (!empty($users)) {
+            $conditions['SavedSearches.user_id IN'] = $users;
+        }
+
+        if (!empty($models)) {
+            $conditions['SavedSearches.model IN'] = $models;
+        }
+
+        $query = $this->find('all', [
+            'conditions' => $conditions
+        ]);
+
+        return $query->toArray();
     }
 
     /**
