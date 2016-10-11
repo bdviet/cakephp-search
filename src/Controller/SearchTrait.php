@@ -164,4 +164,26 @@ trait SearchTrait
 
         return $result;
     }
+
+    /**
+     * Delete method
+     *
+     * @param string|null $id Saved search id.
+     * @return \Cake\Network\Response|null Redirects to referer.
+     * @throws \Cake\Network\Exception\NotFoundException When record not found.
+     */
+    public function search_delete($id = null)
+    {
+        $this->request->allowMethod(['post', 'delete']);
+
+        $table = TableRegistry::get($this->_tableSearch);
+        $savedSearch = $table->get($id);
+        if ($table->delete($savedSearch)) {
+            $this->Flash->success(__('The saved search has been deleted.'));
+        } else {
+            $this->Flash->error(__('The saved search could not be deleted. Please, try again.'));
+        }
+
+        return $this->redirect($this->referer());
+    }
 }
