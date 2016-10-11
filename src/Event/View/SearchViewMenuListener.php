@@ -1,5 +1,5 @@
 <?php
-namespace Search\Events;
+namespace Search\Event\View;
 
 use App\View\AppView;
 use Cake\Event\Event;

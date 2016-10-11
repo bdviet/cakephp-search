@@ -1,8 +1,8 @@
 <?php
 use Cake\Core\Configure;
 use Cake\Event\EventManager;
-use Search\Events\DashboardViewMenuListener;
-use Search\Events\SearchViewMenuListener;
+use Search\Event\View\DashboardViewMenuListener;
+use Search\Event\View\SearchViewMenuListener;
 
 /*
 dashboards columns
