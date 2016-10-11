@@ -3,9 +3,12 @@ namespace Search\Controller;
 
 use Cake\Network\Exception\BadRequestException;
 use Cake\ORM\TableRegistry;
+use Search\Controller\Traits\SearchableTrait;
 
 trait SearchTrait
 {
+    use SearchableTrait;
+
     /**
      * Table name for Saved Searches model.
      *
@@ -141,28 +144,6 @@ trait SearchTrait
         $this->set(compact('searchFields', 'searchOperators', 'savedSearches'));
 
         $this->render($this->_elementSearch);
-    }
-
-    /**
-     * Returns true if table is searchable, false otherwise.
-     *
-     * @param  \Cake\ORM\Table|string $table Table object or name.
-     * @return bool
-     */
-    protected function _isSearchable($table)
-    {
-        $result = false;
-        // get Table instance
-        if (is_string($table)) {
-            $table = TableRegistry::get($table);
-        }
-
-        // check if is searchable
-        if (method_exists($table, 'isSearchable') && is_callable([$table, 'isSearchable'])) {
-            $result = $table->isSearchable();
-        }
-
-        return $result;
     }
 
     /**
