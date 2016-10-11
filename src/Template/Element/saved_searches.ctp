@@ -29,7 +29,6 @@
                                 $results[$search->id] = $search->name;
                                 echo $this->Html->link($search->name, [
                                     'action' => 'saved_result',
-                                    $search->model,
                                     $search->id
                                 ], [
                                     'id' => 'view_' . $search->id,
@@ -43,10 +42,9 @@
                                     'id' => 'view_' . $search->id,
                                     'class' => 'saved-criteria-form hidden',
                                     'url' => [
-                                        'plugin' => 'Search',
-                                        'controller' => 'Search',
+                                        'plugin' => $this->request->plugin,
+                                        'controller' => $this->request->controller,
                                         'action' => 'advanced',
-                                        $search->model
                                     ]
                                 ]);
 

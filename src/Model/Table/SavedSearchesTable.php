@@ -274,14 +274,10 @@ class SavedSearchesTable extends Table
         $table = TableRegistry::get($model);
 
         $query = $data;
-        /*
-        do not include criteria when pre-saving search results
-         */
+        // do not include criteria when pre-saving search results
         unset($query['criteria']);
 
-        /*
-        use query defaults if not set
-         */
+        // use query defaults if not set
         $query = array_merge($this->_queryDefaults, $query);
 
         $query['result'] = $table
@@ -289,16 +285,12 @@ class SavedSearchesTable extends Table
             ->where($where)
             ->order([$query['sort_by_field'] => $query['sort_by_order']]);
 
-        /*
-        set limit if not 0
-         */
+        // set limit if not 0
         if (0 < (int)$query['limit']) {
             $query['result']->limit($query['limit']);
         }
 
-        /*
-        if in advanced mode, pre-save search criteria and results
-         */
+        // if in advanced mode, pre-save search criteria and results
         if ($preSave && !empty($criteria)) {
             $preSaveIds = $this->preSaveSearchCriteriaAndResults(
                 $model,

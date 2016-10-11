@@ -3,19 +3,14 @@ use Cake\Event\Event;
 use Cake\Utility\Inflector;
 ?>
 
-<?php
-if (!empty($entities)) :
-    if (!isset($search_name)) {
-        $model_name = isset($model_name) ? $model_name : $this->request->params['pass'][0];
-        list($plugin, $name) = pluginSplit($model_name);
-        $search_name = '<strong>' . $name . '</strong> ' . __('search results') . ':';
-    }
-?>
+<?php if (!empty($entities)) : ?>
 <div class="row">
     <div class="col-xs-12">
         <div class="panel panel-default">
             <div class="panel-heading">
-                <h3 class="panel-title"><?= $search_name ?></h3>
+                <h3 class="panel-title">
+                    <strong><?= isset($searchName) ? $searchName : $this->name; ?></strong> <?= __('search results'); ?>:
+                </h3>
             </div>
             <div class="panel-body">
                 <div class="table-responsive">
@@ -38,10 +33,7 @@ if (!empty($entities)) :
                                     <?php
                                         $event = new Event('Search.View.View.Menu.Actions', $this, [
                                             'request' => $this->request,
-                                            'options' => [
-                                                'model' => $model,
-                                                'entity' => $entity
-                                            ]
+                                            'entity' => $entity
                                         ]);
                                         $this->eventManager()->dispatch($event);
                                         if (!empty($event->result)) {

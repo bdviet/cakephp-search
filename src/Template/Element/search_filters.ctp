@@ -43,10 +43,9 @@
         <?= $this->Form->create(null, [
             'id' => 'SearchFilterForm',
             'url' => [
-                'plugin' => 'Search',
-                'controller' => 'Search',
-                'action' => 'advanced',
-                $this->request->params['pass'][0]
+                'plugin' => $this->request->plugin,
+                'controller' => $this->request->controller,
+                'action' => 'advanced'
             ]
         ]) ?>
         <hr class="visible-xs visible-sm" />

@@ -2,9 +2,9 @@
     <?= $this->Form->create(null, [
         'class' => 'save-search-form',
         'url' => [
-            'plugin' => 'Search',
-            'controller' => 'Search',
-            'action' => 'save',
+            'plugin' => $this->request->plugin,
+            'controller' => $this->request->controller,
+            'action' => 'search_save',
             $saveSearchCriteriaId
         ]
     ]); ?>
