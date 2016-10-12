@@ -32,10 +32,12 @@ var search = search || {};
         var that = this;
         if (!$.isEmptyObject(criteriaFields)) {
             $.each(criteriaFields, function(k, v) {
-                if ('object' === typeof v) {
-                    data = v[Object.keys(v)[0]];
-                    that._generateField(k, that.fieldProperties[k], data.value, data.operator);
+                if ('object' !== typeof v) {
+                    return;
                 }
+                $.each(v, function(i, j) {
+                    that._generateField(k, that.fieldProperties[k], j.value, j.operator);
+                });
             });
         }
     };
