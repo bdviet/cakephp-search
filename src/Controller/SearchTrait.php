@@ -37,7 +37,7 @@ trait SearchTrait
      * @return \Cake\Network\Response|null
      * @throws \Cake\Network\Exception\NotFoundException When record not found.
      */
-    public function searchSave($id = null)
+    public function saveSearch($id = null)
     {
         $this->request->allowMethod(['patch', 'post', 'put']);
 
@@ -60,7 +60,7 @@ trait SearchTrait
      * @param  string $id    record id
      * @return void
      */
-    public function searchSavedResult($id)
+    public function saveSearchResult($id)
     {
         $model = $this->modelClass;
         $table = TableRegistry::get($this->_tableSearch);
@@ -99,6 +99,13 @@ trait SearchTrait
         $table = TableRegistry::get($this->_tableSearch);
 
         if ($this->request->is('post')) {
+            // basic search query, coverted to search criteria
+            if (isset($this->request->data['criteria']['query'])) {
+                $this->request->data['criteria'] = $table->getSearchCriteria(
+                    $this->request->data['criteria'],
+                    $model
+                );
+            }
             $search = $table->search($model, $this->Auth->user(), $this->request->data);
 
             if (isset($search['saveSearchCriteriaId'])) {
@@ -109,9 +116,9 @@ trait SearchTrait
                 $this->set('saveSearchResultsId', $search['saveSearchResultsId']);
             }
 
-            // if (isset($this->request->data['criteria']['query'])) {
-            //     $this->request->data['criteria'] = $table->getSearchCriteria($this->request->data['criteria'], $model);
-            // }
+            if (isset($this->request->data['criteria']['query'])) {
+                $this->request->data['criteria'] = $table->getSearchCriteria($this->request->data['criteria'], $model);
+            }
 
             // @todo find out how to do pagination without affecting limit
             $entities = $search['entities']['result']->all();
@@ -152,7 +159,7 @@ trait SearchTrait
      * @return \Cake\Network\Response|null Redirects to referer.
      * @throws \Cake\Network\Exception\NotFoundException When record not found.
      */
-    public function searchDelete($id = null)
+    public function deleteSearch($id = null)
     {
         $this->request->allowMethod(['post', 'delete']);
 

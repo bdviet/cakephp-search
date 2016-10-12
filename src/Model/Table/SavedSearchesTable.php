@@ -38,6 +38,11 @@ class SavedSearchesTable extends Table
     const DELETE_OLDER_THAN = '-3 hours';
 
     /**
+     * Default search operator identifier
+     */
+    const DEFAULT_SEARCH_OPERATOR = 'contains';
+
+    /**
      * List of display fields to be skipped.
      *
      * @var array
@@ -83,6 +88,12 @@ class SavedSearchesTable extends Table
             'ends_with' => ['operator' => 'LIKE', 'pattern' => '%{{value}}']
         ],
         'textarea' => [
+            'contains' => ['operator' => 'LIKE', 'pattern' => '%{{value}}%'],
+            'not_contains' => ['operator' => 'NOT LIKE', 'pattern' => '%{{value}}%'],
+            'starts_with' => ['operator' => 'LIKE', 'pattern' => '{{value}}%'],
+            'ends_with' => ['operator' => 'LIKE', 'pattern' => '%{{value}}']
+        ],
+        'email' => [
             'contains' => ['operator' => 'LIKE', 'pattern' => '%{{value}}%'],
             'not_contains' => ['operator' => 'NOT LIKE', 'pattern' => '%{{value}}%'],
             'starts_with' => ['operator' => 'LIKE', 'pattern' => '{{value}}%'],
@@ -141,6 +152,12 @@ class SavedSearchesTable extends Table
             'starts_with' => 'Starts with',
             'ends_with' => 'Ends with'
         ],
+        'email' => [
+            'contains' => 'Contains',
+            'not_contains' => 'Does not contain',
+            'starts_with' => 'Starts with',
+            'ends_with' => 'Ends with'
+        ],
         'integer' => ['is' => 'Is', 'is_not' => 'Is not', 'greater' => 'Greater', 'less' => 'Less'],
         'datetime' => ['is' => 'Is', 'is_not' => 'Is not', 'greater' => 'Greater', 'less' => 'Less'],
         'date' => ['is' => 'Is', 'is_not' => 'Is not', 'greater' => 'Greater', 'less' => 'Less'],
@@ -152,17 +169,7 @@ class SavedSearchesTable extends Table
      *
      * @var array
      */
-    protected $_basicSearchFieldTypes = [
-        'uuid',
-        'list',
-        'string',
-        'text',
-        'textarea',
-        'integer',
-        'datetime',
-        'date',
-        'time'
-    ];
+    protected $_basicSearchFieldTypes = ['string', 'text', 'textarea'];
 
     /**
      * Basic search default fields
@@ -311,7 +318,7 @@ class SavedSearchesTable extends Table
         if (isset($data['criteria'])) {
             $criteria = $data['criteria'];
         }
-        $where = $this->prepareWhereStatement($criteria, $model);
+        $where = $this->_prepareWhereStatement($criteria, $model);
         $table = TableRegistry::get($model);
 
         $query = $data;
@@ -496,24 +503,44 @@ class SavedSearchesTable extends Table
     /**
      * Prepare basic search query's where statement
      *
-     * @param  array  $data  search fields
-     * @param  string $model model name
+     * @param  array                  $data  search fields
+     * @param  \Cake\ORM\Table|string $table Table object or name
      * @return array
      */
-    public function getSearchCriteria(array $data, $model)
+    public function getSearchCriteria(array $data, $table)
     {
         $result = [];
-        if (!empty($data['query'])) {
-            $fields = $this->getSearchableFields($model);
-            $fields = $this->getSearchableFieldProperties($model, $fields);
+        if (empty($data['query'])) {
+            return $result;
+        }
+
+        if (is_string($table)) {
+            $table = TableRegistry::get($table);
+        }
+
+        $displayField = $table->displayField();
+
+        $fields = $this->getSearchableFields($table);
+        $fields = $this->getSearchableFieldProperties($table, $fields);
+
+        // if display field is not a virtual field, use that for basic search
+        if (in_array($displayField, $table->schema()->columns())) {
+            $result[$displayField][] = [
+                'type' => $fields[$displayField]['type'],
+                'operator' => static::DEFAULT_SEARCH_OPERATOR,
+                'value' => $data['query']
+            ];
+        } else {
             foreach ($fields as $field => $properties) {
-                if (in_array($properties['type'], array_keys($this->_basicSearchFieldTypes))) {
-                    $result[$field][] = [
-                        'type' => $properties['type'],
-                        'operator' => $this->_basicSearchFieldTypes[$properties['type']],
-                        'value' => $data['query']
-                    ];
+                if (!in_array($properties['type'], $this->_basicSearchFieldTypes)) {
+                    continue;
                 }
+
+                $result[$field][] = [
+                    'type' => $properties['type'],
+                    'operator' => static::DEFAULT_SEARCH_OPERATOR,
+                    'value' => $data['query']
+                ];
             }
         }
 
@@ -527,118 +554,78 @@ class SavedSearchesTable extends Table
      * @param  string $model    model name
      * @return array
      */
-    public function prepareWhereStatement(array $data, $model)
-    {
-        $result = [];
-
-        if (isset($data['query'])) {
-            $result = $this->_basicWhereStatement($data, $model);
-        } else {
-            $result = $this->_advancedWhereStatement($data, $model);
-        }
-
-        return $result;
-    }
-
-    /**
-     * Prepare basic search query's where statement
-     *
-     * @param  array  $data  search fields
-     * @param  string $model model name
-     * @return array
-     */
-    protected function _basicWhereStatement(array $data, $model)
-    {
-        $result = [];
-        if (!empty($data['query'])) {
-            $fields = $this->getSearchableFields($model);
-            $fields = $this->getSearchableFieldProperties($model, $fields);
-            foreach ($fields as $field => $properties) {
-                if (in_array($properties['type'], $this->_basicSearchFieldTypes)) {
-                    $result['OR'][$field . ' LIKE'] = '%' . $data['query'] . '%';
-                }
-            }
-        }
-
-        return $result;
-    }
-
-    /**
-     * Prepare advanced search query's where statement
-     *
-     * @param  array  $data  search fields
-     * @param  string $model model name
-     * @return array
-     */
-    protected function _advancedWhereStatement(array $data, $model)
+    protected function _prepareWhereStatement(array $data, $model)
     {
         $result = [];
         foreach ($data as $fieldName => $criterias) {
-            if (!empty($criterias)) {
-                foreach ($criterias as $criteria) {
-                    $type = $criteria['type'];
-                    $value = $criteria['value'];
-                    if ('' === trim($value)) {
-                        continue;
-                    }
-                    $operator = $criteria['operator'];
-                    if (isset($this->_sqlOperators[$type][$operator]['pattern'])) {
-                        $value = str_replace(
-                            '{{value}}',
-                            $value,
-                            $this->_sqlOperators[$type][$operator]['pattern']
-                        );
-                    }
-                    $sqlOperator = $this->_sqlOperators[$type][$operator]['operator'];
-                    $key = $fieldName . ' ' . $sqlOperator;
+            if (empty($criterias)) {
+                continue;
+            }
 
-                    if (array_key_exists($key, $result)) {
-                        switch ($type) {
-                            case 'uuid':
-                            case 'list':
-                                if (is_array($result[$key])) {
-                                    array_push($result[$key], $value);
-                                } else {
-                                    $result[$key] = [$result[$key], $value];
-                                }
-                                break;
+            foreach ($criterias as $criteria) {
+                $type = $criteria['type'];
+                $value = $criteria['value'];
+                if ('' === trim($value)) {
+                    continue;
+                }
+                $operator = $criteria['operator'];
+                if (isset($this->_sqlOperators[$type][$operator]['pattern'])) {
+                    $value = str_replace(
+                        '{{value}}',
+                        $value,
+                        $this->_sqlOperators[$type][$operator]['pattern']
+                    );
+                }
+                $sqlOperator = $this->_sqlOperators[$type][$operator]['operator'];
+                $key = $fieldName . ' ' . $sqlOperator;
 
-                            case 'integer':
-                            case 'datetime':
-                            case 'date':
-                            case 'time':
-                                switch ($operator) {
-                                    case 'greater':
-                                    case 'less':
-                                        if (is_array($result[$key])) {
-                                            array_push($result[$key]['AND'], $value);
-                                        } else {
-                                            $result[$key] = ['AND' => [$result[$key], $value]];
-                                        }
-                                        break;
+                if (!array_key_exists($key, $result)) {
+                    $result[$key] = $value;
+                } else {
+                    switch ($type) {
+                        case 'uuid':
+                        case 'list':
+                            if (is_array($result[$key])) {
+                                array_push($result[$key], $value);
+                            } else {
+                                $result[$key] = [$result[$key], $value];
+                            }
+                            break;
 
-                                    default:
-                                        if (is_array($result[$key])) {
-                                            array_push($result[$key], $value);
-                                        } else {
-                                            $result[$key] = [$result[$key], $value];
-                                        }
-                                        break;
-                                }
-                                break;
+                        case 'integer':
+                        case 'datetime':
+                        case 'date':
+                        case 'time':
+                            switch ($operator) {
+                                case 'greater':
+                                case 'less':
+                                    if (is_array($result[$key])) {
+                                        array_push($result[$key]['AND'], $value);
+                                    } else {
+                                        $result[$key] = ['AND' => [$result[$key], $value]];
+                                    }
+                                    break;
 
-                            case 'string':
-                            case 'text':
-                            case 'textarea':
-                                if (is_array($result[$key])) {
-                                    array_push($result[$key]['OR'], $value);
-                                } else {
-                                    $result[$key] = ['OR' => [$result[$key], $value]];
-                                }
-                                break;
-                        }
-                    } else {
-                        $result[$key] = $value;
+                                default:
+                                    if (is_array($result[$key])) {
+                                        array_push($result[$key], $value);
+                                    } else {
+                                        $result[$key] = [$result[$key], $value];
+                                    }
+                                    break;
+                            }
+                            break;
+
+                        case 'string':
+                        case 'text':
+                        case 'textarea':
+                        case 'email':
+                            if (is_array($result[$key])) {
+                                array_push($result[$key]['OR'], $value);
+                            } else {
+                                $result[$key] = ['OR' => [$result[$key], $value]];
+                            }
+                            break;
                     }
                 }
             }
