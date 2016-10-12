@@ -318,7 +318,7 @@ class SavedSearchesTable extends Table
         if (isset($data['criteria'])) {
             $criteria = $data['criteria'];
         }
-        $where = $this->prepareWhereStatement($criteria, $model);
+        $where = $this->_prepareWhereStatement($criteria, $model);
         $table = TableRegistry::get($model);
 
         $query = $data;
@@ -554,118 +554,78 @@ class SavedSearchesTable extends Table
      * @param  string $model    model name
      * @return array
      */
-    public function prepareWhereStatement(array $data, $model)
-    {
-        $result = [];
-
-        if (isset($data['query'])) {
-            $result = $this->_basicWhereStatement($data, $model);
-        } else {
-            $result = $this->_advancedWhereStatement($data, $model);
-        }
-
-        return $result;
-    }
-
-    /**
-     * Prepare basic search query's where statement
-     *
-     * @param  array  $data  search fields
-     * @param  string $model model name
-     * @return array
-     */
-    protected function _basicWhereStatement(array $data, $model)
-    {
-        $result = [];
-        if (!empty($data['query'])) {
-            $fields = $this->getSearchableFields($model);
-            $fields = $this->getSearchableFieldProperties($model, $fields);
-            foreach ($fields as $field => $properties) {
-                if (in_array($properties['type'], $this->_basicSearchFieldTypes)) {
-                    $result['OR'][$field . ' LIKE'] = '%' . $data['query'] . '%';
-                }
-            }
-        }
-
-        return $result;
-    }
-
-    /**
-     * Prepare advanced search query's where statement
-     *
-     * @param  array  $data  search fields
-     * @param  string $model model name
-     * @return array
-     */
-    protected function _advancedWhereStatement(array $data, $model)
+    protected function _prepareWhereStatement(array $data, $model)
     {
         $result = [];
         foreach ($data as $fieldName => $criterias) {
-            if (!empty($criterias)) {
-                foreach ($criterias as $criteria) {
-                    $type = $criteria['type'];
-                    $value = $criteria['value'];
-                    if ('' === trim($value)) {
-                        continue;
-                    }
-                    $operator = $criteria['operator'];
-                    if (isset($this->_sqlOperators[$type][$operator]['pattern'])) {
-                        $value = str_replace(
-                            '{{value}}',
-                            $value,
-                            $this->_sqlOperators[$type][$operator]['pattern']
-                        );
-                    }
-                    $sqlOperator = $this->_sqlOperators[$type][$operator]['operator'];
-                    $key = $fieldName . ' ' . $sqlOperator;
+            if (empty($criterias)) {
+                continue;
+            }
 
-                    if (array_key_exists($key, $result)) {
-                        switch ($type) {
-                            case 'uuid':
-                            case 'list':
-                                if (is_array($result[$key])) {
-                                    array_push($result[$key], $value);
-                                } else {
-                                    $result[$key] = [$result[$key], $value];
-                                }
-                                break;
+            foreach ($criterias as $criteria) {
+                $type = $criteria['type'];
+                $value = $criteria['value'];
+                if ('' === trim($value)) {
+                    continue;
+                }
+                $operator = $criteria['operator'];
+                if (isset($this->_sqlOperators[$type][$operator]['pattern'])) {
+                    $value = str_replace(
+                        '{{value}}',
+                        $value,
+                        $this->_sqlOperators[$type][$operator]['pattern']
+                    );
+                }
+                $sqlOperator = $this->_sqlOperators[$type][$operator]['operator'];
+                $key = $fieldName . ' ' . $sqlOperator;
 
-                            case 'integer':
-                            case 'datetime':
-                            case 'date':
-                            case 'time':
-                                switch ($operator) {
-                                    case 'greater':
-                                    case 'less':
-                                        if (is_array($result[$key])) {
-                                            array_push($result[$key]['AND'], $value);
-                                        } else {
-                                            $result[$key] = ['AND' => [$result[$key], $value]];
-                                        }
-                                        break;
+                if (!array_key_exists($key, $result)) {
+                    $result[$key] = $value;
+                } else {
+                    switch ($type) {
+                        case 'uuid':
+                        case 'list':
+                            if (is_array($result[$key])) {
+                                array_push($result[$key], $value);
+                            } else {
+                                $result[$key] = [$result[$key], $value];
+                            }
+                            break;
 
-                                    default:
-                                        if (is_array($result[$key])) {
-                                            array_push($result[$key], $value);
-                                        } else {
-                                            $result[$key] = [$result[$key], $value];
-                                        }
-                                        break;
-                                }
-                                break;
+                        case 'integer':
+                        case 'datetime':
+                        case 'date':
+                        case 'time':
+                            switch ($operator) {
+                                case 'greater':
+                                case 'less':
+                                    if (is_array($result[$key])) {
+                                        array_push($result[$key]['AND'], $value);
+                                    } else {
+                                        $result[$key] = ['AND' => [$result[$key], $value]];
+                                    }
+                                    break;
 
-                            case 'string':
-                            case 'text':
-                            case 'textarea':
-                                if (is_array($result[$key])) {
-                                    array_push($result[$key]['OR'], $value);
-                                } else {
-                                    $result[$key] = ['OR' => [$result[$key], $value]];
-                                }
-                                break;
-                        }
-                    } else {
-                        $result[$key] = $value;
+                                default:
+                                    if (is_array($result[$key])) {
+                                        array_push($result[$key], $value);
+                                    } else {
+                                        $result[$key] = [$result[$key], $value];
+                                    }
+                                    break;
+                            }
+                            break;
+
+                        case 'string':
+                        case 'text':
+                        case 'textarea':
+                        case 'email':
+                            if (is_array($result[$key])) {
+                                array_push($result[$key]['OR'], $value);
+                            } else {
+                                $result[$key] = ['OR' => [$result[$key], $value]];
+                            }
+                            break;
                     }
                 }
             }
