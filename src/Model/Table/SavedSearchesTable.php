@@ -38,6 +38,11 @@ class SavedSearchesTable extends Table
     const DELETE_OLDER_THAN = '-3 hours';
 
     /**
+     * Default search operator identifier
+     */
+    const DEFAULT_SEARCH_OPERATOR = 'contains';
+
+    /**
      * List of display fields to be skipped.
      *
      * @var array
@@ -152,17 +157,7 @@ class SavedSearchesTable extends Table
      *
      * @var array
      */
-    protected $_basicSearchFieldTypes = [
-        'uuid',
-        'list',
-        'string',
-        'text',
-        'textarea',
-        'integer',
-        'datetime',
-        'date',
-        'time'
-    ];
+    protected $_basicSearchFieldTypes = ['string', 'text', 'textarea'];
 
     /**
      * Basic search default fields
@@ -496,24 +491,44 @@ class SavedSearchesTable extends Table
     /**
      * Prepare basic search query's where statement
      *
-     * @param  array  $data  search fields
-     * @param  string $model model name
+     * @param  array                  $data  search fields
+     * @param  \Cake\ORM\Table|string $table Table object or name
      * @return array
      */
-    public function getSearchCriteria(array $data, $model)
+    public function getSearchCriteria(array $data, $table)
     {
         $result = [];
-        if (!empty($data['query'])) {
-            $fields = $this->getSearchableFields($model);
-            $fields = $this->getSearchableFieldProperties($model, $fields);
+        if (empty($data['query'])) {
+            return $result;
+        }
+
+        if (is_string($table)) {
+            $table = TableRegistry::get($table);
+        }
+
+        $displayField = $table->displayField();
+
+        $fields = $this->getSearchableFields($table);
+        $fields = $this->getSearchableFieldProperties($table, $fields);
+
+        // if display field is not a virtual field, use that for basic search
+        if (in_array($displayField, $table->schema()->columns())) {
+            $result[$displayField][] = [
+                'type' => $fields[$displayField]['type'],
+                'operator' => static::DEFAULT_SEARCH_OPERATOR,
+                'value' => $data['query']
+            ];
+        } else {
             foreach ($fields as $field => $properties) {
-                if (in_array($properties['type'], array_keys($this->_basicSearchFieldTypes))) {
-                    $result[$field][] = [
-                        'type' => $properties['type'],
-                        'operator' => $this->_basicSearchFieldTypes[$properties['type']],
-                        'value' => $data['query']
-                    ];
+                if (!in_array($properties['type'], $this->_basicSearchFieldTypes)) {
+                    continue;
                 }
+
+                $result[$field][] = [
+                    'type' => $properties['type'],
+                    'operator' => static::DEFAULT_SEARCH_OPERATOR,
+                    'value' => $data['query']
+                ];
             }
         }
 

@@ -109,9 +109,9 @@ trait SearchTrait
                 $this->set('saveSearchResultsId', $search['saveSearchResultsId']);
             }
 
-            // if (isset($this->request->data['criteria']['query'])) {
-            //     $this->request->data['criteria'] = $table->getSearchCriteria($this->request->data['criteria'], $model);
-            // }
+            if (isset($this->request->data['criteria']['query'])) {
+                $this->request->data['criteria'] = $table->getSearchCriteria($this->request->data['criteria'], $model);
+            }
 
             // @todo find out how to do pagination without affecting limit
             $entities = $search['entities']['result']->all();
