@@ -99,6 +99,13 @@ trait SearchTrait
         $table = TableRegistry::get($this->_tableSearch);
 
         if ($this->request->is('post')) {
+            // basic search query, coverted to search criteria
+            if (isset($this->request->data['criteria']['query'])) {
+                $this->request->data['criteria'] = $table->getSearchCriteria(
+                    $this->request->data['criteria'],
+                    $model
+                );
+            }
             $search = $table->search($model, $this->Auth->user(), $this->request->data);
 
             if (isset($search['saveSearchCriteriaId'])) {
