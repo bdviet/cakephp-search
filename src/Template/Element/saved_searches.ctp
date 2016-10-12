@@ -28,7 +28,7 @@
                             case 'result':
                                 $results[$search->id] = $search->name;
                                 echo $this->Html->link($search->name, [
-                                    'action' => 'search-saved-result',
+                                    'action' => 'save-search-result',
                                     $search->id
                                 ], [
                                     'id' => 'view_' . $search->id,

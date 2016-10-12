@@ -60,7 +60,7 @@ trait SearchTrait
      * @param  string $id    record id
      * @return void
      */
-    public function searchSavedResult($id)
+    public function saveSearchResult($id)
     {
         $model = $this->modelClass;
         $table = TableRegistry::get($this->_tableSearch);
