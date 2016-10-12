@@ -11,19 +11,15 @@ trait SearchableTrait
      * @param  \Cake\ORM\Table|string $table Table object or name.
      * @return bool
      */
-    public function isSearchable($table)
+    protected function _isSearchable($table)
     {
         $result = false;
-        /*
-        get Table instance
-         */
+        // get Table instance
         if (is_string($table)) {
             $table = TableRegistry::get($table);
         }
 
-        /*
-        check if is searchable
-         */
+        // check if is searchable
         if (method_exists($table, 'isSearchable') && is_callable([$table, 'isSearchable'])) {
             $result = $table->isSearchable();
         }

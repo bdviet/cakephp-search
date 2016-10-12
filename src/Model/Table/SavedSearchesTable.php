@@ -115,6 +115,39 @@ class SavedSearchesTable extends Table
     ];
 
     /**
+     * Per field type operators
+     *
+     * @var array
+     */
+    protected $_fieldTypeOperators = [
+        'uuid' => ['is' => 'Is'],
+        'boolean' => ['is' => 'Is', 'is_not' => 'Is not'],
+        'list' => ['is' => 'Is', 'is_not' => 'Is not'],
+        'string' => [
+            'contains' => 'Contains',
+            'not_contains' => 'Does not contain',
+            'starts_with' => 'Starts with',
+            'ends_with' => 'Ends with'
+        ],
+        'text' => [
+            'contains' => 'Contains',
+            'not_contains' => 'Does not contain',
+            'starts_with' => 'Starts with',
+            'ends_with' => 'Ends with'
+        ],
+        'textarea' => [
+            'contains' => 'Contains',
+            'not_contains' => 'Does not contain',
+            'starts_with' => 'Starts with',
+            'ends_with' => 'Ends with'
+        ],
+        'integer' => ['is' => 'Is', 'is_not' => 'Is not', 'greater' => 'Greater', 'less' => 'Less'],
+        'datetime' => ['is' => 'Is', 'is_not' => 'Is not', 'greater' => 'Greater', 'less' => 'Less'],
+        'date' => ['is' => 'Is', 'is_not' => 'Is not', 'greater' => 'Greater', 'less' => 'Less'],
+        'time' => ['is' => 'Is', 'is_not' => 'Is not', 'greater' => 'Greater', 'less' => 'Less']
+    ];
+
+    /**
      * Filter basic search allowed field types
      *
      * @var array
@@ -255,33 +288,37 @@ class SavedSearchesTable extends Table
     }
 
     /**
+     * Return list of operators grouped by field type
+     *
+     * @return array
+     */
+    public function getFieldTypeOperators()
+    {
+        return $this->_fieldTypeOperators;
+    }
+
+    /**
      * Search method
      *
      * @param  string $model model name
      * @param  array  $user user
      * @param  array  $data data
-     * @param  bool   $advanced advanced search flag
-     * @param  bool   $preSave pre-save
      * @return array
      */
-    public function search($model, $user, $data, $advanced = false, $preSave = false)
+    public function search($model, $user, $data)
     {
         $criteria = [];
         if (isset($data['criteria'])) {
             $criteria = $data['criteria'];
         }
-        $where = $this->prepareWhereStatement($criteria, $model, $advanced);
+        $where = $this->prepareWhereStatement($criteria, $model);
         $table = TableRegistry::get($model);
 
         $query = $data;
-        /*
-        do not include criteria when pre-saving search results
-         */
+        // do not include criteria when pre-saving search results
         unset($query['criteria']);
 
-        /*
-        use query defaults if not set
-         */
+        // use query defaults if not set
         $query = array_merge($this->_queryDefaults, $query);
 
         $query['result'] = $table
@@ -289,17 +326,13 @@ class SavedSearchesTable extends Table
             ->where($where)
             ->order([$query['sort_by_field'] => $query['sort_by_order']]);
 
-        /*
-        set limit if not 0
-         */
+        // set limit if not 0
         if (0 < (int)$query['limit']) {
             $query['result']->limit($query['limit']);
         }
 
-        /*
-        if in advanced mode, pre-save search criteria and results
-         */
-        if ($preSave && !empty($criteria)) {
+        // if in advanced mode, pre-save search criteria and results
+        if (!isset($criteria['query']) && !empty($criteria)) {
             $preSaveIds = $this->preSaveSearchCriteriaAndResults(
                 $model,
                 $query,
@@ -312,6 +345,34 @@ class SavedSearchesTable extends Table
         $result['entities'] = $query;
 
         return $result;
+    }
+
+    /**
+     * Returns saved searches filtered by users and models.
+     *
+     * @param  array  $users  users ids
+     * @param  array  $models models names
+     * @return Cake\ORM\ResultSet
+     */
+    public function getSavedSearches(array $users = [], array $models = [])
+    {
+        $conditions = [
+            'SavedSearches.name IS NOT' => null
+        ];
+
+        if (!empty($users)) {
+            $conditions['SavedSearches.user_id IN'] = $users;
+        }
+
+        if (!empty($models)) {
+            $conditions['SavedSearches.model IN'] = $models;
+        }
+
+        $query = $this->find('all', [
+            'conditions' => $conditions
+        ]);
+
+        return $query->toArray();
     }
 
     /**
@@ -433,18 +494,44 @@ class SavedSearchesTable extends Table
     }
 
     /**
+     * Prepare basic search query's where statement
+     *
+     * @param  array  $data  search fields
+     * @param  string $model model name
+     * @return array
+     */
+    public function getSearchCriteria(array $data, $model)
+    {
+        $result = [];
+        if (!empty($data['query'])) {
+            $fields = $this->getSearchableFields($model);
+            $fields = $this->getSearchableFieldProperties($model, $fields);
+            foreach ($fields as $field => $properties) {
+                if (in_array($properties['type'], array_keys($this->_basicSearchFieldTypes))) {
+                    $result[$field][] = [
+                        'type' => $properties['type'],
+                        'operator' => $this->_basicSearchFieldTypes[$properties['type']],
+                        'value' => $data['query']
+                    ];
+                }
+            }
+        }
+
+        return $result;
+    }
+
+    /**
      * Prepare search query's where statement
      *
      * @param  array  $data     search fields
      * @param  string $model    model name
-     * @param  bool   $advanced advanced search flag
      * @return array
      */
-    public function prepareWhereStatement(array $data, $model, $advanced = false)
+    public function prepareWhereStatement(array $data, $model)
     {
         $result = [];
 
-        if (!$advanced) {
+        if (isset($data['query'])) {
             $result = $this->_basicWhereStatement($data, $model);
         } else {
             $result = $this->_advancedWhereStatement($data, $model);

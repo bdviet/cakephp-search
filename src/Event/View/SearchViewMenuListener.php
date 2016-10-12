@@ -1,5 +1,5 @@
 <?php
-namespace Search\Events;
+namespace Search\Event\View;
 
 use App\View\AppView;
 use Cake\Event\Event;
@@ -31,20 +31,20 @@ class SearchViewMenuListener implements EventListenerInterface
     /**
      * Method that adds elements to index View actions menu.
      *
-     * @param  Cake\Event\Event     $event   Event object
-     * @param  Cake\Network\Request $request Request object
-     * @param  Cake\ORM\Entity      $options Entity options
-     * @return undefined
+     * @param  \Cake\Event\Event      $event   Event object
+     * @param  \Cake\Network\Request  $request Request object
+     * @param  \Cake\ORM\Entity|array $entity  Entity
+     * @return void
      */
-    public function getIndexMenuActions(Event $event, Request $request, $options)
+    public function getIndexMenuActions(Event $event, Request $request, $entity)
     {
-        $appView = new AppView();
+        if ($entity instanceof Entity) {
+            $entity = $entity->toArray();
+        }
 
-        list($plugin, $controller) = pluginSplit($options['model']);
-
-        $btnView = $appView->Html->link(
+        $btnView = $event->subject()->Html->link(
             '',
-            ['plugin' => $plugin, 'controller' => $controller, 'action' => 'view', $options['entity']['id']],
+            ['plugin' => $request->plugin, 'controller' => $request->controller, 'action' => 'view', $entity['id']],
             ['title' => __('View'), 'class' => 'btn btn-default glyphicon glyphicon-eye-open']
         );
 
@@ -52,21 +52,19 @@ class SearchViewMenuListener implements EventListenerInterface
             [
                 'label' => $btnView,
                 'url' => [
-                    'plugin' => $plugin,
-                    'controller' => $controller,
+                    'plugin' => $request->plugin,
+                    'controller' => $request->controller,
                     'action' => 'view',
-                    $options['entity']['id']
+                    $entity['id']
                 ],
                 'capabilities' => 'fromUrl'
             ]
         ];
 
-        if ($appView->elementExists(static::MENU_ELEMENT)) {
-            $result = $appView->element(static::MENU_ELEMENT, ['menu' => $menu, 'renderAs' => 'provided']);
+        if ($event->subject()->elementExists(static::MENU_ELEMENT)) {
+            $event->result .= $event->subject()->element(static::MENU_ELEMENT, ['menu' => $menu, 'renderAs' => 'provided']);
         } else {
-            $result = $btnView;
+            $event->result .= $btnView;
         }
-
-        return $result;
     }
 }

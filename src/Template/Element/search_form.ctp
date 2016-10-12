@@ -17,10 +17,9 @@ if ('Search' === $this->request->params['plugin'] && 'Search' === $this->request
 <?= $this->Form->create(null, [
     'class' => 'navbar-form navbar-right',
     'url' => [
-        'plugin' => 'Search',
-        'controller' => 'Search',
-        'action' => 'basic',
-        $lookInModel
+        'plugin' => $this->request->plugin,
+        'controller' => $this->request->controller,
+        'action' => 'search'
     ]
 ]); ?>
 

@@ -1,7 +1,6 @@
 <?php
-namespace Search\Events;
+namespace Search\Event\View;
 
-use App\View\AppView;
 use Cake\Event\Event;
 use Cake\Event\EventListenerInterface;
 use Cake\Network\Request;
@@ -33,12 +32,10 @@ class DashboardViewMenuListener implements EventListenerInterface
      * @param  Cake\Event\Event     $event   Event object
      * @param  Cake\Network\Request $request Request object
      * @param  Cake\ORM\Entity      $entity  Entity object
-     * @return mixed
+     * @return void
      */
     public function getViewMenuTop(Event $event, Request $request, Entity $entity)
     {
-        $appView = new AppView();
-
         $controllerName = $request->controller;
         if (!empty($request->plugin)) {
             $controllerName = $request->plugin . '.' . $controllerName;
@@ -54,7 +51,7 @@ class DashboardViewMenuListener implements EventListenerInterface
             'action' => 'edit',
             $entity->id
         ];
-        $btnEdit = ' ' . $appView->Html->link(
+        $btnEdit = ' ' . $event->subject()->Html->link(
             '',
             $urlEdit,
             ['title' => __('Edit'), 'class' => 'btn btn-default glyphicon glyphicon-pencil']
@@ -66,7 +63,7 @@ class DashboardViewMenuListener implements EventListenerInterface
             'action' => 'delete',
             $entity->id
         ];
-        $btnDel = ' ' . $appView->Form->postLink(
+        $btnDel = ' ' . $event->subject()->Form->postLink(
             '',
             $urlDel,
             [
@@ -89,13 +86,10 @@ class DashboardViewMenuListener implements EventListenerInterface
             ]
         ];
 
-        $result = null;
-        if ($appView->elementExists(static::MENU_ELEMENT)) {
-            $result .= $appView->element(static::MENU_ELEMENT, ['menu' => $menu, 'renderAs' => 'provided']);
+        if ($event->subject()->elementExists(static::MENU_ELEMENT)) {
+            $event->result .= $event->subject()->element(static::MENU_ELEMENT, ['menu' => $menu, 'renderAs' => 'provided']);
         } else {
-            $result .= $btnEdit . $btnDel;
+            $event->result .= $btnEdit . $btnDel;
         }
-
-        return $result;
     }
 }

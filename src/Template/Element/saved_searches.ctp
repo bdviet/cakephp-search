@@ -28,8 +28,7 @@
                             case 'result':
                                 $results[$search->id] = $search->name;
                                 echo $this->Html->link($search->name, [
-                                    'action' => 'saved_result',
-                                    $search->model,
+                                    'action' => 'search-saved-result',
                                     $search->id
                                 ], [
                                     'id' => 'view_' . $search->id,
@@ -43,10 +42,9 @@
                                     'id' => 'view_' . $search->id,
                                     'class' => 'saved-criteria-form hidden',
                                     'url' => [
-                                        'plugin' => 'Search',
-                                        'controller' => 'Search',
-                                        'action' => 'advanced',
-                                        $search->model
+                                        'plugin' => $this->request->plugin,
+                                        'controller' => $this->request->controller,
+                                        'action' => 'search',
                                     ]
                                 ]);
 
@@ -105,7 +103,7 @@
                         echo $this->Form->postLink(
                             '<span class="glyphicon glyphicon-minus"></span>',
                             [
-                                'action' => 'delete',
+                                'action' => 'search-delete',
                                 $search->id
                             ],
                             [
