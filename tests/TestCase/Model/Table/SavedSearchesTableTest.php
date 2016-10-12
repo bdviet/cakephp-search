@@ -81,6 +81,7 @@ class SavedSearchesTableTest extends TestCase
                 'string' => ['contains' => 'Contains', 'not_contains' => 'Does not contain', 'starts_with' => 'Starts with', 'ends_with' => 'Ends with'],
                 'text' => ['contains' => 'Contains', 'not_contains' => 'Does not contain', 'starts_with' => 'Starts with', 'ends_with' => 'Ends with'],
                 'textarea' => ['contains' => 'Contains', 'not_contains' => 'Does not contain', 'starts_with' => 'Starts with', 'ends_with' => 'Ends with'],
+                'email' => ['contains' => 'Contains', 'not_contains' => 'Does not contain', 'starts_with' => 'Starts with', 'ends_with' => 'Ends with'],
                 'integer' => ['is' => 'Is', 'is_not' => 'Is not', 'greater' => 'Greater', 'less' => 'Less'],
                 'datetime' => ['is' => 'Is', 'is_not' => 'Is not', 'greater' => 'Greater', 'less' => 'Less'],
                 'date' => ['is' => 'Is', 'is_not' => 'Is not', 'greater' => 'Greater', 'less' => 'Less'],
