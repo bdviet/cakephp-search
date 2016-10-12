@@ -103,7 +103,7 @@
                         echo $this->Form->postLink(
                             '<span class="glyphicon glyphicon-minus"></span>',
                             [
-                                'action' => 'search-delete',
+                                'action' => 'delete-search',
                                 $search->id
                             ],
                             [

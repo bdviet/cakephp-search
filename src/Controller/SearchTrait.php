@@ -37,7 +37,7 @@ trait SearchTrait
      * @return \Cake\Network\Response|null
      * @throws \Cake\Network\Exception\NotFoundException When record not found.
      */
-    public function searchSave($id = null)
+    public function saveSearch($id = null)
     {
         $this->request->allowMethod(['patch', 'post', 'put']);
 
@@ -152,7 +152,7 @@ trait SearchTrait
      * @return \Cake\Network\Response|null Redirects to referer.
      * @throws \Cake\Network\Exception\NotFoundException When record not found.
      */
-    public function searchDelete($id = null)
+    public function deleteSearch($id = null)
     {
         $this->request->allowMethod(['post', 'delete']);
 
