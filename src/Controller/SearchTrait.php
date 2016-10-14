@@ -2,6 +2,7 @@
 namespace Search\Controller;
 
 use Cake\Network\Exception\BadRequestException;
+use Cake\ORM\Query;
 use Cake\ORM\TableRegistry;
 use Search\Controller\Traits\SearchableTrait;
 
