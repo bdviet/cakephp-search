@@ -57,9 +57,10 @@ trait SearchTrait
     /**
      * Search action
      *
+     * @param  string $id Saved search id
      * @return void
      */
-    public function search()
+    public function search($id = null)
     {
         $model = $this->modelClass;
         if (!$this->_isSearchable($model)) {
@@ -68,13 +69,18 @@ trait SearchTrait
 
         $table = TableRegistry::get($this->_tableSearch);
 
-        if ($this->request->is('post')) {
-            // basic search query, coverted to search criteria
-            if (isset($this->request->data['criteria']['query'])) {
-                $this->request->data['criteria'] = $table->getSearchCriteria(
-                    $this->request->data['criteria'],
-                    $model
-                );
+        if ($this->request->is(['post', 'get'])) {
+            // basic search query, converted to search criteria
+            if ($this->request->data('criteria.query')) {
+                $this->request->data('criteria', $table->getSearchCriteria($this->request->data('criteria'), $model));
+            }
+
+            // if id of saved search is provided, fetch search conditions from there
+            if (!is_null($id)) {
+                $search = $table->get($id);
+                $this->set('searchName', $search->name);
+                $this->set('searchType', $search->type);
+                $this->request->data = json_decode($search->content, true);
             }
             $search = $table->search($model, $this->Auth->user(), $this->request->data);
 
@@ -86,12 +92,15 @@ trait SearchTrait
                 $this->set('saveSearchResultsId', $search['saveSearchResultsId']);
             }
 
-            if (isset($this->request->data['criteria']['query'])) {
-                $this->request->data['criteria'] = $table->getSearchCriteria($this->request->data['criteria'], $model);
-            }
-
             // @todo find out how to do pagination without affecting limit
-            $entities = $search['entities']['result']->all();
+            if ($search['entities']['result'] instanceof Query) {
+                // fetched from new search result
+                $entities = $search['entities']['result']->all();
+            } else {
+                // as taken from a saved search result
+                $entities = $search['entities']['result'];
+
+            }
             $this->set('entities', $entities);
 
             // set listing fields
