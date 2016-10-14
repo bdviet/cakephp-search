@@ -27,79 +27,21 @@
                         switch ($type) {
                             case 'result':
                                 $results[$search->id] = $search->name;
-                                echo $this->Html->link($search->name, [
-                                    'action' => 'save-search-result',
-                                    $search->id
-                                ], [
-                                    'id' => 'view_' . $search->id,
-                                    'class' => 'hidden'
-                                ]);
                                 break;
 
                             case 'criteria':
                                 $criterias[$search->id] = $search->name;
-                                echo $this->Form->create(null, [
-                                    'id' => 'view_' . $search->id,
-                                    'class' => 'saved-criteria-form hidden',
-                                    'url' => [
-                                        'plugin' => $this->request->plugin,
-                                        'controller' => $this->request->controller,
-                                        'action' => 'search',
-                                    ]
-                                ]);
-
-                                $savedSearchContent = json_decode($search->content);
-                                /*
-                                saved search criterias fields
-                                 */
-                                foreach ($savedSearchContent->criteria as $fieldName => $properties) {
-                                    foreach ($properties as $k => $property) {
-                                        echo $this->Form->hidden('criteria[' . $fieldName . '][' . $k . '][type]', [
-                                            'value' => $property->type,
-                                        ]);
-                                        echo $this->Form->hidden('criteria[' . $fieldName . '][' . $k . '][operator]', [
-                                            'value' => $property->operator,
-                                        ]);
-                                        echo $this->Form->hidden('criteria[' . $fieldName . '][' . $k . '][value]', [
-                                            'value' => $property->value,
-                                        ]);
-                                    }
-                                }
-                                /*
-                                saved search display columns
-                                 */
-                                foreach ($savedSearchContent->display_columns as $k => $display_column) {
-                                    echo $this->Form->hidden('display_columns[' . $k . ']', [
-                                        'value' => $display_column,
-                                    ]);
-                                }
-                                /*
-                                saved search sort by field
-                                 */
-                                echo $this->Form->hidden('sort_by_field', [
-                                    'value' => $savedSearchContent->sort_by_field,
-                                ]);
-                                /*
-                                saved search sort by order
-                                 */
-                                echo $this->Form->hidden('sort_by_order', [
-                                    'value' => $savedSearchContent->sort_by_order,
-                                ]);
-                                /*
-                                saved search limit
-                                 */
-                                echo $this->Form->hidden('limit', [
-                                    'value' => $savedSearchContent->limit,
-                                ]);
-
-                                echo $this->Form->button(
-                                    $search->name,
-                                    ['class' => 'btn btn-link']
-                                );
-
-                                echo $this->Form->end();
                                 break;
                         }
+
+                        echo $this->Html->link($search->name, [
+                            'action' => 'search',
+                            $search->id
+                        ], [
+                            'id' => 'view_' . $search->id,
+                            'class' => 'hidden'
+                        ]);
+
                         echo $this->Form->postLink(
                             '<span class="glyphicon glyphicon-minus"></span>',
                             [
@@ -137,6 +79,7 @@
                     }
                     echo $this->Form->select($selectFieldName, $selectFieldOptions, [
                         'id' => $selectFieldId,
+                        'default' => $this->request->param('pass.0'),
                         'class' => 'form-control input-sm'
                     ]);
                     ?>

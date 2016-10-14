@@ -2,6 +2,7 @@
 namespace Search\Controller;
 
 use Cake\Network\Exception\BadRequestException;
+use Cake\ORM\Query;
 use Cake\ORM\TableRegistry;
 use Search\Controller\Traits\SearchableTrait;
 
@@ -51,45 +52,16 @@ trait SearchTrait
             $this->Flash->error(__('The search could not be saved. Please, try again.'));
         }
 
-        return $this->redirect(['action' => 'search']);
-    }
-
-    /**
-     * Saved result action
-     *
-     * @param  string $id    record id
-     * @return void
-     */
-    public function saveSearchResult($id)
-    {
-        $model = $this->modelClass;
-        $table = TableRegistry::get($this->_tableSearch);
-
-        $search = $table->get($id);
-
-        $this->set('searchName', $search->name);
-
-        $content = json_decode($search->content, true);
-        $this->set('entities', $content['result']);
-
-        // get listing fields
-        if (isset($content['display_columns'])) {
-            $listingFields = $content['display_columns'];
-        } else {
-            $listingFields = $this->SavedSearches->getListingFields($model);
-        }
-
-        $this->set('listingFields', $listingFields);
-
-        $this->render($this->_elementSavedResult);
+        return $this->redirect(['action' => 'search', $id]);
     }
 
     /**
      * Search action
      *
+     * @param  string $id Saved search id
      * @return void
      */
-    public function search()
+    public function search($id = null)
     {
         $model = $this->modelClass;
         if (!$this->_isSearchable($model)) {
@@ -98,14 +70,26 @@ trait SearchTrait
 
         $table = TableRegistry::get($this->_tableSearch);
 
-        if ($this->request->is('post')) {
-            // basic search query, coverted to search criteria
-            if (isset($this->request->data['criteria']['query'])) {
-                $this->request->data['criteria'] = $table->getSearchCriteria(
-                    $this->request->data['criteria'],
-                    $model
-                );
+        if ($this->request->is(['post', 'get'])) {
+            // basic search query, converted to search criteria
+            if ($this->request->data('criteria.query')) {
+                $this->request->data('criteria', $table->getSearchCriteria($this->request->data('criteria'), $model));
             }
+
+            // if id of saved search is provided, fetch search conditions from there
+            if (!is_null($id)) {
+                $search = $table->get($id);
+                $this->set('searchName', $search->name);
+                $this->set('searchType', $search->type);
+                $this->request->data = json_decode($search->content, true);
+            }
+
+            // set display columns before the pre-saving, fixes bug
+            // with missing display columns when saving a basic search
+            if (!$this->request->data('display_columns')) {
+                $this->request->data('display_columns', $table->getListingFields($model));
+            }
+
             $search = $table->search($model, $this->Auth->user(), $this->request->data);
 
             if (isset($search['saveSearchCriteriaId'])) {
@@ -116,21 +100,18 @@ trait SearchTrait
                 $this->set('saveSearchResultsId', $search['saveSearchResultsId']);
             }
 
-            if (isset($this->request->data['criteria']['query'])) {
-                $this->request->data['criteria'] = $table->getSearchCriteria($this->request->data['criteria'], $model);
-            }
-
             // @todo find out how to do pagination without affecting limit
-            $entities = $search['entities']['result']->all();
+            if ($search['entities']['result'] instanceof Query) {
+                // fetched from new search result
+                $entities = $search['entities']['result']->all();
+            } else {
+                // as taken from a saved search result
+                $entities = $search['entities']['result'];
+            }
             $this->set('entities', $entities);
 
             // set listing fields
-            if (isset($this->request->data['display_columns'])) {
-                $listingFields = $this->request->data['display_columns'];
-            } else {
-                $listingFields = $table->getListingFields($model);
-            }
-            $this->set('listingFields', $listingFields);
+            $listingFields = $this->request->data('display_columns');
         }
 
         $searchFields = [];
@@ -147,7 +128,7 @@ trait SearchTrait
 
         $savedSearches = $table->getSavedSearches([$this->Auth->user('id')], [$model]);
 
-        $this->set(compact('searchFields', 'searchOperators', 'savedSearches'));
+        $this->set(compact('searchFields', 'searchOperators', 'savedSearches', 'listingFields'));
 
         $this->render($this->_elementSearch);
     }
@@ -171,6 +152,6 @@ trait SearchTrait
             $this->Flash->error(__('The saved search could not be deleted. Please, try again.'));
         }
 
-        return $this->redirect($this->referer());
+        return $this->redirect(['action' => 'search']);
     }
 }

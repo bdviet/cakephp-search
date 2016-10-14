@@ -1,6 +1,15 @@
 <?php
 use Cake\Event\Event;
 use Cake\Utility\Inflector;
+
+$title = [
+    'main' => $this->name,
+    'sub' => __('search results')
+];
+if (!empty($searchName) && !empty($searchType)) {
+    $title['main'] = $searchName;
+    $title['sub'] = '(' . __('from saved search') . ' ' . $searchType . ')';
+}
 ?>
 
 <?php if (!empty($entities)) : ?>
@@ -9,7 +18,7 @@ use Cake\Utility\Inflector;
         <div class="panel panel-default">
             <div class="panel-heading">
                 <h3 class="panel-title">
-                    <strong><?= isset($searchName) ? $searchName : $this->name; ?></strong> <?= __('search results'); ?>:
+                    <strong><?= $title['main']; ?></strong> <?= $title['sub'] ?>:
                 </h3>
             </div>
             <div class="panel-body">
