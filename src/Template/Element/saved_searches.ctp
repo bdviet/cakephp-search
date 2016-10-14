@@ -27,13 +27,6 @@
                         switch ($type) {
                             case 'result':
                                 $results[$search->id] = $search->name;
-                                echo $this->Html->link($search->name, [
-                                    'action' => 'save-search-result',
-                                    $search->id
-                                ], [
-                                    'id' => 'view_' . $search->id,
-                                    'class' => 'hidden'
-                                ]);
                                 break;
 
                             case 'criteria':
@@ -100,6 +93,15 @@
                                 echo $this->Form->end();
                                 break;
                         }
+
+                        echo $this->Html->link($search->name, [
+                            'action' => 'search',
+                            $search->id
+                        ], [
+                            'id' => 'view_' . $search->id,
+                            'class' => 'hidden'
+                        ]);
+
                         echo $this->Form->postLink(
                             '<span class="glyphicon glyphicon-minus"></span>',
                             [

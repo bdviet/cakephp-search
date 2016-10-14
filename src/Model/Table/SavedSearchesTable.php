@@ -328,27 +328,28 @@ class SavedSearchesTable extends Table
         // use query defaults if not set
         $query = array_merge($this->_queryDefaults, $query);
 
-        $query['result'] = $table
-            ->find('all')
-            ->where($where)
-            ->order([$query['sort_by_field'] => $query['sort_by_order']]);
+        if (empty($query['result'])) {
+            $query['result'] = $table
+                ->find('all')
+                ->where($where)
+                ->order([$query['sort_by_field'] => $query['sort_by_order']]);
 
-        // set limit if not 0
-        if (0 < (int)$query['limit']) {
-            $query['result']->limit($query['limit']);
+            // set limit if not 0
+            if (0 < (int)$query['limit']) {
+                $query['result']->limit($query['limit']);
+            }
         }
 
         // if in advanced mode, pre-save search criteria and results
-        if (!isset($criteria['query']) && !empty($criteria)) {
-            $preSaveIds = $this->preSaveSearchCriteriaAndResults(
-                $model,
-                $query,
-                $data,
-                $user['id']
-            );
-            $result['saveSearchCriteriaId'] = $preSaveIds['saveSearchCriteriaId'];
-            $result['saveSearchResultsId'] = $preSaveIds['saveSearchResultsId'];
-        }
+        $preSaveIds = $this->preSaveSearchCriteriaAndResults(
+            $model,
+            $query,
+            $data,
+            $user['id']
+        );
+        $result['saveSearchCriteriaId'] = $preSaveIds['saveSearchCriteriaId'];
+        $result['saveSearchResultsId'] = $preSaveIds['saveSearchResultsId'];
+
         $result['entities'] = $query;
 
         return $result;
@@ -692,9 +693,8 @@ class SavedSearchesTable extends Table
         $search->model = $model;
         $search->shared = $this->getPrivateSharedStatus();
         $search->content = json_encode($data);
-        /*
-        save search criteria
-         */
+
+        // save search criteria
         $this->save($search);
 
         return $search->id;
@@ -716,9 +716,8 @@ class SavedSearchesTable extends Table
         $search->model = $model;
         $search->shared = $this->getPrivateSharedStatus();
         $search->content = json_encode($query);
-        /*
-        save search results
-         */
+
+        // save search results
         $this->save($search);
 
         return $search->id;
