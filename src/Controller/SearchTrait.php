@@ -152,6 +152,6 @@ trait SearchTrait
             $this->Flash->error(__('The saved search could not be deleted. Please, try again.'));
         }
 
-        return $this->redirect($this->referer());
+        return $this->redirect(['action' => 'search']);
     }
 }
