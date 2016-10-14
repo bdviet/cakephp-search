@@ -105,6 +105,10 @@ trait SearchTrait
                     $this->request->data['criteria'],
                     $model
                 );
+            // set display columns before the pre-saving, fixes bug
+            // with missing display columns when saving a basic search
+            if (!$this->request->data('display_columns')) {
+                $this->request->data('display_columns', $table->getListingFields($model));
             }
             $search = $table->search($model, $this->Auth->user(), $this->request->data);
 
