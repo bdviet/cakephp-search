@@ -77,6 +77,7 @@
                     }
                     echo $this->Form->select($selectFieldName, $selectFieldOptions, [
                         'id' => $selectFieldId,
+                        'default' => $this->request->param('pass.0'),
                         'class' => 'form-control input-sm'
                     ]);
                     ?>
