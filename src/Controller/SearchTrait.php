@@ -100,7 +100,6 @@ trait SearchTrait
             } else {
                 // as taken from a saved search result
                 $entities = $search['entities']['result'];
-
             }
             $this->set('entities', $entities);
 
