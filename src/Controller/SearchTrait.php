@@ -106,6 +106,13 @@ trait SearchTrait
                     $model
                 );
             }
+
+            // set display columns before the pre-saving, fixes bug
+            // with missing display columns when saving a basic search
+            if (!$this->request->data('display_columns')) {
+                $this->request->data('display_columns', $table->getListingFields($model));
+            }
+
             $search = $table->search($model, $this->Auth->user(), $this->request->data);
 
             if (isset($search['saveSearchCriteriaId'])) {
@@ -125,12 +132,7 @@ trait SearchTrait
             $this->set('entities', $entities);
 
             // set listing fields
-            if (isset($this->request->data['display_columns'])) {
-                $listingFields = $this->request->data['display_columns'];
-            } else {
-                $listingFields = $table->getListingFields($model);
-            }
-            $this->set('listingFields', $listingFields);
+            $listingFields = $this->request->data('display_columns');
         }
 
         $searchFields = [];
@@ -147,7 +149,7 @@ trait SearchTrait
 
         $savedSearches = $table->getSavedSearches([$this->Auth->user('id')], [$model]);
 
-        $this->set(compact('searchFields', 'searchOperators', 'savedSearches'));
+        $this->set(compact('searchFields', 'searchOperators', 'savedSearches', 'listingFields'));
 
         $this->render($this->_elementSearch);
     }
