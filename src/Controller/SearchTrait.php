@@ -132,12 +132,7 @@ trait SearchTrait
             $this->set('entities', $entities);
 
             // set listing fields
-            if (isset($this->request->data['display_columns'])) {
-                $listingFields = $this->request->data['display_columns'];
-            } else {
-                $listingFields = $table->getListingFields($model);
-            }
-            $this->set('listingFields', $listingFields);
+            $listingFields = $this->request->data('display_columns');
         }
 
         $searchFields = [];
@@ -154,7 +149,7 @@ trait SearchTrait
 
         $savedSearches = $table->getSavedSearches([$this->Auth->user('id')], [$model]);
 
-        $this->set(compact('searchFields', 'searchOperators', 'savedSearches'));
+        $this->set(compact('searchFields', 'searchOperators', 'savedSearches', 'listingFields'));
 
         $this->render($this->_elementSearch);
     }
