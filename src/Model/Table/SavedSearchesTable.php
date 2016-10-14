@@ -322,8 +322,6 @@ class SavedSearchesTable extends Table
         $table = TableRegistry::get($model);
 
         $query = $data;
-        // do not include criteria when pre-saving search results
-        unset($query['criteria']);
 
         // use query defaults if not set
         $query = array_merge($this->_queryDefaults, $query);
