@@ -59,7 +59,7 @@ var saved_searches = saved_searches || {};
 
         $(this.criteriasViewId).on('click', function() {
             selElement = $(that.criteriasSelectId).val();
-            $(that.viewPrefixId + selElement).submit();
+            window.location.href = $(that.viewPrefixId + selElement).attr('href');
         });
 
         $(this.criteriasDeleteId).on('click', function() {
