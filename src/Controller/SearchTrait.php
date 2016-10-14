@@ -51,37 +51,7 @@ trait SearchTrait
             $this->Flash->error(__('The search could not be saved. Please, try again.'));
         }
 
-        return $this->redirect(['action' => 'search']);
-    }
-
-    /**
-     * Saved result action
-     *
-     * @param  string $id    record id
-     * @return void
-     */
-    public function saveSearchResult($id)
-    {
-        $model = $this->modelClass;
-        $table = TableRegistry::get($this->_tableSearch);
-
-        $search = $table->get($id);
-
-        $this->set('searchName', $search->name);
-
-        $content = json_decode($search->content, true);
-        $this->set('entities', $content['result']);
-
-        // get listing fields
-        if (isset($content['display_columns'])) {
-            $listingFields = $content['display_columns'];
-        } else {
-            $listingFields = $this->SavedSearches->getListingFields($model);
-        }
-
-        $this->set('listingFields', $listingFields);
-
-        $this->render($this->_elementSavedResult);
+        return $this->redirect(['action' => 'search', $id]);
     }
 
     /**
