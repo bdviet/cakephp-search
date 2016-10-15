@@ -576,7 +576,8 @@ class SavedSearchesTable extends Table
                     );
                 }
                 $sqlOperator = $this->_sqlOperators[$type][$operator]['operator'];
-                $key = $fieldName . ' ' . $sqlOperator;
+                list(, $prefix) = pluginSplit($model);
+                $key = $prefix . '.' . $fieldName . ' ' . $sqlOperator;
 
                 if (!array_key_exists($key, $result)) {
                     $result[$key] = $value;
