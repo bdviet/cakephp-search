@@ -4,7 +4,8 @@
         <?php for ($x = 0; $x < $gridRows; $x++) : ?>
             <?php if (!empty($savedSearches[$i][$x])) : ?>
                 <?= $this->element('Search.search_results', [
-                    'search_name' => $savedSearches[$i][$x]['search_name'],
+                    'searchType' => $savedSearches[$i][$x]['search_type'],
+                    'searchName' => $savedSearches[$i][$x]['search_name'],
                     'model' => $savedSearches[$i][$x]['model'],
                     'entities' => $savedSearches[$i][$x]['entities']['result'],
                     'listingFields' => $savedSearches[$i][$x]['entities']['display_columns']

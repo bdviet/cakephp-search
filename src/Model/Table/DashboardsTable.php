@@ -118,6 +118,7 @@ class DashboardsTable extends Table
 
             $result[] = [
                 'search_name' => $savedSearch->name,
+                'search_type' => $savedSearch->type,
                 'model' => $savedSearch->model,
                 'entities' => $search['entities'],
                 'row' => $savedSearch->_joinData->row,
