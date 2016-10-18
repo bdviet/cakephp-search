@@ -28,6 +28,11 @@ var view_search_result = view_search_result || {};
         this.datatable();
     };
 
+    /**
+     * Initialize datatables.
+     *
+     * @return {void}
+     */
     ViewSearchResult.prototype.datatable = function() {
         var that = this;
         console.log(that.sort_by_field);
