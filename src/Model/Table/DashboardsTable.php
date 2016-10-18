@@ -99,30 +99,22 @@ class DashboardsTable extends Table
                         json_decode($savedSearch->content, true),
                         true
                     );
-                    $search['entities'] = $search['entities'];
+                    $savedSearch->entities = $search['entities'];
                     break;
 
                 case $this->SavedSearches->getResultType():
                     $search = $this->SavedSearches->get($savedSearch->id);
-                    $search['entities'] = json_decode($search->content, true);
+                    $savedSearch->entities = json_decode($search->content, true);
                     break;
             }
 
-            /*
-             * filter out skipped display fields
-             */
-            $search['entities']['display_columns'] = array_diff(
-                $search['entities']['display_columns'],
+            // filter out skipped display fields
+            $savedSearch->entities['display_columns'] = array_diff(
+                $savedSearch->entities['display_columns'],
                 $this->SavedSearches->getSkippedDisplayFields()
             );
 
-            $result[] = [
-                'search_name' => $savedSearch->name,
-                'model' => $savedSearch->model,
-                'entities' => $search['entities'],
-                'row' => $savedSearch->_joinData->row,
-                'column' => $savedSearch->_joinData->column
-            ];
+            $result[] = $savedSearch;
         }
 
         return $result;
