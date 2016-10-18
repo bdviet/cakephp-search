@@ -19,11 +19,11 @@ class DashboardCell extends Cell
         $gridColumns = count(Configure::read('Search.dashboard.columns'));
         $result = [];
         foreach ($savedSearches as $savedSearch) {
-            if ($savedSearch['row'] + 1 > $gridRows) {
-                $gridRows = $savedSearch['row'] + 1;
+            if ($savedSearch->_joinData->row + 1 > $gridRows) {
+                $gridRows = $savedSearch->_joinData->row + 1;
             }
-            $result[$savedSearch['column']][$savedSearch['row']] = $savedSearch;
-            ksort($result[$savedSearch['column']]);
+            $result[$savedSearch->_joinData->column][$savedSearch->_joinData->row] = $savedSearch;
+            ksort($result[$savedSearch->_joinData->column]);
         }
         ksort($result);
 
