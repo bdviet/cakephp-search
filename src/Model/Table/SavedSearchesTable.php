@@ -171,10 +171,10 @@ class SavedSearchesTable extends Table
             'ends_with' => 'Ends with'
         ],
         'phone' => [
-            'contains' => ['operator' => 'LIKE', 'pattern' => '%{{value}}%'],
-            'not_contains' => ['operator' => 'NOT LIKE', 'pattern' => '%{{value}}%'],
-            'starts_with' => ['operator' => 'LIKE', 'pattern' => '{{value}}%'],
-            'ends_with' => ['operator' => 'LIKE', 'pattern' => '%{{value}}']
+            'contains' => 'Contains',
+            'not_contains' => 'Does not contain',
+            'starts_with' => 'Starts with',
+            'ends_with' => 'Ends with'
         ],
         'url' => [
             'contains' => 'Contains',
