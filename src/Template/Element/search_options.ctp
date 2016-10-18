@@ -11,6 +11,8 @@ foreach ($searchFields as $k => $v) {
         $availableColumns[$k] = $v;
     }
 }
+// sort display columns based on listing fields order
+$displayColumns = array_merge(array_flip($listingFields), $displayColumns);
 ?>
     <div class="row">
         <div class="col-md-4">
