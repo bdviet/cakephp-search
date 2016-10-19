@@ -21,7 +21,9 @@
                     </div>
                 </div>
             </div>
-            <?= $this->cell('Search.Dashboard::savedSearches', [$dashboard]); ?>
+            <div class="dashboard-saved-searches">
+                <?= $this->cell('Search.Dashboard::savedSearches', [$dashboard]); ?>
+            </div>
         </fieldset>
         <?= $this->Form->button(__('Submit'), ['class' => 'btn btn-primary']) ?>
         <?= $this->Form->end() ?>
