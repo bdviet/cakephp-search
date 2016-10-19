@@ -1,4 +1,4 @@
-.dropable-area {
+.droppable-area {
     min-height: 100px;
     list-style-type: none;
     margin: 0;
@@ -18,7 +18,7 @@
     margin-top: 50px;
 }
 
-.dropable-area li {
+.droppable-area li {
     margin: 5px;
     padding: 0 0 50px 0;
     font-size: 14px;
@@ -29,17 +29,17 @@
     cursor: pointer;
 }
 
-.dropable-area.savetrue li {
+.droppable-area.savetrue li {
     float: none;
     width: auto;
 }
 
-.dropable-area.savetrue li .header,
-.dropable-area.savetrue li .content {
+.droppable-area.savetrue li .header,
+.droppable-area.savetrue li .content {
     padding-left: 15px;
 }
 
-.dropable-area li .header {
+.droppable-area li .header {
     color: #fff;
     text-shadow: #000 0 1px;
     box-shadow: 5px;
