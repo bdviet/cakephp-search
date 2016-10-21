@@ -26,7 +26,7 @@ class DashboardsController extends AppController
         }
     }
 
-    /**
+	/**
      * View method
      *
      * @param string|null $id Dashboard id.
@@ -35,20 +35,35 @@ class DashboardsController extends AppController
      */
     public function view($id = null)
     {
+        $dashboard = [];
+        $widgets = [];
+
         $dashboard = $this->Dashboards->get($id, [
-            'contain' => ['Roles', 'SavedSearches']
+            'contain' => ['Widgets','Roles','SavedSearches']
         ]);
 
-        if (method_exists($this, '_checkRoleAccess')) {
+        if( method_exists($this, '_checkRoleAccess') ) {
             $this->_checkRoleAccess($dashboard->role_id);
         }
 
-        $savedSearches = $this->Dashboards->prepareSavedSearches($dashboard->saved_searches, $this->Auth->user());
+        if( !empty($dashboard->widgets) ) {
+            foreach($dashboard->widgets as $w) {
+                $widgets[] = WidgetFactory::create(
+                    $w,
+                    $this->request,
+                    $this->response,
+                    $this->eventManager()
+                );
+            }
+        }
 
-        $this->set('savedSearches', $savedSearches);
+        $this->set('widgets', $widgets);
+        $this->set('user', $this->Auth->user());
         $this->set('dashboard', $dashboard);
         $this->set('_serialize', ['dashboard']);
     }
+
+
 
     /**
      * Add method
