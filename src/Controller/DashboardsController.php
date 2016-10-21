@@ -39,7 +39,7 @@ class DashboardsController extends AppController
         $widgets = [];
 
         $dashboard = $this->Dashboards->get($id, [
-            'contain' => ['Widgets','Roles','SavedSearches']
+            'contain' => ['Widgets','Roles']
         ]);
 
         if( method_exists($this, '_checkRoleAccess') ) {
