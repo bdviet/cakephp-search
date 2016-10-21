@@ -22,7 +22,14 @@ use Cake\Event\Event;
 </div>
 
 <div class="row">
-    <?= $this->cell('Search.Dashboard', [$savedSearches]); ?>
+    <?php
+    if( !empty($widgets) ) {
+        foreach( $widgets as $widget) {
+            echo $this->cell("Search.Widget::{$widget->widgetDisplayMethod}" , [[$widget], ['user' => $user]]);
+        }
+
+    }
+    ?>
 </div>
 
 <?= $this->element('Search.common_js_libs'); ?>
