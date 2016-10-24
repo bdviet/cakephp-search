@@ -112,8 +112,7 @@ class WidgetCell extends Cell
     * In this case we have same displayMethod for all
     * the widgets, when dealing with Drag/Drop jQuery plugin
     */
-    public function displayDroppableBlock(array $widgets) {
-
-
+    public function displayDroppableBlock(array $widget) {
+        $this->set('widget', $widget);
     }
 }
