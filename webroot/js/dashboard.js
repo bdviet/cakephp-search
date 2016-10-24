@@ -48,22 +48,22 @@ var dashboard = dashboard || {};
                 $form.append(
                     $('<input>')
                        .attr('type', 'hidden')
-                       .attr('name', 'saved_searches[_ids][]').val($(e).data('id'))
+                       .attr('name', 'widgets[widget_id][]').val($(e).data('id'))
                 );
                 $form.append(
                     $('<input>')
                         .attr('type','hidden')
-                        .attr('name','saved_searches[_types][]').val( $(e).data('type'))
+                        .attr('name','widgets[widget_type][]').val( $(e).data('type'))
                 );
                 $form.append(
                     $('<input>')
                        .attr('type', 'hidden')
-                       .attr('name', 'saved_searches[_rows][]').val(k)
+                       .attr('name', 'widgets[row][]').val(k)
                 );
                 $form.append(
                     $('<input>')
                        .attr('type', 'hidden')
-                       .attr('name', 'saved_searches[_columns][]').val($(c).data('column'))
+                       .attr('name', 'widgets[column][]').val($(c).data('column'))
                 );
             });
         });

@@ -11,7 +11,7 @@ $listingFields = explode(',',$widgetData['info']['columns']);
             <div class="col-xs-12">
                 <div class="panel panel-default">
                     <div class="panel-heading">
-                        <h3 class="panel-title"><strong> <?= $widgetData['info']['title'] ?></strong></h3>
+                        <h3 class="panel-title"><strong> <?= $widgetData['info']['name'] ?></strong></h3>
                     </div> <!-- panel-heading -->
 
                     <div class="panel-body">

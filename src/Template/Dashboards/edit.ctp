@@ -1,6 +1,5 @@
 <?= $this->Html->css('Search.dashboard', ['block' => 'cssBottom']) ?>
 <?= $this->Html->script('Search.dashboard', ['block' => 'scriptBottom']) ?>
-
 <div class="row">
     <div class="col-xs-12">
         <?= $this->Form->create($dashboard, ['id' => 'dashboardForm']) ?>
@@ -22,8 +21,34 @@
                 </div>
             </div>
             <div class="dashboard-saved-searches">
-                <?= $this->cell('Search.Dashboard::savedSearches', [$dashboard]); ?>
+            <div class="row">
+            <?php foreach (array_keys($dashboardLayout) as $col) : ?>
+                <div class="col-xs-6">
+                    <p class="h3 text-center"><?= $columns[$col] ?></p>
+                    <ul class="savetrue droppable-area" data-column=<?= $col ?>>
+                    <?php if (!empty($savedWidgetData)) : ?>
+                        <?php foreach($savedWidgetData as $k => $widget) :?>
+                            <?php if($widget['data']['column'] == $col):?>
+                                <?= $this->cell('Search.Widget::displayDroppableBlock', [$widget]) ?>
+                            <?php endif; ?>
+                        <?php endforeach;?>
+                    <?php endif; ?>
+                    </ul>
+                </div>
+            <?php endforeach; ?>
             </div>
+        </div>
+        <div class="row">
+            <div class="col-xs-12">
+                <p class="h3 text-center saved-searches-title"><?= __('Widgets') ?></p>
+                <ul class="list-inline droppable-area saved-searches-area">
+                    <?php foreach ($widgets as $widget) : ?>
+                        <?php echo $this->cell('Search.Widget::displayDroppableBlock', [$widget]);?>
+                    </li>
+                    <?php endforeach; ?>
+                </ul>
+            </div>
+        </div>
         </fieldset>
         <?= $this->Form->button(__('Submit'), ['class' => 'btn btn-primary']) ?>
         <?= $this->Form->end() ?>
