@@ -1,7 +1,6 @@
 <?php
 //humanizing Column Heads
 use Cake\Utility\Inflector;
-
 //getting column heads
 $listingFields = explode(',',$widgetData['info']['columns']);
 ?>

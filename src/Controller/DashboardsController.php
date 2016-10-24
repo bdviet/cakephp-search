@@ -43,7 +43,9 @@ class DashboardsController extends AppController
         $widgets = [];
 
         $dashboard = $this->Dashboards->get($id, [
-            'contain' => ['Widgets','Roles']
+            'contain' => [
+                'Roles', 'Widgets'
+            ],
         ]);
 
         if( method_exists($this, '_checkRoleAccess') ) {
@@ -61,6 +63,7 @@ class DashboardsController extends AppController
             }
         }
 
+        $this->set('columns', count(Configure::read('Search.dashboard.columns')));
         $this->set('widgets', $widgets);
         $this->set('user', $this->Auth->user());
         $this->set('dashboard', $dashboard);
