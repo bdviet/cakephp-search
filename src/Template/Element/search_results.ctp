@@ -2,13 +2,34 @@
 use Cake\Event\Event;
 use Cake\Utility\Inflector;
 
-$title = [
-    'main' => $this->name,
-    'sub' => __('search results')
-];
-if (!empty($searchName) && !empty($searchType)) {
-    $title['main'] = $searchName;
-    $title['sub'] = '(' . __('from saved search') . ' ' . $searchType . ')';
+if (!empty($savedSearch)) {
+    $searchId = $savedSearch->id;
+    $searchName = $savedSearch->name;
+    $model = $savedSearch->model;
+    $entities = $savedSearch->entities['result'];
+    $listingFields = $savedSearch->entities['display_columns'];
+}
+
+$title = $this->name;
+if (!empty($searchName)) {
+    $title = $searchName;
+}
+
+$url = null;
+if (!empty($model) && !empty($searchId)) {
+    list($plugin, $controller) = pluginSplit($model);
+    $url = [
+        'plugin' => $plugin,
+        'controller' => $controller,
+        'action' => 'search',
+        $searchId
+    ];
+} elseif (!empty($searchId)) {
+    $url = $this->request->here;
+}
+
+if (!empty($url)) {
+    $title = '<a href="' . $this->Url->build($url) . '">' . $title . '</a>';
 }
 ?>
 
@@ -18,7 +39,7 @@ if (!empty($searchName) && !empty($searchType)) {
         <div class="panel panel-default">
             <div class="panel-heading">
                 <h3 class="panel-title">
-                    <strong><?= $title['main']; ?></strong> <?= $title['sub'] ?>:
+                    <strong><?= $title; ?></strong>
                 </h3>
             </div>
             <div class="panel-body">

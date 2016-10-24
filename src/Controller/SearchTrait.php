@@ -80,7 +80,7 @@ trait SearchTrait
             if (!is_null($id)) {
                 $search = $table->get($id);
                 $this->set('searchName', $search->name);
-                $this->set('searchType', $search->type);
+                $this->set('searchId', $search->id);
                 $this->request->data = json_decode($search->content, true);
             }
 
