@@ -79,8 +79,7 @@ trait SearchTrait
             // if id of saved search is provided, fetch search conditions from there
             if (!is_null($id)) {
                 $search = $table->get($id);
-                $this->set('searchName', $search->name);
-                $this->set('searchId', $search->id);
+                $this->set('savedSearch', $search);
                 $this->request->data = json_decode($search->content, true);
             }
 
