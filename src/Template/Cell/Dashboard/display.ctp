@@ -3,13 +3,7 @@
     <?php if (!empty($savedSearches[$i])) : ?>
         <?php for ($x = 0; $x < $gridRows; $x++) : ?>
             <?php if (!empty($savedSearches[$i][$x])) : ?>
-                <?= $this->element('Search.search_results', [
-                    'searchType' => $savedSearches[$i][$x]->type,
-                    'searchName' => $savedSearches[$i][$x]->name,
-                    'model' => $savedSearches[$i][$x]->model,
-                    'entities' => $savedSearches[$i][$x]->entities['result'],
-                    'listingFields' => $savedSearches[$i][$x]->entities['display_columns']
-                ]); ?>
+                <?= $this->element('Search.search_results', ['savedSearch' => $savedSearches[$i][$x]]); ?>
             <?php endif; ?>
         <?php endfor; ?>
     <?php endif; ?>
