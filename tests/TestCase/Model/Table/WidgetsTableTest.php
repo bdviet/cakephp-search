@@ -27,8 +27,6 @@ class WidgetsTableTest extends TestCase
         'plugin.search.widgets',
         'plugin.search.dashboards',
         'plugin.search.saved_searches',
-        'plugin.search.users',
-        'plugin.search.dashboards_saved_searches'
     ];
 
     /**
