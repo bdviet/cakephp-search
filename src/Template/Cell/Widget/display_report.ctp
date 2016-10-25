@@ -37,6 +37,11 @@ $listingFields = explode(',',$widgetData['info']['columns']);
                             </table>
                         </div> <!-- table-responsive -->
                         <?php endif; ?>
+
+                        <?php if ($widgetData['info']['renderAs'] == 'barChart') : ?>
+                            //bar chart
+
+                        <?php endif; ?>
                     </div> <!-- panel-body -->
 
                 </div> <!-- panel-default -->
