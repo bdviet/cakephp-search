@@ -82,42 +82,8 @@ class DashboardsController extends AppController
 
         $dashboard = $this->Dashboards->newEntity();
 
-        $widgets = [];
-        $allSavedSearches = $this->Dashboards->SavedSearches->find('all')
-            ->where(['SavedSearches.name IS NOT' => null])
-            ->order(['SavedSearches.model', 'SavedSearches.name']);
-
-        $allSavedSearches = $this->Dashboards->SavedSearches
-            ->find()
-            ->select()
-            ->where(['SavedSearches.name IS NOT' => null])
-            ->hydrate(false)
-            ->indexBy('id')
-            ->toArray();
-
-        if( !empty($allSavedSearches) ) {
-            foreach($allSavedSearches as $savedSearch) {
-                $widgets[] = [
-                    'type' => 'saved_search',
-                    'data' => $savedSearch
-                ];
-            }
-        }
-
-        $event = new Event('Search.Report.getReports', $this);
-        $this->eventManager()->dispatch($event);
-        $reports = $event->result;
-
-        if( !empty($reports) ) {
-            foreach($reports as $model => $items) {
-                foreach($items as $slug => $report) {
-                    $widgets[] = [
-                        'type' => 'report',
-                        'data' => array_merge( ['model' => $model], $report)
-                    ];
-                }
-            }
-        }
+        $widgetsTable = TableRegistry::get('Search.Widgets');
+        $widgets = $widgetsTable->getWidgets();
 
         $columns = Configure::read('Search.dashboard.columns');
         $dashboardLayout = array_fill(0, count(Configure::read('Search.dashboard.columns')), []);
@@ -156,7 +122,7 @@ class DashboardsController extends AppController
                     foreach($widgets as $w) {
                         $widget = $widgetTable->newEntity();
                         $widget = $widgetTable->patchEntity($widget, $w);
-                        $resultedWidgets = $widgetTable->save($widget);
+                        $widgetTable->save($widget);
                     }
                 }
 
@@ -181,7 +147,8 @@ class DashboardsController extends AppController
      */
     public function edit($id = null)
     {
-        $widgets = [];
+        $widgets = $savedWidgetData = [];
+
         $columns = Configure::read('Search.dashboard.columns');
         $dashboardLayout = array_fill(0, count(Configure::read('Search.dashboard.columns')), []);
 
@@ -189,47 +156,11 @@ class DashboardsController extends AppController
             'contain' => ['Widgets']
         ]);
 
-        $allSavedSearches = $this->Dashboards->SavedSearches->find('all')
-            ->where(['SavedSearches.name IS NOT' => null])
-            ->order(['SavedSearches.model', 'SavedSearches.name']);
-
-        $allSavedSearches = $this->Dashboards->SavedSearches
-            ->find()
-            ->select()
-            ->where(['SavedSearches.name IS NOT' => null])
-            ->hydrate(false)
-            ->indexBy('id')
-            ->toArray();
-
-        if( !empty($allSavedSearches) ) {
-            foreach($allSavedSearches as $savedSearch) {
-                $widgets[] = [
-                    'type' => 'saved_search',
-                    'data' => $savedSearch
-                ];
-            }
-        }
-
-        $event = new Event('Search.Report.getReports', $this);
-        $this->eventManager()->dispatch($event);
-        $reports = $event->result;
-
-        if( !empty($reports) ) {
-            foreach($reports as $model => $items) {
-                foreach($items as $slug => $report) {
-                    $widgets[] = [
-                        'type' => 'report',
-                        'data' => array_merge( ['model' => $model], $report)
-                    ];
-                }
-            }
-        }
-
         $dashboardWidgets = $dashboard->widgets;
-        $savedWidgetData = [];
-
-        $saved_widget_ids = array_map(function($item) { return $item['widget_id']; }, $dashboard->widgets);
         unset($dashboard->widgets);
+
+        $widgetsTable = TableRegistry::get('Search.Widgets');
+        $widgets = $widgetsTable->getWidgets();
 
         foreach($widgets as $k => $w ) {
             foreach($dashboardWidgets as $dWidget) {
@@ -293,7 +224,7 @@ class DashboardsController extends AppController
 
         $roles = $this->Dashboards->Roles->find('list', ['limit' => 200]);
 
-        $this->set(compact('dashboard', 'roles','widgets','savedWidgetData','dashboardLayout','columns','saved_widget_ids'));
+        $this->set(compact('dashboard', 'roles','widgets','savedWidgetData','dashboardLayout','columns'));
         $this->set('_serialize', ['dashboard']);
     }
 

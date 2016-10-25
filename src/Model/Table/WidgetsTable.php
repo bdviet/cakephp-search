@@ -1,9 +1,11 @@
 <?php
 namespace Search\Model\Table;
 
+use Cake\Event\Event;
 use Cake\ORM\Query;
 use Cake\ORM\RulesChecker;
 use Cake\ORM\Table;
+use Cake\ORM\TableRegistry;
 use Cake\Validation\Validator;
 
 /**
@@ -102,5 +104,55 @@ class WidgetsTable extends Table
         $rules->add($rules->existsIn(['widget_id'], 'Widgets'));
 
         return $rules;
+    }
+
+    /**
+     * getWidgets method
+     * @return array $result containing all widgets
+     */
+    public function getWidgets()
+    {
+        $result = [];
+
+        $dashboardsTable = TableRegistry::get('Search.Dashboards');
+
+        $allSavedSearches = $dashboardsTable->SavedSearches->find('all')
+            ->where(['SavedSearches.name IS NOT' => null])
+            ->order(['SavedSearches.model', 'SavedSearches.name']);
+
+        $widgets[] = [
+            'type' => 'saved_search',
+            'data' => $dashboardsTable->SavedSearches
+                        ->find()
+                        ->select()
+                        ->where(['SavedSearches.name IS NOT' => null])
+                        ->hydrate(false)
+                        ->indexBy('id')
+                        ->toArray()
+        ];
+
+        $event = new Event('Search.Report.getReports', $this);
+        $this->eventManager()->dispatch($event);
+
+        $widgets[] = [
+            'type' => 'report',
+            'data' => array_shift($event->result)
+        ];
+
+        //assembling all widgets in one
+        if (!empty($widgets)) {
+            foreach ($widgets as $k => $widgetsGroup) {
+                if (!empty($widgetsGroup['data']) ) {
+                    foreach ($widgetsGroup['data'] as $widget) {
+                        array_push($result, [
+                            'type' => $widgetsGroup['type'],
+                            'data' => $widget
+                        ]);
+                    }
+                }
+            }
+        }
+
+        return $result;
     }
 }
