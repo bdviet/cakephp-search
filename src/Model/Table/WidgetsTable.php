@@ -142,7 +142,7 @@ class WidgetsTable extends Table
         //assembling all widgets in one
         if (!empty($widgets)) {
             foreach ($widgets as $k => $widgetsGroup) {
-                if (!empty($widgetsGroup['data']) ) {
+                if (!empty($widgetsGroup['data'])) {
                     foreach ($widgetsGroup['data'] as $widget) {
                         array_push($result, [
                             'type' => $widgetsGroup['type'],

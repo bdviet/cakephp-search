@@ -1,12 +1,11 @@
 <?php
 namespace Search\View\Cell;
 
+use Cake\Datasource\ConnectionManager;
 use Cake\ORM\Table;
 use Cake\ORM\TableRegistry;
-use Search\Model\Entity\SavedSearch;
-
 use Cake\View\Cell;
-use Cake\Datasource\ConnectionManager;
+use Search\Model\Entity\SavedSearch;
 
 /**
  * Widget cell
@@ -25,13 +24,20 @@ class WidgetCell extends Cell
     /**
      * Default display method.
      *
+     * @param array $widgets passed
      * @return void
      */
     public function display(array $widgets)
     {
-
     }
 
+    /**
+     * displayReport method for widgets with type 'report'
+     *
+     * @param array $widgets with all widgets
+     * @param array $options with mixed options
+     * @return void
+     */
     public function displayReport(array $widgets, array $options)
     {
         $renderData = [];
@@ -46,11 +52,11 @@ class WidgetCell extends Cell
         $sth = $dbh->execute($widgetData['info']['query']);
         $resultSet = $sth->fetchAll('assoc');
 
-        if( !empty($resultSet) ) {
-            foreach($resultSet as $k => $row) {
+        if (!empty($resultSet)) {
+            foreach ($resultSet as $k => $row) {
                 $renderRow = [];
-                foreach($row as $column => $value) {
-                    if( in_array($column, $columns) ) {
+                foreach ($row as $column => $value) {
+                    if (in_array($column, $columns)) {
                         $renderRow[$column] = $value;
                     }
                 }
@@ -67,7 +73,14 @@ class WidgetCell extends Cell
     }
 
 
-    public function displaySavedSearch(array $widgets, array $options = []) {
+    /**
+     * displaySavedSearch method for widgets with type 'saved_search'
+     * @param array $widgets with all widgets
+     * @param array $options with mixed options
+     * @return void
+     */
+    public function displaySavedSearch(array $widgets, array $options = [])
+    {
         $widget = array_shift($widgets);
 
         $renderData = [];
@@ -76,9 +89,9 @@ class WidgetCell extends Cell
         //actual ORM\Entity of savedSearch
         $widgetData = $widget->widgetData;
 
-       $savedSearchTable = TableRegistry::get('Search.SavedSearches');
+        $savedSearchTable = TableRegistry::get('Search.SavedSearches');
 
-        switch($widgetData->type) {
+        switch ($widgetData->type) {
             case $savedSearchTable->getCriteriaType():
                 $search = $savedSearchTable->search(
                     $widgetData->model,
@@ -93,13 +106,10 @@ class WidgetCell extends Cell
                 break;
         }
 
-
-
         $widgetData->entities['display_columns'] = array_diff(
             $widgetData->entities['display_columns'],
             $savedSearchTable->getSkippedDisplayFields()
         );
-
 
         $this->set('widget', $widget);
         $this->set('widgetData', $widget->widgetData);
@@ -109,10 +119,14 @@ class WidgetCell extends Cell
 
 
     /**
-    * In this case we have same displayMethod for all
-    * the widgets, when dealing with Drag/Drop jQuery plugin
-    */
-    public function displayDroppableBlock(array $widget) {
+     * In this case we have same displayMethod for all
+     * the widgets, when dealing with Drag/Drop jQuery plugin
+     *
+     * @param array $widget data
+     * @return void
+     */
+    public function displayDroppableBlock(array $widget)
+    {
         $this->set('widget', $widget);
     }
 }

@@ -41,7 +41,7 @@ class DashboardsTable extends Table
 
         $this->hasMany('Widgets', [
             'foreignKey' => 'dashboard_id',
-            'className'  => 'Search.Widgets'
+            'className' => 'Search.Widgets'
         ]);
 
         $this->belongsToMany('SavedSearches', [
@@ -121,6 +121,7 @@ class DashboardsTable extends Table
 
             $result[] = $savedSearch;
         }
+
         return $result;
     }
 
