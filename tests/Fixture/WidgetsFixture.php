@@ -50,12 +50,12 @@ class WidgetsFixture extends TestFixture
     public $records = [
         [
             'id' => '57584f6e-9b36-11e6-a1ce-c434b5ee89e3',
-            'dashboard_id' => '418fcd5a-05aa-4d5e-a20c-4edf2ab8821f',
+            'dashboard_id' => 'Lorem Ipsum H',
             'widget_id' => 'Lorem Ipsum',
             'widget_type' => 'report',
             'widget_options' => 'Lorem Ipsum',
-            'column' => 0,
-            'row' => 0,
+            'column' => 1,
+            'row' => 1,
             'created' => '2016-10-19 12:08:59',
             'modified' => '2016-10-19 12:08:59',
             'trashed' => null
