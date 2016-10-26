@@ -38,10 +38,11 @@ class DashboardsTable extends Table
             'foreignKey' => 'role_id',
             'className' => 'Search.Roles'
         ]);
-
-        $this->hasMany('Widgets', [
+        $this->belongsToMany('SavedSearches', [
             'foreignKey' => 'dashboard_id',
-            'className' => 'Search.Widgets'
+            'targetForeignKey' => 'saved_search_id',
+            'joinTable' => 'dashboards_saved_searches',
+            'className' => 'Search.SavedSearches'
         ]);
     }
 
@@ -106,6 +107,7 @@ class DashboardsTable extends Table
                     $savedSearch->entities = json_decode($search->content, true);
                     break;
             }
+
             // filter out skipped display fields
             $savedSearch->entities['display_columns'] = array_diff(
                 $savedSearch->entities['display_columns'],
