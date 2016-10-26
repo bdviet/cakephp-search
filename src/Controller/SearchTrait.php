@@ -127,7 +127,7 @@ trait SearchTrait
 
         $savedSearches = $table->getSavedSearches([$this->Auth->user('id')], [$model]);
 
-        $this->set(compact('searchFields', 'searchOperators', 'savedSearches', 'listingFields'));
+        $this->set(compact('searchFields', 'searchOperators', 'savedSearches', 'listingFields', 'model'));
 
         $this->render($this->_elementSearch);
     }

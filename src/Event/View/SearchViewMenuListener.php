@@ -31,20 +31,22 @@ class SearchViewMenuListener implements EventListenerInterface
     /**
      * Method that adds elements to index View actions menu.
      *
-     * @param  \Cake\Event\Event      $event   Event object
-     * @param  \Cake\Network\Request  $request Request object
-     * @param  \Cake\ORM\Entity|array $entity  Entity
+     * @param  \Cake\Event\Event      $event  Event object
+     * @param  \Cake\ORM\Entity|array $entity Entity
+     * @param  string                 $model  Model name
      * @return void
      */
-    public function getIndexMenuActions(Event $event, Request $request, $entity)
+    public function getIndexMenuActions(Event $event, $entity, $model)
     {
         if ($entity instanceof Entity) {
             $entity = $entity->toArray();
         }
 
+        list($plugin, $controller) = pluginSplit($model);
+
         $btnView = $event->subject()->Html->link(
             '',
-            ['plugin' => $request->plugin, 'controller' => $request->controller, 'action' => 'view', $entity['id']],
+            ['plugin' => $plugin, 'controller' => $controller, 'action' => 'view', $entity['id']],
             ['title' => __('View'), 'class' => 'btn btn-default glyphicon glyphicon-eye-open']
         );
 
@@ -52,8 +54,8 @@ class SearchViewMenuListener implements EventListenerInterface
             [
                 'label' => $btnView,
                 'url' => [
-                    'plugin' => $request->plugin,
-                    'controller' => $request->controller,
+                    'plugin' => $plugin,
+                    'controller' => $controller,
                     'action' => 'view',
                     $entity['id']
                 ],
