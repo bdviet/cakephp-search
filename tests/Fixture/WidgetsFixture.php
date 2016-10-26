@@ -26,7 +26,7 @@ class WidgetsFixture extends TestFixture
         'row' => ['type' => 'integer', 'length' => 11, 'unsigned' => false, 'null' => false, 'default' => null, 'comment' => '', 'precision' => null, 'autoIncrement' => null],
         'created' => ['type' => 'datetime', 'length' => null, 'null' => false, 'default' => null, 'comment' => '', 'precision' => null],
         'modified' => ['type' => 'datetime', 'length' => null, 'null' => false, 'default' => null, 'comment' => '', 'precision' => null],
-        'trashed' => ['type' => 'datetime', 'length' => null, 'null' => false, 'default' => null, 'comment' => '', 'precision' => null],
+        'trashed' => ['type' => 'datetime', 'length' => null, 'null' => true, 'default' => null, 'comment' => '', 'precision' => null],
         '_indexes' => [
             'dashboard_id' => ['type' => 'index', 'columns' => ['dashboard_id'], 'length' => []],
             'widget_id' => ['type' => 'index', 'columns' => ['widget_id'], 'length' => []],
@@ -58,7 +58,7 @@ class WidgetsFixture extends TestFixture
             'row' => 0,
             'created' => '2016-10-19 12:08:59',
             'modified' => '2016-10-19 12:08:59',
-            'trashed' => '2016-10-19 12:08:59'
+            'trashed' => null
         ],
     ];
 }
