@@ -1,6 +1,7 @@
 <?php
 namespace Search\Model\Table;
 
+use Cake\Core\Configure;
 use Cake\Event\Event;
 use Cake\ORM\Query;
 use Cake\ORM\RulesChecker;
@@ -157,5 +158,31 @@ class WidgetsTable extends Table
         }
 
         return $result;
+    }
+
+    /**
+     * sortWidgets method
+     * @param array $data objects with widgetObject param
+     * @return array $result sorted based on columns/rows
+     */
+    public function sortWidgets(array $data)
+    {
+        $widgets = [];
+
+        $gridRows = 0;
+        $gridColumns = count(Configure::read('Search.dashboard.columns'));
+
+        foreach ($data as $w) {
+            if ($w->widgetObject->row + 1 > $gridRows) {
+                $gridRows = $w->widgetObject->row + 1;
+            }
+
+            $widgets[$w->widgetObject->column][$w->widgetObject->row] = $w;
+            ksort($widgets[$w->widgetObject->column]);
+        }
+
+        ksort($widgets);
+
+        return compact('gridRows', 'gridColumns', 'widgets');
     }
 }

@@ -7,7 +7,6 @@ use Search\Helper\ChartHelper;
 $listingFields = explode(',',$widgetData['info']['columns']);
 ?>
 <div class='dashboard-widget-display_report'>
-    <div class="col-md-6">
         <div class="row">
             <div class="col-xs-12">
                 <div class="panel panel-default">
@@ -112,5 +111,4 @@ $listingFields = explode(',',$widgetData['info']['columns']);
 
             </div> <!-- col-xs-12 -->
         </div> <!-- row -->
-    </div> <!-- col-md-6 -->
 </div> <!-- dashboard-widget-display_report -->

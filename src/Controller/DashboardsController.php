@@ -62,8 +62,12 @@ class DashboardsController extends AppController
             }
         }
 
-        $this->set('columns', count(Configure::read('Search.dashboard.columns')));
-        $this->set('widgets', $widgets);
+        $widgetsTable = TableRegistry::get('Search.Widgets');
+        $sortedResults = $widgetsTable->sortWidgets($widgets);
+
+        $this->set('columns', $sortedResults['gridColumns']);
+        $this->set('rows', $sortedResults['gridRows']);
+        $this->set('widgets', $sortedResults['widgets']);
         $this->set('user', $this->Auth->user());
         $this->set('dashboard', $dashboard);
         $this->set('_serialize', ['dashboard']);
