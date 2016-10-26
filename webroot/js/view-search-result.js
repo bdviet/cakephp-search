@@ -35,8 +35,6 @@ var view_search_result = view_search_result || {};
      */
     ViewSearchResult.prototype.datatable = function() {
         var that = this;
-        console.log(that.sort_by_field);
-        console.log(that.sort_by_order);
         $(this.table_id).DataTable({
             paging: false,
             searching: false,
