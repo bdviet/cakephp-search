@@ -44,7 +44,6 @@ require_once CORE_PATH . 'config/bootstrap.php';
 
 date_default_timezone_set('UTC');
 mb_internal_encoding('UTF-8');
-
 Configure::write('debug', true);
 Configure::write('App', [
     'namespace' => 'App',
@@ -97,6 +96,11 @@ $config = [
 
 // Use the test connection for 'debug_kit' as well.
 ConnectionManager::config('test', $config);
+
+Configure::write('Datasources.default.quoteIdentifiers', true);
+Configure::write('Datasources.test.quoteIdentifiers', true);
+
+
 #ConnectionManager::config('test_debug_kit', $config);
 
 
