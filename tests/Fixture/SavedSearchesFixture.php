@@ -26,7 +26,7 @@ class SavedSearchesFixture extends TestFixture
         'content' => ['type' => 'text', 'length' => null, 'null' => false, 'default' => null, 'comment' => '', 'precision' => null],
         'created' => ['type' => 'datetime', 'null' => false],
         'modified' => ['type' => 'datetime', 'null' => false],
-        'trashed' => ['type' => 'datetime', 'null' => false],
+        'trashed' => ['type' => 'datetime', 'null' => true],
         '_constraints' => [
             'primary' => ['type' => 'primary', 'columns' => ['id'], 'length' => []],
         ],
@@ -53,7 +53,8 @@ class SavedSearchesFixture extends TestFixture
             'content' => 'Lorem ipsum dolor sit amet, aliquet feugiat. Convallis morbi fringilla gravida, phasellus feugiat dapibus velit nunc, pulvinar eget sollicitudin venenatis cum nullam, vivamus ut a sed, mollitia lectus. Nulla vestibulum massa neque ut et, id hendrerit sit, feugiat in taciti enim proin nibh, tempor dignissim, rhoncus duis vestibulum nunc mattis convallis.',
             'created' => '2016-07-01 10:39:23',
             'modified' => '2016-07-01 10:41:31',
-            'trashed' => '0000-00-00 00:00:00'
+            //'trashed' => '0000-00-00 00:00:00'
+            'trashed' => null
         ],
         [
             'id' => '1999d041-e36c-4e62-90fb-1b81718db29f',
@@ -65,7 +66,8 @@ class SavedSearchesFixture extends TestFixture
             'content' => 'Lorem ipsum dolor sit amet, aliquet feugiat. Convallis morbi fringilla gravida, phasellus feugiat dapibus velit nunc, pulvinar eget sollicitudin venenatis cum nullam, vivamus ut a sed, mollitia lectus. Nulla vestibulum massa neque ut et, id hendrerit sit, feugiat in taciti enim proin nibh, tempor dignissim, rhoncus duis vestibulum nunc mattis convallis.',
             'created' => '2016-07-01 10:39:23',
             'modified' => '2016-07-01 10:41:31',
-            'trashed' => '0000-00-00 00:00:00'
+            'trashed' => null
+            //'trashed' => '0000-00-00 00:00:00'
         ],
     ];
 }
