@@ -50,12 +50,12 @@ class WidgetsFixture extends TestFixture
     public $records = [
         [
             'id' => 'e4e3e462-a0fe-4ac5-a0b6-83744b5c65bd',
-            'dashboard_id' => 'Lorem ipsum dolor sit amet',
-            'widget_id' => 'Lorem ipsum dolor sit amet',
-            'widget_type' => 'Lorem ipsum dolor sit amet',
-            'widget_options' => 'Lorem ipsum dolor sit amet, aliquet feugiat. Convallis morbi fringilla gravida, phasellus feugiat dapibus velit nunc, pulvinar eget sollicitudin venenatis cum nullam, vivamus ut a sed, mollitia lectus. Nulla vestibulum massa neque ut et, id hendrerit sit, feugiat in taciti enim proin nibh, tempor dignissim, rhoncus duis vestibulum nunc mattis convallis.',
-            'column' => 1,
-            'row' => 1,
+            'dashboard_id' => '418fcd5a-05aa-4d5e-a20c-4edf2ab8821f',
+            'widget_id' => 'e4e3e462-a0fe-4ac5-a0b6-83744b5c65ef',
+            'widget_type' => 'report',
+            'widget_options' => '',
+            'column' => 0,
+            'row' => 0,
             'created' => '2016-10-19 12:08:59',
             'modified' => '2016-10-19 12:08:59',
             'trashed' => '2016-10-19 12:08:59'

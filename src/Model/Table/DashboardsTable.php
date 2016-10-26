@@ -43,13 +43,6 @@ class DashboardsTable extends Table
             'foreignKey' => 'dashboard_id',
             'className' => 'Search.Widgets'
         ]);
-
-        $this->belongsToMany('SavedSearches', [
-            'foreignKey' => 'dashboard_id',
-            'targetForeignKey' => 'saved_search_id',
-            'joinTable' => 'dashboards_saved_searches',
-            'className' => 'Search.SavedSearches'
-        ]);
     }
 
     /**

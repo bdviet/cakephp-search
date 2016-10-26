@@ -115,14 +115,15 @@ class WidgetsTable extends Table
         $result = [];
 
         $dashboardsTable = TableRegistry::get('Search.Dashboards');
+        $savedSearchesTable = TableRegistry::get('Search.SavedSearches');
 
-        $allSavedSearches = $dashboardsTable->SavedSearches->find('all')
+        $allSavedSearches = $savedSearchesTable->find('all')
             ->where(['SavedSearches.name IS NOT' => null])
             ->order(['SavedSearches.model', 'SavedSearches.name']);
 
         $widgets[] = [
             'type' => 'saved_search',
-            'data' => $dashboardsTable->SavedSearches
+            'data' => $savedSearchesTable
                         ->find()
                         ->select()
                         ->where(['SavedSearches.name IS NOT' => null])
