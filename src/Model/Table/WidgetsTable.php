@@ -135,10 +135,12 @@ class WidgetsTable extends Table
         $event = new Event('Search.Report.getReports', $this);
         $this->eventManager()->dispatch($event);
 
-        $widgets[] = [
-            'type' => 'report',
-            'data' => array_shift($event->result)
-        ];
+        if (!empty($event->result)) {
+            $widgets[] = [
+                'type' => 'report',
+                'data' => array_shift($event->result)
+            ];
+        }
 
         //assembling all widgets in one
         if (!empty($widgets)) {

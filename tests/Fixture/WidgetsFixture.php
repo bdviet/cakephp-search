@@ -49,9 +49,9 @@ class WidgetsFixture extends TestFixture
      */
     public $records = [
         [
-            'id' => 'e4e3e462-a0fe-4ac5-a0b6-83744b5c65bd',
+            'id' => '57584f6e-9b36-11e6-a1ce-c434b5ee89e3',
             'dashboard_id' => '418fcd5a-05aa-4d5e-a20c-4edf2ab8821f',
-            'widget_id' => 'e4e3e462-a0fe-4ac5-a0b6-83744b5c65ef',
+            'widget_id' => 'Lorem Ipsum',
             'widget_type' => 'report',
             'widget_options' => '',
             'column' => 0,

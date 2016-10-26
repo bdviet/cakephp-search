@@ -63,6 +63,17 @@ class WidgetsTableTest extends TestCase
     }
 
     /**
+     * testing find
+     * @return array $res containing array of saved_searches
+     */
+    public function testGetWidgets()
+    {
+        $res = $this->Widgets->getWidgets();
+        $this->assertNotEmpty($res);
+        $this->assertInternalType('array', $res);
+    }
+
+    /**
      * Test validationDefault method
      *
      * @return void
