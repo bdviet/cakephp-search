@@ -8,9 +8,9 @@ var dashboard = dashboard || {};
      */
     function Dashboard(options) {
         this.formId = options.hasOwnProperty('formId') ? options.formId : '#dashboardForm';
-        this.droppableId = options.hasOwnProperty('droppableId') ? options.droppableId : '.droppable-area';
+        this.dropableId = options.hasOwnProperty('dropableId') ? options.dropableId : '.dropable-area';
         this.containerId = options.hasOwnProperty('containerId') ? options.containerId : '.savetrue';
-        this.targetId = options.hasOwnProperty('targetId') ? options.targetId : '.droppable';
+        this.targetId = options.hasOwnProperty('targetId') ? options.targetId : '.dropable';
     }
 
     /**
@@ -21,15 +21,16 @@ var dashboard = dashboard || {};
     Dashboard.prototype.init = function() {
         that = this;
 
-        $(this.droppableId).sortable({
+        $(this.dropableId).sortable({
             connectWith: 'ul'
         });
 
-        $(this.droppableId).disableSelection();
+        $(this.dropableId).disableSelection();
 
         // that = this;
         $(this.formId).submit(function(e) {
             that._generateInputs();
+
             return true;
         });
     };
@@ -48,22 +49,17 @@ var dashboard = dashboard || {};
                 $form.append(
                     $('<input>')
                        .attr('type', 'hidden')
-                       .attr('name', 'widgets[widget_id][]').val($(e).data('id'))
-                );
-                $form.append(
-                    $('<input>')
-                        .attr('type','hidden')
-                        .attr('name','widgets[widget_type][]').val( $(e).data('type'))
+                       .attr('name', 'saved_searches[_ids][]').val($(e).data('id'))
                 );
                 $form.append(
                     $('<input>')
                        .attr('type', 'hidden')
-                       .attr('name', 'widgets[row][]').val(k)
+                       .attr('name', 'saved_searches[_rows][]').val(k)
                 );
                 $form.append(
                     $('<input>')
                        .attr('type', 'hidden')
-                       .attr('name', 'widgets[column][]').val($(c).data('column'))
+                       .attr('name', 'saved_searches[_columns][]').val($(c).data('column'))
                 );
             });
         });
@@ -71,9 +67,9 @@ var dashboard = dashboard || {};
 
     dashboard = new Dashboard({
         formId: '#dashboardForm',
-        droppableId: '.droppable-area',
+        dropableId: '.dropable-area',
         containerId: '.savetrue',
-        targetId: '.droppable'
+        targetId: '.dropable'
     });
 
     dashboard.init();

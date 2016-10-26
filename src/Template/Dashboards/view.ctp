@@ -22,17 +22,7 @@ use Cake\Event\Event;
 </div>
 
 <div class="row">
-    <?php if( !empty($widgets) ) : ?>
-        <?php for($i=0; $i < $columns; $i++) { ?>
-                <?php foreach( $widgets as $widget) : ?>
-
-                    <?php if( $widget->widgetObject->column == $i ) { ?>
-                        <?= $this->cell("Search.Widget::{$widget->widgetDisplayMethod}" , [[$widget], ['user' => $user]]); ?>
-                    <?php } ?>
-                <?php endforeach; ?>
-
-        <?php }?>
-    <?php endif; ?>
+    <?= $this->cell('Search.Dashboard', [$savedSearches]); ?>
 </div>
 
 <?= $this->element('Search.common_js_libs'); ?>
