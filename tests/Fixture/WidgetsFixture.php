@@ -53,7 +53,7 @@ class WidgetsFixture extends TestFixture
             'dashboard_id' => '418fcd5a-05aa-4d5e-a20c-4edf2ab8821f',
             'widget_id' => 'Lorem Ipsum',
             'widget_type' => 'report',
-            'widget_options' => '',
+            'widget_options' => 'Lorem Ipsum',
             'column' => 0,
             'row' => 0,
             'created' => '2016-10-19 12:08:59',
