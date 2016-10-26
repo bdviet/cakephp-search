@@ -26,12 +26,10 @@
                 <div class="col-xs-6">
                     <p class="h3 text-center"><?= $columns[$col] ?></p>
                     <ul class="savetrue droppable-area" data-column=<?= $col ?>>
-                    <?php if (!empty($savedWidgetData)) : ?>
-                        <?php foreach($savedWidgetData as $k => $widget) :?>
-                            <?php if($widget['data']['column'] == $col):?>
-                                <?= $this->cell('Search.Widget::displayDroppableBlock', [$widget]) ?>
-                            <?php endif; ?>
-                        <?php endforeach;?>
+                    <?php if (!empty($savedWidgetData[$col])) : ?>
+                        <?php for ($j = 0; $j < count($savedWidgetData[$col]); $j++) : ?>
+                            <?= $this->cell('Search.Widget::displayDroppableBlock', [ $savedWidgetData[$col][$j] ]) ?>
+                        <?php endfor; ?>
                     <?php endif; ?>
                     </ul>
                 </div>

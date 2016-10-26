@@ -63,7 +63,7 @@ class DashboardsController extends AppController
         }
 
         $widgetsTable = TableRegistry::get('Search.Widgets');
-        $sortedResults = $widgetsTable->sortWidgets($widgets);
+        $sortedResults = $widgetsTable->sortWidgets($widgets, ['source' => 'widgets']);
 
         $this->set('columns', $sortedResults['gridColumns']);
         $this->set('rows', $sortedResults['gridRows']);
@@ -164,17 +164,20 @@ class DashboardsController extends AppController
         $widgetsTable = TableRegistry::get('Search.Widgets');
         $widgets = $widgetsTable->getWidgets();
 
+
         foreach ($widgets as $k => $w) {
             foreach ($dashboardWidgets as $dWidget) {
                 if ($dWidget->widget_id == $w['data']['id']) {
                     $w['data']['column'] = $dWidget->column;
                     $w['data']['row'] = $dWidget->row;
-
                     array_push($savedWidgetData, $w);
                     unset($widgets[$k]);
                 }
             }
         }
+
+        $sortedResults = $widgetsTable->sortWidgets($savedWidgetData);
+        $savedWidgetData = $sortedResults['widgets'];
 
         if ($this->request->is(['patch', 'post', 'put'])) {
             $data = $this->request->data;
