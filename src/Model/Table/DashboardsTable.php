@@ -159,7 +159,7 @@ class DashboardsTable extends Table
         }
 
         $userGroups = [];
-        if (method_exists($groupsTable, 'getUserGroups')) {
+        if (method_exists($groupsTable, 'getUserGroups') && !empty($user)) {
             $userGroups = $groupsTable->getUserGroups($user['id']);
         }
 
