@@ -137,10 +137,15 @@ class WidgetsTable extends Table
         $this->eventManager()->dispatch($event);
 
         if (!empty($event->result)) {
-            $widgets[] = [
-                'type' => 'report',
-                'data' => array_shift($event->result)
-            ];
+            $data = [];
+            foreach ($event->result as $model => $reports) {
+                foreach ($reports as $reportSlug => $reportInfo) {
+                    $data[$reportInfo['id']] = $reportInfo;
+                }
+            }
+            if (!empty($data)) {
+                $widgets[] = [ 'type' => 'report', 'data' => $data ];
+            }
         }
 
         //assembling all widgets in one
