@@ -122,17 +122,22 @@ class WidgetsTable extends Table
             ->where(['SavedSearches.name IS NOT' => null])
             ->order(['SavedSearches.model', 'SavedSearches.name']);
 
-        $widgets[] = [
-            'type' => 'saved_search',
-            'data' => $savedSearchesTable
+        $savedSearches = $savedSearchesTable
                         ->find()
                         ->select()
                         ->where(['SavedSearches.name IS NOT' => null])
                         ->hydrate(false)
                         ->indexBy('id')
-                        ->toArray()
-        ];
+                        ->toArray();
 
+        foreach ($savedSearches as $id => $savedSearch) {
+            $table = TableRegistry::get($savedSearch['model']);
+            if (method_exists($table, 'moduleAlias')) {
+                $savedSearches[$id]['model'] = $table->moduleAlias();
+            }
+        }
+
+        $widgets[] = ['type' => 'saved_search', 'data' => $savedSearches];
         $event = new Event('Search.Report.getReports', $this);
         $this->eventManager()->dispatch($event);
 
