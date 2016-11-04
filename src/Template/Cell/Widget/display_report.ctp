@@ -64,8 +64,8 @@ $listingFields = explode(',',$widgetData['info']['columns']);
                                 var data = <?= $this->Chart->getChartData($renderData, ['data' => $widgetData]) ?>;
 
                                 var margin = {top: 20, right: 20, bottom: 70, left: 40},
-                                    width = 550 - margin.left - margin.right,
-                                    height = 300 - margin.top - margin.bottom;
+                                    width = 400 - margin.left - margin.right,
+                                    height = 200 - margin.top - margin.bottom;
 
                                 var x = d3.scaleBand().rangeRound([0, width]).padding(0.1),
                                     y = d3.scaleLinear().rangeRound([height, 0]);
