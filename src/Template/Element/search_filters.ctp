@@ -31,6 +31,9 @@
                 array_keys($searchFields),
                 array_map(function ($v) { return $v['label']; }, $searchFields)
             );
+            //sort the list alphabetically for dropdown
+            asort($selectOptions);
+
             echo $this->Form->select(
                 'fields',
                  $selectOptions, [
