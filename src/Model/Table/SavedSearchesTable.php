@@ -182,10 +182,10 @@ class SavedSearchesTable extends Table
             'starts_with' => 'Starts with',
             'ends_with' => 'Ends with'
         ],
-        'integer' => ['is' => 'Is', 'is_not' => 'Is not', 'greater' => 'Greater', 'less' => 'Less'],
-        'datetime' => ['is' => 'Is', 'is_not' => 'Is not', 'greater' => 'Greater', 'less' => 'Less'],
-        'date' => ['is' => 'Is', 'is_not' => 'Is not', 'greater' => 'Greater', 'less' => 'Less'],
-        'time' => ['is' => 'Is', 'is_not' => 'Is not', 'greater' => 'Greater', 'less' => 'Less']
+        'integer' => ['is' => 'Is', 'is_not' => 'Is not', 'greater' => 'From', 'less' => 'To'],
+        'datetime' => ['is' => 'Is', 'is_not' => 'Is not', 'greater' => 'From', 'less' => 'To'],
+        'date' => ['is' => 'Is', 'is_not' => 'Is not', 'greater' => 'From', 'less' => 'To'],
+        'time' => ['is' => 'Is', 'is_not' => 'Is not', 'greater' => 'From', 'less' => 'To']
     ];
 
     /**
