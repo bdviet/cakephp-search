@@ -89,10 +89,10 @@ class SavedSearchesTableTest extends TestCase
             'email' => ['contains' => 'Contains', 'not_contains' => 'Does not contain', 'starts_with' => 'Starts with', 'ends_with' => 'Ends with'],
             'phone' => ['contains' => 'Contains', 'not_contains' => 'Does not contain', 'starts_with' => 'Starts with', 'ends_with' => 'Ends with'],
             'url' => ['contains' => 'Contains', 'not_contains' => 'Does not contain', 'starts_with' => 'Starts with', 'ends_with' => 'Ends with'],
-            'integer' => ['is' => 'Is', 'is_not' => 'Is not', 'greater' => 'From', 'less' => 'To'],
-            'datetime' => ['is' => 'Is', 'is_not' => 'Is not', 'greater' => 'From', 'less' => 'To'],
-            'date' => ['is' => 'Is', 'is_not' => 'Is not', 'greater' => 'From', 'less' => 'To'],
-            'time' => ['is' => 'Is', 'is_not' => 'Is not', 'greater' => 'From', 'less' => 'To']
+            'integer' => ['is' => 'Is', 'is_not' => 'Is not', 'greater' => 'greater', 'less' => 'less'],
+            'datetime' => ['is' => 'Is', 'is_not' => 'Is not', 'greater' => 'from', 'less' => 'to'],
+            'date' => ['is' => 'Is', 'is_not' => 'Is not', 'greater' => 'from', 'less' => 'to'],
+            'time' => ['is' => 'Is', 'is_not' => 'Is not', 'greater' => 'from', 'less' => 'to']
         ];
         $result = $this->SavedSearches->getFieldTypeOperators();
         $this->assertEquals($expected, $result);
