@@ -578,7 +578,15 @@ class SavedSearchesTable extends Table
             $query->limit($data['limit']);
         }
 
-        return $query->all();
+        $result = $query->all();
+
+        $event = new Event('Search.Model.Search.afterFind', $this, [
+            'entities' => $result,
+            'table' => $table
+        ]);
+        $this->eventManager()->dispatch($event);
+
+        return $result;
     }
 
     /**
