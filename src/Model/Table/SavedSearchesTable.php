@@ -571,8 +571,7 @@ class SavedSearchesTable extends Table
             ->find('all')
             ->select($this->_getQueryFields($data, $table))
             ->where($this->_prepareWhereStatement($data, $tableName))
-            ->order([$data['sort_by_field'] => $data['sort_by_order']])
-        ;
+            ->order([$data['sort_by_field'] => $data['sort_by_order']]);
 
         // set limit if not 0
         if (0 < (int)$data['limit']) {
