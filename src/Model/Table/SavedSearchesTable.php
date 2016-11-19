@@ -2,7 +2,9 @@
 namespace Search\Model\Table;
 
 use Cake\Datasource\ConnectionManager;
+use Cake\Event\Event;
 use Cake\ORM\Query;
+use Cake\ORM\ResultSet;
 use Cake\ORM\RulesChecker;
 use Cake\ORM\Table;
 use Cake\ORM\TableRegistry;
@@ -332,50 +334,33 @@ class SavedSearchesTable extends Table
     /**
      * Search method
      *
-     * @param  string $model model name
+     * @param  string $tableName table name
      * @param  array  $user user
-     * @param  array  $data data
+     * @param  array  $requestData request data
      * @return array
      */
-    public function search($model, $user, $data)
+    public function search($tableName, $user, $requestData)
     {
-        $criteria = [];
-        if (isset($data['criteria'])) {
-            $criteria = $data['criteria'];
-        }
-        $where = $this->_prepareWhereStatement($criteria, $model);
-        $table = TableRegistry::get($model);
+        $data = array_merge($this->_queryDefaults, $requestData);
 
-        $query = $data;
-
-        // use query defaults if not set
-        $query = array_merge($this->_queryDefaults, $query);
-
-        if (empty($query['result'])) {
-            $query['result'] = $table
-                ->find('all')
-                ->where($where)
-                ->order([$query['sort_by_field'] => $query['sort_by_order']]);
-
-            // set limit if not 0
-            if (0 < (int)$query['limit']) {
-                $query['result']->limit($query['limit']);
-            }
+        if (empty($data['result'])) {
+            // get search results
+            $data['result'] = $this->_getResults($data, $tableName);
         }
 
-        // if in advanced mode, pre-save search criteria and results
+        // pre-save search criteria and results
         $preSaveIds = $this->preSaveSearchCriteriaAndResults(
-            $model,
-            $query,
+            $tableName,
             $data,
+            $requestData,
             $user['id']
         );
-        $result['saveSearchCriteriaId'] = $preSaveIds['saveSearchCriteriaId'];
-        $result['saveSearchResultsId'] = $preSaveIds['saveSearchResultsId'];
 
-        $result['entities'] = $query;
-
-        return $result;
+        return [
+            'saveSearchCriteriaId' => $preSaveIds['saveSearchCriteriaId'],
+            'saveSearchResultsId' => $preSaveIds['saveSearchResultsId'],
+            'entities' => $data
+        ];
     }
 
     /**
@@ -572,16 +557,54 @@ class SavedSearchesTable extends Table
     }
 
     /**
+     * Method that fetches the search results.
+     *
+     * @param  array $data search data
+     * @param  string $tableName table name
+     * @return \Cake\ORM\ResultSet
+     */
+    protected function _getResults(array $data, $tableName)
+    {
+        $table = TableRegistry::get($tableName);
+
+        $query = $table
+            ->find('all')
+            ->select($this->_getQueryFields($data, $table))
+            ->where($this->_prepareWhereStatement($data, $tableName))
+            ->order([$data['sort_by_field'] => $data['sort_by_order']]);
+
+        // set limit if not 0
+        if (0 < (int)$data['limit']) {
+            $query->limit($data['limit']);
+        }
+
+        $result = $query->all();
+
+        $event = new Event('Search.Model.Search.afterFind', $this, [
+            'entities' => $result,
+            'table' => $table
+        ]);
+        $this->eventManager()->dispatch($event);
+
+        return $result;
+    }
+
+    /**
      * Prepare search query's where statement
      *
-     * @param  array  $data     search fields
-     * @param  string $model    model name
+     * @param  array  $data  request data
+     * @param  string $model model name
      * @return array
      */
     protected function _prepareWhereStatement(array $data, $model)
     {
         $result = [];
-        foreach ($data as $fieldName => $criterias) {
+
+        if (empty($data['criteria'])) {
+            return $result;
+        }
+
+        foreach ($data['criteria'] as $fieldName => $criterias) {
             if (empty($criterias)) {
                 continue;
             }
@@ -660,15 +683,44 @@ class SavedSearchesTable extends Table
     }
 
     /**
+     * Get fields for Query's select statement.
+     *
+     * @param  array $data request data
+     * @param  \Cake\ORM\Table $table Table instance
+     * @return array
+     */
+    protected function _getQueryFields(array $data, Table $table)
+    {
+        $result = [];
+        if (empty($data['display_columns'])) {
+            return $result;
+        }
+
+        $result = $data['display_columns'];
+
+        if (!is_array($result)) {
+            $result = (array)$result;
+        }
+
+        $primaryKey = $table->primaryKey();
+
+        if (!in_array($primaryKey, $result)) {
+            array_unshift($result, $primaryKey);
+        }
+
+        return $result;
+    }
+
+    /**
      * Method that pre-saves search criteria and results and returns saved records ids.
      *
      * @param  string $model  model name
-     * @param  array  $query  results query
+     * @param  array  $results search results
      * @param  array  $data   request data
      * @param  string $userId user id
      * @return array
      */
-    public function preSaveSearchCriteriaAndResults($model, array $query, $data, $userId)
+    public function preSaveSearchCriteriaAndResults($model, array $results, $data, $userId)
     {
         $result = [];
         /*
@@ -683,7 +735,7 @@ class SavedSearchesTable extends Table
         /*
         pre-save search results
          */
-        $result['saveSearchResultsId'] = $this->_preSaveSearchResults($model, $query, $userId);
+        $result['saveSearchResultsId'] = $this->_preSaveSearchResults($model, $results, $userId);
 
         return $result;
     }
@@ -728,18 +780,18 @@ class SavedSearchesTable extends Table
      * Pre-save search results and return record id.
      *
      * @param  string $model  model name
-     * @param  array  $query  results query
+     * @param  array  $results search results
      * @param  string $userId user id
      * @return string
      */
-    protected function _preSaveSearchResults($model, array $query, $userId)
+    protected function _preSaveSearchResults($model, array $results, $userId)
     {
         $search = $this->newEntity();
         $search->type = $this->getResultType();
         $search->user_id = $userId;
         $search->model = $model;
         $search->shared = $this->getPrivateSharedStatus();
-        $search->content = json_encode($query);
+        $search->content = json_encode($results);
 
         // save search results
         $this->save($search);
