@@ -10,6 +10,7 @@ use Cake\ORM\Table;
 use Cake\ORM\TableRegistry;
 use Cake\Utility\Inflector;
 use Cake\Validation\Validator;
+use RuntimeException;
 use Search\Model\Entity\SavedSearch;
 
 /**
@@ -43,6 +44,13 @@ class SavedSearchesTable extends Table
      * Default search operator identifier
      */
     const DEFAULT_SEARCH_OPERATOR = 'contains';
+
+    /**
+     * Target table searchable fields.
+     *
+     * @var array
+     */
+    protected $_searchableFields = [];
 
     /**
      * List of display fields to be skipped.
@@ -399,28 +407,27 @@ class SavedSearchesTable extends Table
      */
     public function getSearchableFields($table)
     {
-        $result = [];
-        /*
-        get Table instance
-         */
+        if (!empty($this->_searchableFields)) {
+            return $this->_searchableFields;
+        }
+
+        // get Table instance
         if (is_string($table)) {
             $table = TableRegistry::get($table);
         }
 
-        if (method_exists($table, 'getSearchableFields') && is_callable([$table, 'getSearchableFields'])) {
-            $result = $table->getSearchableFields();
-        } else {
-            $db = ConnectionManager::get('default');
-            $collection = $db->schemaCollection();
-            // by default, all fields are searchable
-            $result = $collection->describe($table->table())->columns();
-        }
-        /*
-        skip display fields
-         */
-        $result = array_diff($result, $this->_skipDisplayFields);
+        $event = new Event('Search.Model.Search.searchabeFields', $this, [
+            'table' => $table
+        ]);
+        $this->eventManager()->dispatch($event);
 
-        return $result;
+        if (empty($event->result)) {
+            throw new RuntimeException('Module [' . $table->registryAlias() . '] has no searchable fields defined.');
+        }
+
+        $this->_searchableFields = $event->result;
+
+        return $this->_searchableFields;
     }
 
     /**
