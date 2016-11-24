@@ -359,7 +359,7 @@ class SavedSearchesTable extends Table
         $this->eventManager()->dispatch($event);
 
         if (empty($event->result)) {
-            throw new RuntimeException('Module [' . $table->registryAlias() . '] has no searchable fields defined.');
+            throw new RuntimeException('Table [' . $table->registryAlias() . '] has no searchable fields defined.');
         }
 
         $this->_searchableFields = $event->result;
@@ -401,21 +401,6 @@ class SavedSearchesTable extends Table
         }
 
         return $result;
-    }
-
-    /**
-     * Generates and returns searchable fields labels.
-     *
-     * @param  array  $fields searchable fields
-     * @return array
-     */
-    public function getSearchableFieldLabels(array $fields)
-    {
-        foreach ($fields as $fieldName => &$fieldProperties) {
-            $fieldProperties['label'] = Inflector::humanize($fieldName);
-        }
-
-        return $fields;
     }
 
     /**

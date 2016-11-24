@@ -117,7 +117,6 @@ trait SearchTrait
         // get searchable fields
         $searchFields = $table->getSearchableFields($model);
         $searchFields = $table->getSearchableFieldProperties($model, $searchFields);
-        $searchFields = $table->getSearchableFieldLabels($searchFields);
 
 
         $savedSearches = $table->getSavedSearches([$this->Auth->user('id')], [$model]);
