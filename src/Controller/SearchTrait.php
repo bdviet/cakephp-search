@@ -119,15 +119,10 @@ trait SearchTrait
         $searchFields = $table->getSearchableFieldProperties($model, $searchFields);
         $searchFields = $table->getSearchableFieldLabels($searchFields);
 
-        $searchOperators = [];
-        // get search operators based on searchable fields
-        if (!empty($searchFields)) {
-            $searchOperators = $table->getFieldTypeOperators();
-        }
 
         $savedSearches = $table->getSavedSearches([$this->Auth->user('id')], [$model]);
 
-        $this->set(compact('searchFields', 'searchOperators', 'savedSearches', 'listingFields', 'model'));
+        $this->set(compact('searchFields', 'savedSearches', 'listingFields', 'model'));
 
         $this->render($this->_elementSearch);
     }

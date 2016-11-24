@@ -1,12 +1,7 @@
-<?php if (!empty($searchFields) && !empty($searchOperators)) : ?>
+<?php if (!empty($searchFields)) : ?>
 
     <?= $this->Html->css('Search.search', ['block' => true]); ?>
     <?= $this->Html->script('Search.search', ['block' => 'scriptBottom']); ?>
-
-    <?= $this->Html->scriptBlock(
-        'search.setFieldTypeOperators(' . json_encode($searchOperators) . ');',
-        ['block' => 'scriptBottom']
-    ); ?>
 
     <?= $this->Html->scriptBlock(
         'search.setFieldProperties(' . json_encode($searchFields) . ');',

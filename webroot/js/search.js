@@ -52,15 +52,6 @@ var search = search || {};
     };
 
     /**
-     * Field type operators setter.
-     *
-     * @param {object} fieldTypeOperators field type operators
-     */
-    Search.prototype.setFieldTypeOperators = function(fieldTypeOperators) {
-        this.fieldTypeOperators = fieldTypeOperators;
-    };
-
-    /**
      * Method that generates field on field dropdown select.
      *
      * @return {undefined}
@@ -107,7 +98,7 @@ var search = search || {};
                     inputHtml += this._generateFieldLabel(properties.label);
                 inputHtml += '</div>';
                 inputHtml += '<div class="col-xs-4 col-md-2 col-lg-3">';
-                    inputHtml += this._generateFieldOperator(field, properties.type, timestamp, setOperator);
+                    inputHtml += this._generateSearchOperator(field, properties, timestamp, setOperator);
                 inputHtml += '</div>';
                 inputHtml += '<div class="col-xs-6 col-md-5 col-lg-4">';
                     inputHtml += this._generateFieldInput(field, properties, timestamp, value);
@@ -159,20 +150,18 @@ var search = search || {};
      * @param  {string} setOperator field set operator
      * @return {string}
      */
-    Search.prototype._generateFieldOperator = function(field, type, timestamp, setOperator) {
+    Search.prototype._generateSearchOperator = function(field, properties, timestamp, setOperator) {
         var result = '';
-        if (this.fieldTypeOperators.hasOwnProperty(type)) {
-            result += '<select name="criteria[' + field + '][' + timestamp + '][operator]" class="form-control input-sm">';
-            $.each(this.fieldTypeOperators[type], function(k, v) {
-                result += '<option value="' + k + '"';
-                if (setOperator === k) {
-                    result += ' selected';
-                }
-                result += '>';
-                result += v + '</option>';
-            });
-            result += '</select>';
-        }
+        result += '<select name="criteria[' + field + '][' + timestamp + '][operator]" class="form-control input-sm">';
+        $.each(properties.operators, function(k, v) {
+            result += '<option value="' + k + '"';
+            if (setOperator === k) {
+                result += ' selected';
+            }
+            result += '>';
+            result += v + '</option>';
+        });
+        result += '</select>';
 
         return result;
     };

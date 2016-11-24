@@ -148,58 +148,6 @@ class SavedSearchesTable extends Table
     ];
 
     /**
-     * Per field type operators
-     *
-     * @var array
-     */
-    protected $_fieldTypeOperators = [
-        'uuid' => ['is' => 'Is'],
-        'boolean' => ['is' => 'Is', 'is_not' => 'Is not'],
-        'list' => ['is' => 'Is', 'is_not' => 'Is not'],
-        'string' => [
-            'contains' => 'Contains',
-            'not_contains' => 'Does not contain',
-            'starts_with' => 'Starts with',
-            'ends_with' => 'Ends with'
-        ],
-        'text' => [
-            'contains' => 'Contains',
-            'not_contains' => 'Does not contain',
-            'starts_with' => 'Starts with',
-            'ends_with' => 'Ends with'
-        ],
-        'textarea' => [
-            'contains' => 'Contains',
-            'not_contains' => 'Does not contain',
-            'starts_with' => 'Starts with',
-            'ends_with' => 'Ends with'
-        ],
-        'email' => [
-            'contains' => 'Contains',
-            'not_contains' => 'Does not contain',
-            'starts_with' => 'Starts with',
-            'ends_with' => 'Ends with'
-        ],
-        'phone' => [
-            'contains' => 'Contains',
-            'not_contains' => 'Does not contain',
-            'starts_with' => 'Starts with',
-            'ends_with' => 'Ends with'
-        ],
-        'url' => [
-            'contains' => 'Contains',
-            'not_contains' => 'Does not contain',
-            'starts_with' => 'Starts with',
-            'ends_with' => 'Ends with'
-        ],
-        'integer' => ['is' => 'Is', 'is_not' => 'Is not', 'greater' => 'greater', 'less' => 'less'],
-        'decimal' => ['is' => 'Is', 'is_not' => 'Is not', 'greater' => 'greater', 'less' => 'less'],
-        'datetime' => ['is' => 'Is', 'is_not' => 'Is not', 'greater' => 'from', 'less' => 'to'],
-        'date' => ['is' => 'Is', 'is_not' => 'Is not', 'greater' => 'from', 'less' => 'to'],
-        'time' => ['is' => 'Is', 'is_not' => 'Is not', 'greater' => 'from', 'less' => 'to']
-    ];
-
-    /**
      * Filter basic search allowed field types
      *
      * @var array
@@ -328,17 +276,6 @@ class SavedSearchesTable extends Table
     {
         return $this->_skipDisplayFields;
     }
-
-    /**
-     * Return list of operators grouped by field type
-     *
-     * @return array
-     */
-    public function getFieldTypeOperators()
-    {
-        return $this->_fieldTypeOperators;
-    }
-
     /**
      * Search method
      *
