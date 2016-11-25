@@ -71,83 +71,6 @@ class SavedSearchesTable extends Table
     ];
 
     /**
-     * Operators to SQL operator
-     *
-     * @var array
-     */
-    protected $_sqlOperators = [
-        'uuid' => ['operator' => 'IN'],
-        'boolean' => [
-            'is' => ['operator' => 'IS'],
-            'is_not' => ['operator' => 'IS NOT']
-        ],
-        'list' => [
-            'is' => ['operator' => 'IN'],
-            'is_not' => ['operator' => 'NOT IN']
-        ],
-        'string' => [
-            'contains' => ['operator' => 'LIKE', 'pattern' => '%{{value}}%'],
-            'not_contains' => ['operator' => 'NOT LIKE', 'pattern' => '%{{value}}%'],
-            'starts_with' => ['operator' => 'LIKE', 'pattern' => '{{value}}%'],
-            'ends_with' => ['operator' => 'LIKE', 'pattern' => '%{{value}}']
-        ],
-        'text' => [
-            'contains' => ['operator' => 'LIKE', 'pattern' => '%{{value}}%'],
-            'not_contains' => ['operator' => 'NOT LIKE', 'pattern' => '%{{value}}%'],
-            'starts_with' => ['operator' => 'LIKE', 'pattern' => '{{value}}%'],
-            'ends_with' => ['operator' => 'LIKE', 'pattern' => '%{{value}}']
-        ],
-        'textarea' => [
-            'contains' => ['operator' => 'LIKE', 'pattern' => '%{{value}}%'],
-            'not_contains' => ['operator' => 'NOT LIKE', 'pattern' => '%{{value}}%'],
-            'starts_with' => ['operator' => 'LIKE', 'pattern' => '{{value}}%'],
-            'ends_with' => ['operator' => 'LIKE', 'pattern' => '%{{value}}']
-        ],
-        'email' => [
-            'contains' => ['operator' => 'LIKE', 'pattern' => '%{{value}}%'],
-            'not_contains' => ['operator' => 'NOT LIKE', 'pattern' => '%{{value}}%'],
-            'starts_with' => ['operator' => 'LIKE', 'pattern' => '{{value}}%'],
-            'ends_with' => ['operator' => 'LIKE', 'pattern' => '%{{value}}']
-        ],
-        'phone' => [
-            'contains' => ['operator' => 'LIKE', 'pattern' => '%{{value}}%'],
-            'not_contains' => ['operator' => 'NOT LIKE', 'pattern' => '%{{value}}%'],
-            'starts_with' => ['operator' => 'LIKE', 'pattern' => '{{value}}%'],
-            'ends_with' => ['operator' => 'LIKE', 'pattern' => '%{{value}}']
-        ],
-        'url' => [
-            'contains' => ['operator' => 'LIKE', 'pattern' => '%{{value}}%'],
-            'not_contains' => ['operator' => 'NOT LIKE', 'pattern' => '%{{value}}%'],
-            'starts_with' => ['operator' => 'LIKE', 'pattern' => '{{value}}%'],
-            'ends_with' => ['operator' => 'LIKE', 'pattern' => '%{{value}}']
-        ],
-        'integer' => [
-            'is' => ['operator' => 'IN'],
-            'is_not' => ['operator' => 'NOT IN'],
-            'greater' => ['operator' => '>'],
-            'less' => ['operator' => '<']
-        ],
-        'datetime' => [
-            'is' => ['operator' => 'IN'],
-            'is_not' => ['operator' => 'NOT IN'],
-            'greater' => ['operator' => '>'],
-            'less' => ['operator' => '<']
-        ],
-        'date' => [
-            'is' => ['operator' => 'IN'],
-            'is_not' => ['operator' => 'NOT IN'],
-            'greater' => ['operator' => '>'],
-            'less' => ['operator' => '<']
-        ],
-        'time' => [
-            'is' => ['operator' => 'IN'],
-            'is_not' => ['operator' => 'NOT IN'],
-            'greater' => ['operator' => '>'],
-            'less' => ['operator' => '<']
-        ]
-    ];
-
-    /**
      * Filter basic search allowed field types
      *
      * @var array
@@ -545,14 +468,14 @@ class SavedSearchesTable extends Table
                     continue;
                 }
                 $operator = $criteria['operator'];
-                if (isset($this->_sqlOperators[$type][$operator]['pattern'])) {
+                if (isset($this->_searchableFields[$fieldName]['sqlOperators'][$operator]['pattern'])) {
                     $value = str_replace(
                         '{{value}}',
                         $value,
-                        $this->_sqlOperators[$type][$operator]['pattern']
+                        $this->_searchableFields[$fieldName]['sqlOperators'][$operator]['pattern']
                     );
                 }
-                $sqlOperator = $this->_sqlOperators[$type][$operator]['operator'];
+                $sqlOperator = $this->_searchableFields[$fieldName]['sqlOperators'][$operator]['operator'];
                 list(, $prefix) = pluginSplit($model);
                 $key = $prefix . '.' . $fieldName . ' ' . $sqlOperator;
 
