@@ -122,7 +122,7 @@ var search = search || {};
         inputHtml = inputHtml.replace('{{fieldLabel}}', this._generateFieldLabel(properties.label));
         inputHtml = inputHtml.replace(
             '{{fieldOperator}}',
-            this._generateSearchOperator(field, properties, timestamp, setOperator)
+            this._generateSearchOperator(field, properties.operators, timestamp, setOperator)
         );
         inputHtml = inputHtml.replace('{{fieldInput}}', this._generateFieldInput(field, properties, timestamp, value));
         inputHtml = inputHtml.replace('{{deleteButton}}', this._generateDeleteButton(id));
@@ -167,14 +167,14 @@ var search = search || {};
      * @param  {string} setOperator field set operator
      * @return {string}
      */
-    Search.prototype._generateSearchOperator = function(field, properties, timestamp, setOperator) {
+    Search.prototype._generateSearchOperator = function(field, operators, timestamp, setOperator) {
         var that = this;
 
         var options = '';
-        $.each(properties.operators, function(k, v) {
+        $.each(operators, function(k, v) {
             var option = that.operatorOptionHtml;
             option = option.replace('{{value}}', k);
-            option = option.replace('{{label}}', v);
+            option = option.replace('{{label}}', v.label);
             if (k === setOperator) {
                 option = option.replace('{{selected}}', 'selected');
             } else {
