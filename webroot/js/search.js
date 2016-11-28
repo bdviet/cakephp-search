@@ -202,15 +202,18 @@ var search = search || {};
      * @param  {string} value      field value
      * @return {string}
      */
-    Search.prototype._generateFieldInput = function(field, properties, timestamp, value) {
+    Search.prototype._generateFieldInput = function(field, input, timestamp, value) {
         var name = 'criteria[' + field + '][' + timestamp + '][value]';
         if ('undefined' === typeof value) {
             value = '';
         }
 
-        var input = properties.input;
+        var result = input.content
+            .replace(/{{name}}/g, name)
+            .replace(/{{value}}/g, value)
+            .replace(/{{id}}/g, timestamp);
 
-        return input.replace('{{name}}', name).replace('{{value}}', value);
+        return result;
     };
 
     /**
