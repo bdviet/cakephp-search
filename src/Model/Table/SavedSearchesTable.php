@@ -468,14 +468,14 @@ class SavedSearchesTable extends Table
                     continue;
                 }
                 $operator = $criteria['operator'];
-                if (isset($this->_searchableFields[$fieldName]['sqlOperators'][$operator]['pattern'])) {
+                if (isset($this->_searchableFields[$fieldName]['operators'][$operator]['pattern'])) {
                     $value = str_replace(
                         '{{value}}',
                         $value,
-                        $this->_searchableFields[$fieldName]['sqlOperators'][$operator]['pattern']
+                        $this->_searchableFields[$fieldName]['operators'][$operator]['pattern']
                     );
                 }
-                $sqlOperator = $this->_searchableFields[$fieldName]['sqlOperators'][$operator]['operator'];
+                $sqlOperator = $this->_searchableFields[$fieldName]['operators'][$operator]['operator'];
                 list(, $prefix) = pluginSplit($model);
                 $key = $prefix . '.' . $fieldName . ' ' . $sqlOperator;
 
