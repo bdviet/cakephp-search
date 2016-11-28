@@ -72,4 +72,34 @@ if (isset($this->request->data['criteria'])) {
         </div>
     </div>
 </div>
+<?php
+$duplicates = [];
+foreach ($searchFields as $searchField) {
+    if (empty($searchField['input']['post'])) {
+        continue;
+    }
+
+    $md5 = md5(serialize($searchField['input']['post']));
+    // skip duplicates
+    if (in_array($md5, $duplicates)) {
+        continue;
+    }
+
+    $duplicates[] = $md5;
+
+    foreach ($searchField['input']['post'] as $item) {
+        if (empty($item['type']) || empty($item['content'])) {
+            continue;
+        }
+
+        if (!method_exists($this->Html, $item['type'])) {
+            continue;
+        }
+
+        echo $this->Html->{$item['type']}($item['content'], [
+            'block' => !empty($item['block']) ? $item['block'] : true
+        ]);
+    }
+}
+?>
 <?php endif; ?>
