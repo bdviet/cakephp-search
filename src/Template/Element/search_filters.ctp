@@ -1,20 +1,20 @@
 <?php if (!empty($searchFields)) : ?>
 
-    <?= $this->Html->css('Search.search', ['block' => true]); ?>
-    <?= $this->Html->script('Search.search', ['block' => 'scriptBottom']); ?>
+<?= $this->Html->css('Search.search', ['block' => true]); ?>
+<?= $this->Html->script('Search.search', ['block' => 'scriptBottom']); ?>
 
-    <?= $this->Html->scriptBlock(
-        'search.setFieldProperties(' . json_encode($searchFields) . ');',
+<?= $this->Html->scriptBlock(
+    'search.setFieldProperties(' . json_encode($searchFields) . ');',
+    ['block' => 'scriptBottom']
+); ?>
+<?php
+if (isset($this->request->data['criteria'])) {
+    echo $this->Html->scriptBlock(
+        'search.generateCriteriaFields(' . json_encode($this->request->data['criteria']) . ');',
         ['block' => 'scriptBottom']
-    ); ?>
-    <?php
-    if (isset($this->request->data['criteria'])) {
-        echo $this->Html->scriptBlock(
-            'search.generateCriteriaFields(' . json_encode($this->request->data['criteria']) . ');',
-            ['block' => 'scriptBottom']
-        );
-    }
-    ?>
+    );
+}
+?>
 <div class="well">
     <h4><?= __('Search Filters') ?></h4>
     <hr />
