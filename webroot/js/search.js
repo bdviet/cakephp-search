@@ -124,7 +124,12 @@ var search = search || {};
             '{{fieldOperator}}',
             this._generateSearchOperator(field, properties.operators, timestamp, setOperator)
         );
-        inputHtml = inputHtml.replace('{{fieldInput}}', this._generateFieldInput(field, properties, timestamp, value));
+        inputHtml = inputHtml.replace('{{fieldInput}}', this._generateFieldInput(
+            field,
+            properties.input,
+            timestamp,
+            value
+        ));
         inputHtml = inputHtml.replace('{{deleteButton}}', this._generateDeleteButton(id));
 
         $(this.formId + ' fieldset').append(inputHtml);
