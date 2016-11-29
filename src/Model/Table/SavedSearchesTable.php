@@ -286,42 +286,6 @@ class SavedSearchesTable extends Table
     }
 
     /**
-     * Method responsible for retrieving specified fields properties.
-     *
-     * @param  mixed  $table  name or instance of the Table
-     * @param  array  $fields fields
-     * @return string         field input
-     */
-    public function getSearchableFieldProperties($table, array $fields)
-    {
-        $result = [];
-        if (empty($fields)) {
-            return $result;
-        }
-        /*
-        get Table instance
-         */
-        if (is_string($table)) {
-            $table = TableRegistry::get($table);
-        }
-
-        if (method_exists($table, 'getSearchableFieldProperties') &&
-            is_callable([$table, 'getSearchableFieldProperties'])
-        ) {
-            $result = $table->getSearchableFieldProperties($fields);
-        } else {
-            $db = ConnectionManager::get('default');
-            $collection = $db->schemaCollection();
-
-            foreach ($fields as $field) {
-                $result[$field] = $collection->describe($table->table())->column($field);
-            }
-        }
-
-        return $result;
-    }
-
-    /**
      * Return Table's listing fields.
      *
      * @param  \Cake\ORM\Table|string $table Table object or name.
