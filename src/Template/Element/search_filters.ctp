@@ -1,30 +1,25 @@
-<?php if (!empty($searchFields) && !empty($searchOperators)) : ?>
+<?php if (!empty($searchFields)) : ?>
 
-    <?= $this->Html->css('Search.search', ['block' => true]); ?>
-    <?= $this->Html->script('Search.search', ['block' => 'scriptBottom']); ?>
+<?= $this->Html->css('Search.search', ['block' => true]); ?>
+<?= $this->Html->script('Search.search', ['block' => 'scriptBottom']); ?>
 
-    <?= $this->Html->scriptBlock(
-        'search.setFieldTypeOperators(' . json_encode($searchOperators) . ');',
+<?= $this->Html->scriptBlock(
+    'search.setFieldProperties(' . json_encode($searchFields) . ');',
+    ['block' => 'scriptBottom']
+); ?>
+<?php
+if (isset($this->request->data['criteria'])) {
+    echo $this->Html->scriptBlock(
+        'search.generateCriteriaFields(' . json_encode($this->request->data['criteria']) . ');',
         ['block' => 'scriptBottom']
-    ); ?>
-
-    <?= $this->Html->scriptBlock(
-        'search.setFieldProperties(' . json_encode($searchFields) . ');',
-        ['block' => 'scriptBottom']
-    ); ?>
-    <?php
-    if (isset($this->request->data['criteria'])) {
-        echo $this->Html->scriptBlock(
-            'search.generateCriteriaFields(' . json_encode($this->request->data['criteria']) . ');',
-            ['block' => 'scriptBottom']
-        );
-    }
-    ?>
+    );
+}
+?>
 <div class="well">
     <h4><?= __('Search Filters') ?></h4>
     <hr />
     <div class="row">
-        <div class="col-md-4 col-md-push-8 col-lg-3 col-lg-push-9">
+        <div class="col-lg-3 col-lg-push-9">
             <?= $this->Form->label(__('Add Filter')) ?>
             <?php
             $selectOptions = array_combine(
@@ -45,14 +40,16 @@
         </div>
         <?= $this->Form->create(null, [
             'id' => 'SearchFilterForm',
+            'class' => 'search-form',
+            'novalidate' => 'novalidate',
             'url' => [
                 'plugin' => $this->request->plugin,
                 'controller' => $this->request->controller,
                 'action' => 'search'
             ]
         ]) ?>
-        <hr class="visible-xs visible-sm" />
-        <div class="col-md-8 col-md-pull-4 col-lg-9 col-lg-pull-3">
+        <hr class="visible-xs visible-sm visible-md" />
+        <div class="col-lg-9 col-lg-pull-3">
             <fieldset></fieldset>
         </div>
     </div>
@@ -77,4 +74,34 @@
         </div>
     </div>
 </div>
+<?php
+$duplicates = [];
+foreach ($searchFields as $searchField) {
+    if (empty($searchField['input']['post'])) {
+        continue;
+    }
+
+    $md5 = md5(serialize($searchField['input']['post']));
+    // skip duplicates
+    if (in_array($md5, $duplicates)) {
+        continue;
+    }
+
+    $duplicates[] = $md5;
+
+    foreach ($searchField['input']['post'] as $item) {
+        if (empty($item['type']) || empty($item['content'])) {
+            continue;
+        }
+
+        if (!method_exists($this->Html, $item['type'])) {
+            continue;
+        }
+
+        echo $this->Html->{$item['type']}($item['content'], [
+            'block' => !empty($item['block']) ? $item['block'] : true
+        ]);
+    }
+}
+?>
 <?php endif; ?>

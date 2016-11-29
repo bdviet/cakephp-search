@@ -77,28 +77,6 @@ class SavedSearchesTableTest extends TestCase
         $this->assertEquals($expected, $result);
     }
 
-    public function testGetFieldTypeOperators()
-    {
-        $expected = [
-            'uuid' => ['is' => 'Is'],
-            'boolean' => ['is' => 'Is', 'is_not' => 'Is not'],
-            'list' => ['is' => 'Is', 'is_not' => 'Is not'],
-            'string' => ['contains' => 'Contains', 'not_contains' => 'Does not contain', 'starts_with' => 'Starts with', 'ends_with' => 'Ends with'],
-            'text' => ['contains' => 'Contains', 'not_contains' => 'Does not contain', 'starts_with' => 'Starts with', 'ends_with' => 'Ends with'],
-            'textarea' => ['contains' => 'Contains', 'not_contains' => 'Does not contain', 'starts_with' => 'Starts with', 'ends_with' => 'Ends with'],
-            'email' => ['contains' => 'Contains', 'not_contains' => 'Does not contain', 'starts_with' => 'Starts with', 'ends_with' => 'Ends with'],
-            'phone' => ['contains' => 'Contains', 'not_contains' => 'Does not contain', 'starts_with' => 'Starts with', 'ends_with' => 'Ends with'],
-            'url' => ['contains' => 'Contains', 'not_contains' => 'Does not contain', 'starts_with' => 'Starts with', 'ends_with' => 'Ends with'],
-            'integer' => ['is' => 'Is', 'is_not' => 'Is not', 'greater' => 'greater', 'less' => 'less'],
-            'decimal' => ['is' => 'Is', 'is_not' => 'Is not', 'greater' => 'greater', 'less' => 'less'],
-            'datetime' => ['is' => 'Is', 'is_not' => 'Is not', 'greater' => 'from', 'less' => 'to'],
-            'date' => ['is' => 'Is', 'is_not' => 'Is not', 'greater' => 'from', 'less' => 'to'],
-            'time' => ['is' => 'Is', 'is_not' => 'Is not', 'greater' => 'from', 'less' => 'to']
-        ];
-        $result = $this->SavedSearches->getFieldTypeOperators();
-        $this->assertEquals($expected, $result);
-    }
-
     public function testGetSavedSearchesFindAll()
     {
         $resultset = $this->SavedSearches->getSavedSearches();
@@ -129,21 +107,6 @@ class SavedSearchesTableTest extends TestCase
 
         foreach ($resultset as $entity) {
             $this->assertEquals($model, $entity->model);
-        }
-    }
-
-    public function testGetSearchableFields()
-    {
-        $result = $this->SavedSearches->getSearchableFields('dashboards');
-        $this->assertTrue(is_array($result));
-
-        // If we have searchable fields, check that they don't have any
-        // skipped fields.
-        $skippedFields = $this->SavedSearches->getSkippedDisplayFields();
-        if (!empty($result) && !empty($skippedFields)) {
-            foreach ($skippedFields as $skippedField) {
-                $this->assertFalse(in_array($skippedField, $result), "Skipped field [$skippedField] found in searchable fields");
-            }
         }
     }
 }

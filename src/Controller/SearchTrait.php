@@ -70,6 +70,9 @@ trait SearchTrait
 
         $table = TableRegistry::get($this->_tableSearch);
 
+        // get searchable fields
+        $searchFields = $table->getSearchableFields($model);
+
         if ($this->request->is(['post', 'get'])) {
             // basic search query, converted to search criteria
             if ($this->request->data('criteria.query')) {
@@ -113,21 +116,9 @@ trait SearchTrait
             $listingFields = $this->request->data('display_columns');
         }
 
-        $searchFields = [];
-        // get searchable fields
-        $searchFields = $table->getSearchableFields($model);
-        $searchFields = $table->getSearchableFieldProperties($model, $searchFields);
-        $searchFields = $table->getSearchableFieldLabels($searchFields);
-
-        $searchOperators = [];
-        // get search operators based on searchable fields
-        if (!empty($searchFields)) {
-            $searchOperators = $table->getFieldTypeOperators();
-        }
-
         $savedSearches = $table->getSavedSearches([$this->Auth->user('id')], [$model]);
 
-        $this->set(compact('searchFields', 'searchOperators', 'savedSearches', 'listingFields', 'model'));
+        $this->set(compact('searchFields', 'savedSearches', 'listingFields', 'model'));
 
         $this->render($this->_elementSearch);
     }

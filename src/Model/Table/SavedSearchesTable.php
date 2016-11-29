@@ -10,6 +10,7 @@ use Cake\ORM\Table;
 use Cake\ORM\TableRegistry;
 use Cake\Utility\Inflector;
 use Cake\Validation\Validator;
+use RuntimeException;
 use Search\Model\Entity\SavedSearch;
 
 /**
@@ -40,9 +41,11 @@ class SavedSearchesTable extends Table
     const DELETE_OLDER_THAN = '-3 hours';
 
     /**
-     * Default search operator identifier
+     * Target table searchable fields.
+     *
+     * @var array
      */
-    const DEFAULT_SEARCH_OPERATOR = 'contains';
+    protected $_searchableFields = [];
 
     /**
      * List of display fields to be skipped.
@@ -60,135 +63,6 @@ class SavedSearchesTable extends Table
         'sort_by_field' => 'created',
         'sort_by_order' => 'desc',
         'limit' => 10
-    ];
-
-    /**
-     * Operators to SQL operator
-     *
-     * @var array
-     */
-    protected $_sqlOperators = [
-        'uuid' => ['operator' => 'IN'],
-        'boolean' => [
-            'is' => ['operator' => 'IS'],
-            'is_not' => ['operator' => 'IS NOT']
-        ],
-        'list' => [
-            'is' => ['operator' => 'IN'],
-            'is_not' => ['operator' => 'NOT IN']
-        ],
-        'string' => [
-            'contains' => ['operator' => 'LIKE', 'pattern' => '%{{value}}%'],
-            'not_contains' => ['operator' => 'NOT LIKE', 'pattern' => '%{{value}}%'],
-            'starts_with' => ['operator' => 'LIKE', 'pattern' => '{{value}}%'],
-            'ends_with' => ['operator' => 'LIKE', 'pattern' => '%{{value}}']
-        ],
-        'text' => [
-            'contains' => ['operator' => 'LIKE', 'pattern' => '%{{value}}%'],
-            'not_contains' => ['operator' => 'NOT LIKE', 'pattern' => '%{{value}}%'],
-            'starts_with' => ['operator' => 'LIKE', 'pattern' => '{{value}}%'],
-            'ends_with' => ['operator' => 'LIKE', 'pattern' => '%{{value}}']
-        ],
-        'textarea' => [
-            'contains' => ['operator' => 'LIKE', 'pattern' => '%{{value}}%'],
-            'not_contains' => ['operator' => 'NOT LIKE', 'pattern' => '%{{value}}%'],
-            'starts_with' => ['operator' => 'LIKE', 'pattern' => '{{value}}%'],
-            'ends_with' => ['operator' => 'LIKE', 'pattern' => '%{{value}}']
-        ],
-        'email' => [
-            'contains' => ['operator' => 'LIKE', 'pattern' => '%{{value}}%'],
-            'not_contains' => ['operator' => 'NOT LIKE', 'pattern' => '%{{value}}%'],
-            'starts_with' => ['operator' => 'LIKE', 'pattern' => '{{value}}%'],
-            'ends_with' => ['operator' => 'LIKE', 'pattern' => '%{{value}}']
-        ],
-        'phone' => [
-            'contains' => ['operator' => 'LIKE', 'pattern' => '%{{value}}%'],
-            'not_contains' => ['operator' => 'NOT LIKE', 'pattern' => '%{{value}}%'],
-            'starts_with' => ['operator' => 'LIKE', 'pattern' => '{{value}}%'],
-            'ends_with' => ['operator' => 'LIKE', 'pattern' => '%{{value}}']
-        ],
-        'url' => [
-            'contains' => ['operator' => 'LIKE', 'pattern' => '%{{value}}%'],
-            'not_contains' => ['operator' => 'NOT LIKE', 'pattern' => '%{{value}}%'],
-            'starts_with' => ['operator' => 'LIKE', 'pattern' => '{{value}}%'],
-            'ends_with' => ['operator' => 'LIKE', 'pattern' => '%{{value}}']
-        ],
-        'integer' => [
-            'is' => ['operator' => 'IN'],
-            'is_not' => ['operator' => 'NOT IN'],
-            'greater' => ['operator' => '>'],
-            'less' => ['operator' => '<']
-        ],
-        'datetime' => [
-            'is' => ['operator' => 'IN'],
-            'is_not' => ['operator' => 'NOT IN'],
-            'greater' => ['operator' => '>'],
-            'less' => ['operator' => '<']
-        ],
-        'date' => [
-            'is' => ['operator' => 'IN'],
-            'is_not' => ['operator' => 'NOT IN'],
-            'greater' => ['operator' => '>'],
-            'less' => ['operator' => '<']
-        ],
-        'time' => [
-            'is' => ['operator' => 'IN'],
-            'is_not' => ['operator' => 'NOT IN'],
-            'greater' => ['operator' => '>'],
-            'less' => ['operator' => '<']
-        ]
-    ];
-
-    /**
-     * Per field type operators
-     *
-     * @var array
-     */
-    protected $_fieldTypeOperators = [
-        'uuid' => ['is' => 'Is'],
-        'boolean' => ['is' => 'Is', 'is_not' => 'Is not'],
-        'list' => ['is' => 'Is', 'is_not' => 'Is not'],
-        'string' => [
-            'contains' => 'Contains',
-            'not_contains' => 'Does not contain',
-            'starts_with' => 'Starts with',
-            'ends_with' => 'Ends with'
-        ],
-        'text' => [
-            'contains' => 'Contains',
-            'not_contains' => 'Does not contain',
-            'starts_with' => 'Starts with',
-            'ends_with' => 'Ends with'
-        ],
-        'textarea' => [
-            'contains' => 'Contains',
-            'not_contains' => 'Does not contain',
-            'starts_with' => 'Starts with',
-            'ends_with' => 'Ends with'
-        ],
-        'email' => [
-            'contains' => 'Contains',
-            'not_contains' => 'Does not contain',
-            'starts_with' => 'Starts with',
-            'ends_with' => 'Ends with'
-        ],
-        'phone' => [
-            'contains' => 'Contains',
-            'not_contains' => 'Does not contain',
-            'starts_with' => 'Starts with',
-            'ends_with' => 'Ends with'
-        ],
-        'url' => [
-            'contains' => 'Contains',
-            'not_contains' => 'Does not contain',
-            'starts_with' => 'Starts with',
-            'ends_with' => 'Ends with'
-        ],
-        'integer' => ['is' => 'Is', 'is_not' => 'Is not', 'greater' => 'greater', 'less' => 'less'],
-        'decimal' => ['is' => 'Is', 'is_not' => 'Is not', 'greater' => 'greater', 'less' => 'less'],
-        'datetime' => ['is' => 'Is', 'is_not' => 'Is not', 'greater' => 'from', 'less' => 'to'],
-        'date' => ['is' => 'Is', 'is_not' => 'Is not', 'greater' => 'from', 'less' => 'to'],
-        'time' => ['is' => 'Is', 'is_not' => 'Is not', 'greater' => 'from', 'less' => 'to']
     ];
 
     /**
@@ -320,17 +194,6 @@ class SavedSearchesTable extends Table
     {
         return $this->_skipDisplayFields;
     }
-
-    /**
-     * Return list of operators grouped by field type
-     *
-     * @return array
-     */
-    public function getFieldTypeOperators()
-    {
-        return $this->_fieldTypeOperators;
-    }
-
     /**
      * Search method
      *
@@ -399,79 +262,27 @@ class SavedSearchesTable extends Table
      */
     public function getSearchableFields($table)
     {
-        $result = [];
-        /*
-        get Table instance
-         */
+        if (!empty($this->_searchableFields)) {
+            return $this->_searchableFields;
+        }
+
+        // get Table instance
         if (is_string($table)) {
             $table = TableRegistry::get($table);
         }
 
-        if (method_exists($table, 'getSearchableFields') && is_callable([$table, 'getSearchableFields'])) {
-            $result = $table->getSearchableFields();
-        } else {
-            $db = ConnectionManager::get('default');
-            $collection = $db->schemaCollection();
-            // by default, all fields are searchable
-            $result = $collection->describe($table->table())->columns();
-        }
-        /*
-        skip display fields
-         */
-        $result = array_diff($result, $this->_skipDisplayFields);
+        $event = new Event('Search.Model.Search.searchabeFields', $this, [
+            'table' => $table
+        ]);
+        $this->eventManager()->dispatch($event);
 
-        return $result;
-    }
-
-    /**
-     * Method responsible for retrieving specified fields properties.
-     *
-     * @param  mixed  $table  name or instance of the Table
-     * @param  array  $fields fields
-     * @return string         field input
-     */
-    public function getSearchableFieldProperties($table, array $fields)
-    {
-        $result = [];
-        if (empty($fields)) {
-            return $result;
-        }
-        /*
-        get Table instance
-         */
-        if (is_string($table)) {
-            $table = TableRegistry::get($table);
+        if (empty($event->result)) {
+            throw new RuntimeException('Table [' . $table->registryAlias() . '] has no searchable fields defined.');
         }
 
-        if (method_exists($table, 'getSearchableFieldProperties') &&
-            is_callable([$table, 'getSearchableFieldProperties'])
-        ) {
-            $result = $table->getSearchableFieldProperties($fields);
-        } else {
-            $db = ConnectionManager::get('default');
-            $collection = $db->schemaCollection();
+        $this->_searchableFields = $event->result;
 
-            foreach ($fields as $field) {
-                $result[$field] = $collection->describe($table->table())->column($field);
-            }
-        }
-
-        return $result;
-    }
-
-    /**
-     * Generates and returns searchable fields labels.
-     *
-     * @param  array  $fields searchable fields
-     * @return array
-     */
-    public function getSearchableFieldLabels(array $fields)
-    {
-        foreach ($fields as $fieldName => &$fieldProperties) {
-            $fieldProperties['label'] = Inflector::humanize($fieldName);
-        }
-
-        return $fields;
+        return $this->_searchableFields;
     }
 
     /**
@@ -530,13 +341,15 @@ class SavedSearchesTable extends Table
         $displayField = $table->displayField();
 
         $fields = $this->getSearchableFields($table);
-        $fields = $this->getSearchableFieldProperties($table, $fields);
+        if (empty($fields)) {
+            return $result;
+        }
 
         // if display field is not a virtual field, use that for basic search
         if (in_array($displayField, $table->schema()->columns())) {
             $result[$displayField][] = [
                 'type' => $fields[$displayField]['type'],
-                'operator' => static::DEFAULT_SEARCH_OPERATOR,
+                'operator' => key($fields[$displayField]['operators']),
                 'value' => $data['query']
             ];
         } else {
@@ -547,7 +360,7 @@ class SavedSearchesTable extends Table
 
                 $result[$field][] = [
                     'type' => $properties['type'],
-                    'operator' => static::DEFAULT_SEARCH_OPERATOR,
+                    'operator' => key($fields[$displayField]['operators']),
                     'value' => $data['query']
                 ];
             }
@@ -616,14 +429,14 @@ class SavedSearchesTable extends Table
                     continue;
                 }
                 $operator = $criteria['operator'];
-                if (isset($this->_sqlOperators[$type][$operator]['pattern'])) {
+                if (isset($this->_searchableFields[$fieldName]['operators'][$operator]['pattern'])) {
                     $value = str_replace(
                         '{{value}}',
                         $value,
-                        $this->_sqlOperators[$type][$operator]['pattern']
+                        $this->_searchableFields[$fieldName]['operators'][$operator]['pattern']
                     );
                 }
-                $sqlOperator = $this->_sqlOperators[$type][$operator]['operator'];
+                $sqlOperator = $this->_searchableFields[$fieldName]['operators'][$operator]['operator'];
                 list(, $prefix) = pluginSplit($model);
                 $key = $prefix . '.' . $fieldName . ' ' . $sqlOperator;
 

@@ -11,6 +11,31 @@ var search = search || {};
         this.addFieldId = options.hasOwnProperty('addFieldId') ? options.addFieldId : '#addFilter';
         this.fieldProperties = {};
         this.fieldTypeOperators = {};
+        this.deleteBtnHtml = '<div class="input-sm">' +
+            '<a href="#" data-element-id="{{id}}">' +
+                '<span class="glyphicon glyphicon-minus"></span>' +
+            '</a>' +
+        '</div>';
+        this.operatorSelectHtml = '<select ' +
+            'name="criteria[{{field}}][{{timestamp}}][operator]" ' +
+            'class="form-control input-sm">' +
+            '{{options}}' +
+        '</select>';
+        this.operatorOptionHtml = '<option value="{{value}}" {{selected}}>{{label}}</option>';
+        this.fieldTypeHtml = '<input' +
+            ' type="hidden"' +
+            ' name="criteria[{{field}}][{{timestamp}}][type]"' +
+            ' value="{{type}}"' +
+        '>';
+        this.fieldLabelHtml = '<label>{{label}}</label>';
+        this.fieldInputHtml = '<div class="form-group" id="{{id}}">{{fieldType}}' +
+            '<div class="row">' +
+                '<div class="col-xs-12 col-md-3 col-lg-2">{{fieldLabel}}</div>' +
+                '<div class="col-xs-4 col-md-2 col-lg-3">{{fieldOperator}}</div>' +
+                '<div class="col-xs-6 col-md-5 col-lg-4">{{fieldInput}}</div>' +
+                '<div class="col-xs-2 col-lg-1">{{deleteButton}}</div>' +
+            '</div>' +
+        '</div>';
     }
 
     /**
@@ -52,15 +77,6 @@ var search = search || {};
     };
 
     /**
-     * Field type operators setter.
-     *
-     * @param {object} fieldTypeOperators field type operators
-     */
-    Search.prototype.setFieldTypeOperators = function(fieldTypeOperators) {
-        this.fieldTypeOperators = fieldTypeOperators;
-    };
-
-    /**
      * Method that generates field on field dropdown select.
      *
      * @return {undefined}
@@ -98,26 +114,27 @@ var search = search || {};
      */
     Search.prototype._generateField = function(field, properties, value, setOperator) {
         var timestamp = new Date().getUTCMilliseconds();
-        var del_id = field + '_' + timestamp;
-        var inputHtml = '';
-        inputHtml += '<div class="form-group" id="' + del_id + '">';
-            inputHtml += this._generateFieldLabel(properties.label);
-            inputHtml += this._generateFieldType(field, properties.type, timestamp);
-            inputHtml += '<div class="row">';
-                inputHtml += '<div class="col-xs-5 col-md-4 col-lg-3">';
-                    inputHtml += this._generateFieldOperator(field, properties.type, timestamp, setOperator);
-                inputHtml += '</div>';
-                inputHtml += '<div class="col-xs-5 col-md-5 col-lg-4">';
-                    inputHtml += this._generateFieldInput(field, properties, timestamp, value);
-                inputHtml += '</div>';
-                inputHtml += '<div class="col-xs-2 col-md-1">';
-                    inputHtml += this._generateDeleteButton(del_id);
-                inputHtml += '</div>';
-            inputHtml += '</div>';
-        inputHtml += '</div>';
+        var id = field + '_' + timestamp;
+
+        var inputHtml = this.fieldInputHtml;
+        inputHtml = inputHtml.replace('{{id}}', id);
+        inputHtml = inputHtml.replace('{{fieldType}}', this._generateFieldType(field, properties.type, timestamp));
+        inputHtml = inputHtml.replace('{{fieldLabel}}', this._generateFieldLabel(properties.label));
+        inputHtml = inputHtml.replace(
+            '{{fieldOperator}}',
+            this._generateSearchOperator(field, properties.operators, timestamp, setOperator)
+        );
+        inputHtml = inputHtml.replace('{{fieldInput}}', this._generateFieldInput(
+            field,
+            properties.input,
+            timestamp,
+            value
+        ));
+        inputHtml = inputHtml.replace('{{deleteButton}}', this._generateDeleteButton(id));
+
         $(this.formId + ' fieldset').append(inputHtml);
 
-        this._onRemoveBtnClick(del_id);
+        this._onRemoveBtnClick(id);
     };
 
     /**
@@ -127,10 +144,9 @@ var search = search || {};
      * @return {string}
      */
     Search.prototype._generateFieldLabel = function(label) {
-        var result = '';
-        result += '<label>' + label + '</label>';
+        var input = this.fieldLabelHtml;
 
-        return result;
+        return input.replace('{{label}}', label);
     };
 
     /**
@@ -142,10 +158,9 @@ var search = search || {};
      * @return {string}
      */
     Search.prototype._generateFieldType = function(field, type, timestamp) {
-        var result = '';
-        result += '<input type="hidden" name="criteria[' + field + '][' + timestamp + '][type]" value="' + type + '">';
+        var input = this.fieldTypeHtml;
 
-        return result;
+        return input.replace('{{field}}', field).replace('{{timestamp}}', timestamp).replace('{{type}}', type);
     };
 
     /**
@@ -157,22 +172,25 @@ var search = search || {};
      * @param  {string} setOperator field set operator
      * @return {string}
      */
-    Search.prototype._generateFieldOperator = function(field, type, timestamp, setOperator) {
-        var result = '';
-        if (this.fieldTypeOperators.hasOwnProperty(type)) {
-            result += '<select name="criteria[' + field + '][' + timestamp + '][operator]" class="form-control input-sm">';
-            $.each(this.fieldTypeOperators[type], function(k, v) {
-                result += '<option value="' + k + '"';
-                if (setOperator === k) {
-                    result += ' selected';
-                }
-                result += '>';
-                result += v + '</option>';
-            });
-            result += '</select>';
-        }
+    Search.prototype._generateSearchOperator = function(field, operators, timestamp, setOperator) {
+        var that = this;
 
-        return result;
+        var options = '';
+        $.each(operators, function(k, v) {
+            var option = that.operatorOptionHtml;
+            option = option.replace('{{value}}', k);
+            option = option.replace('{{label}}', v.label);
+            if (k === setOperator) {
+                option = option.replace('{{selected}}', 'selected');
+            } else {
+                option = option.replace('{{selected}}', '');
+            }
+            options += option;
+        });
+
+        var select = this.operatorSelectHtml;
+
+        return select.replace('{{field}}', field).replace('{{timestamp}}', timestamp).replace('{{options}}', options);
     };
 
     /**
@@ -184,30 +202,68 @@ var search = search || {};
      * @param  {string} value      field value
      * @return {string}
      */
-    Search.prototype._generateFieldInput = function(field, properties, timestamp, value) {
-        var result = '';
+    Search.prototype._generateFieldInput = function(field, input, timestamp, value) {
+        var name = 'criteria[' + field + '][' + timestamp + '][value]';
         if ('undefined' === typeof value) {
             value = '';
         }
-        switch (properties.type) {
-            case 'list':
-                result += '<select name="criteria[' + field + '][' + timestamp + '][value]" class="form-control input-sm">';
-                $.each(properties.fieldOptions, function(k, v) {
-                    selected = k === value ? ' selected' : null;
-                    result += '<option value="' + k + '"' + selected + '>' + v + '</option>';
-                });
-                result += '</select>';
-                break;
-            case 'boolean':
-                result += '<input type="hidden" name="criteria[' + field + '][' + timestamp + '][value]" value="0">';
-                result += '<input type="checkbox" name="criteria[' + field + '][' + timestamp + '][value]" = value="1">';
-                break;
-            default:
-                result += '<input type="' + properties.type + '" name="criteria[' + field + '][' + timestamp + '][value]"';
-                result += ' class="form-control input-sm" value="' + value + '">';
+
+        var result = input.content
+            .replace(/{{name}}/g, name)
+            .replace(/{{value}}/g, value)
+            .replace(/{{id}}/g, timestamp);
+
+        if (value) {
+            result = this._handleSpecialInputs(result, value);
         }
 
         return result;
+    };
+
+    /**
+     * Handle special inputs such as checkbox and select.
+     * Select will set the correct option as 'selected'
+     * and checkbox will set the checked flag if value
+     * is true.
+     *
+     * @param  {string} element Input element
+     * @param  {string} value   Input value
+     * @return {string}
+     */
+    Search.prototype._handleSpecialInputs = function(element, value) {
+        var html = $(element);
+
+        // handle select element
+        var has_select = $(html).find('select');
+        if (html.is('select') || 0 < has_select.length) {
+            $(html).find('option').each(function() {
+                if (this.value !== value) {
+                    return true;
+                }
+                $(this).attr('selected', 'selected');
+
+                return false;
+            });
+
+            return html.get(0).outerHTML;
+        }
+
+        // handle checkbox element
+        var has_checkbox = $(html).find(':checkbox');
+        if (html.is(':checkbox') || 0 < has_checkbox.length) {
+            $(html).find(':checkbox').each(function() {
+                // convert string to int with + and then to boolean with !!
+                // @link http://stackoverflow.com/a/16313488/2562232
+                var checked = !!+value;
+                $(this).attr('checked', checked);
+
+                return false;
+            });
+
+            return html.get(0).outerHTML;
+        }
+
+        return element;
     };
 
     /**
@@ -217,14 +273,9 @@ var search = search || {};
      * @return {string}
      */
     Search.prototype._generateDeleteButton = function(id) {
-        var result = '';
-        result += '<div class="input-sm">';
-            result += '<a href="#" data-element-id="' + id + '">';
-                result += '<span class="glyphicon glyphicon-minus"></span>';
-            result += '</a>';
-        result += '</div>';
+        var button = this.deleteBtnHtml;
 
-        return result;
+        return button.replace('{{id}}', id);
     };
 
     search = new Search({
