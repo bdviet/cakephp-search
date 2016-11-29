@@ -41,11 +41,6 @@ class SavedSearchesTable extends Table
     const DELETE_OLDER_THAN = '-3 hours';
 
     /**
-     * Default search operator identifier
-     */
-    const DEFAULT_SEARCH_OPERATOR = 'contains';
-
-    /**
      * Target table searchable fields.
      *
      * @var array
@@ -382,13 +377,15 @@ class SavedSearchesTable extends Table
         $displayField = $table->displayField();
 
         $fields = $this->getSearchableFields($table);
-        $fields = $this->getSearchableFieldProperties($table, $fields);
+        if (empty($fields)) {
+            return $result;
+        }
 
         // if display field is not a virtual field, use that for basic search
         if (in_array($displayField, $table->schema()->columns())) {
             $result[$displayField][] = [
                 'type' => $fields[$displayField]['type'],
-                'operator' => static::DEFAULT_SEARCH_OPERATOR,
+                'operator' => key($fields[$displayField]['operators']),
                 'value' => $data['query']
             ];
         } else {
@@ -399,7 +396,7 @@ class SavedSearchesTable extends Table
 
                 $result[$field][] = [
                     'type' => $properties['type'],
-                    'operator' => static::DEFAULT_SEARCH_OPERATOR,
+                    'operator' => key($fields[$displayField]['operators']),
                     'value' => $data['query']
                 ];
             }
