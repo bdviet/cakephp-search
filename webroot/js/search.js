@@ -213,7 +213,57 @@ var search = search || {};
             .replace(/{{value}}/g, value)
             .replace(/{{id}}/g, timestamp);
 
+        if (value) {
+            result = this._handleSpecialInputs(result, value);
+        }
+
         return result;
+    };
+
+    /**
+     * Handle special inputs such as checkbox and select.
+     * Select will set the correct option as 'selected'
+     * and checkbox will set the checked flag if value
+     * is true.
+     *
+     * @param  {string} element Input element
+     * @param  {string} value   Input value
+     * @return {string}
+     */
+    Search.prototype._handleSpecialInputs = function(element, value) {
+        var html = $(element);
+
+        // handle select element
+        var has_select = $(html).find('select');
+        if (html.is('select') || 0 < has_select.length) {
+            $(html).find('option').each(function() {
+                if (this.value !== value) {
+                    return true;
+                }
+                $(this).attr('selected', 'selected');
+
+                return false;
+            });
+
+            return html.get(0).outerHTML;
+        }
+
+        // handle checkbox element
+        var has_checkbox = $(html).find(':checkbox');
+        if (html.is(':checkbox') || 0 < has_checkbox.length) {
+            $(html).find(':checkbox').each(function() {
+                // convert string to int with + and then to boolean with !!
+                // @link http://stackoverflow.com/a/16313488/2562232
+                var checked = !!+value;
+                $(this).attr('checked', checked);
+
+                return false;
+            });
+
+            return html.get(0).outerHTML;
+        }
+
+        return element;
     };
 
     /**
