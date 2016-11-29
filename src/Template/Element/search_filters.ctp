@@ -40,6 +40,7 @@ if (isset($this->request->data['criteria'])) {
         </div>
         <?= $this->Form->create(null, [
             'id' => 'SearchFilterForm',
+            'class' => 'search-form',
             'novalidate' => 'novalidate',
             'url' => [
                 'plugin' => $this->request->plugin,
