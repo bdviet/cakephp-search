@@ -383,8 +383,9 @@ class SavedSearchesTable extends Table
         $query = $table
             ->find('all')
             ->select($this->_getQueryFields($data, $table))
-            ->where($this->_prepareWhereStatement($data, $tableName))
             ->order([$data['sort_by_field'] => $data['sort_by_order']]);
+
+        $this->_setWhereStatement($data, $tableName, $query);
 
         // set limit if not 0
         if (0 < (int)$data['limit']) {
@@ -403,18 +404,19 @@ class SavedSearchesTable extends Table
     }
 
     /**
-     * Prepare search query's where statement
+     * Set search query's where statement.
      *
-     * @param  array  $data  request data
+     * @param  array $data request data
      * @param  string $model model name
-     * @return array
+     * @param  \Cake\ORM\Query $query Query instance
+     * @return void
      */
-    protected function _prepareWhereStatement(array $data, $model)
+    protected function _setWhereStatement(array $data, $model, Query $query)
     {
         $result = [];
 
         if (empty($data['criteria'])) {
-            return $result;
+            return;
         }
 
         foreach ($data['criteria'] as $fieldName => $criterias) {
@@ -438,61 +440,61 @@ class SavedSearchesTable extends Table
                 }
                 $sqlOperator = $this->_searchableFields[$fieldName]['operators'][$operator]['operator'];
                 list(, $prefix) = pluginSplit($model);
-                $key = $prefix . '.' . $fieldName . ' ' . $sqlOperator;
+                $field = $prefix . '.' . $fieldName . ' ' . $sqlOperator;
 
-                if (!array_key_exists($key, $result)) {
-                    $result[$key] = $value;
+                if (!array_key_exists($field, $result)) {
+                    $result[$field] = $value;
                 } else {
-                    switch ($type) {
-                        case 'uuid':
-                        case 'list':
-                            if (is_array($result[$key])) {
-                                array_push($result[$key], $value);
+                    switch (strtolower($sqlOperator)) {
+                        case 'in':
+                        case 'not in':
+                            if (is_array($result[$field])) {
+                                array_push($result[$field], $value);
                             } else {
-                                $result[$key] = [$result[$key], $value];
+                                $result[$field] = [$result[$field], $value];
                             }
                             break;
 
-                        case 'integer':
-                        case 'datetime':
-                        case 'date':
-                        case 'time':
-                            switch ($operator) {
-                                case 'greater':
-                                case 'less':
-                                    if (is_array($result[$key])) {
-                                        array_push($result[$key]['AND'], $value);
-                                    } else {
-                                        $result[$key] = ['AND' => [$result[$key], $value]];
-                                    }
-                                    break;
-
-                                default:
-                                    if (is_array($result[$key])) {
-                                        array_push($result[$key], $value);
-                                    } else {
-                                        $result[$key] = [$result[$key], $value];
-                                    }
-                                    break;
+                        case 'is':
+                        case 'is not':
+                        case 'like':
+                        case 'not like':
+                            if (is_array($result[$field])) {
+                                array_push($result[$field]['OR'], $value);
+                            } else {
+                                $result[$field] = ['OR' => [$result[$field], $value]];
                             }
                             break;
 
-                        case 'string':
-                        case 'text':
-                        case 'textarea':
-                        case 'email':
-                            if (is_array($result[$key])) {
-                                array_push($result[$key]['OR'], $value);
+                        case '>':
+                        case '<':
+                            if (is_array($result[$field])) {
+                                array_push($result[$field]['AND'], $value);
                             } else {
-                                $result[$key] = ['OR' => [$result[$key], $value]];
+                                $result[$field] = ['AND' => [$result[$field], $value]];
                             }
                             break;
                     }
                 }
             }
         }
+        debug($result);
 
-        return $result;
+        foreach ($result as $k => $v) {
+            if (is_array($v)) {
+                $operator = strtolower(key($v)) . 'Where';
+                debug($v);
+                foreach ($v as $y => $i) {
+                    debug($y);
+                    debug($i);
+                    $query->{$operator}([$k => $i]);
+                }
+            } else {
+                $query->andWhere([$k => $v]);
+            }
+        }
+        debug($query);
+        die;
     }
 
     /**
