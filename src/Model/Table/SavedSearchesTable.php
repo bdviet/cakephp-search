@@ -417,6 +417,10 @@ class SavedSearchesTable extends Table
             return $result;
         }
 
+        if (empty($this->_searchableFields)) {
+            $this->getSearchableFields($model);
+        }
+
         foreach ($data['criteria'] as $fieldName => $criterias) {
             if (empty($criterias)) {
                 continue;
