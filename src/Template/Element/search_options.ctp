@@ -11,6 +11,12 @@ foreach ($searchFields as $k => $v) {
         $availableColumns[$k] = $v;
     }
 }
+
+// sort available columns by label
+uasort($availableColumns, function($a, $b) {
+    return strcmp($a['label'], $b['label']);
+});
+
 // sort display columns based on listing fields order
 $displayColumns = array_merge(array_flip($listingFields), $displayColumns);
 ?>
