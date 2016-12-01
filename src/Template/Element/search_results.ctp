@@ -2,17 +2,20 @@
 use Cake\Event\Event;
 use Cake\Utility\Inflector;
 
+// get search information from the saved search (if is set) to construct search results title
 if (!empty($savedSearch)) {
     $searchId = $savedSearch->id;
     $searchName = $savedSearch->name;
     $model = $savedSearch->model;
 }
 
+// search title
 $title = $this->name;
 if (!empty($searchName)) {
     $title = $searchName;
 }
 
+//search url if is a saved one
 $url = null;
 if (!empty($model) && !empty($searchId)) {
     list($plugin, $controller) = pluginSplit($model);
