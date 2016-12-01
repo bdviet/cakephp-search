@@ -26,13 +26,6 @@ trait SearchTrait
     protected $_elementSearch = 'Search.Search/search';
 
     /**
-     * Element to be used as Saved Result template.
-     *
-     * @var string
-     */
-    protected $_elementSavedResult = 'Search.Search/search_saved_result';
-
-    /**
      * Save action
      *
      * @param string|null $id Search id.
