@@ -34,7 +34,7 @@ if (!empty($url)) {
 }
 ?>
 
-<?php if (!empty($entities)) : ?>
+<?php if (!empty($searchData['result'])) : ?>
 <div class="row">
     <div class="col-xs-12">
         <div class="panel panel-default">
@@ -55,7 +55,7 @@ if (!empty($url)) {
                             </tr>
                         </thead>
                         <tbody>
-                            <?php foreach ($entities as $entity) : ?>
+                            <?php foreach ($searchData['result'] as $entity) : ?>
                             <tr>
                                 <?php foreach ($searchData['display_columns'] as $field) : ?>
                                     <td><?= isset($entity[$field]) ? $entity[$field] : null; ?></td>

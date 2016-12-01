@@ -3,7 +3,6 @@
         'searchType' => $renderData->type,
         'searchName' => $renderData->name,
         'model'      => $renderData->model,
-        'entities'   => $renderData->entities['result'],
         'searchData' => $renderData->entities
     ]);?>
 </div>

@@ -101,10 +101,10 @@ trait SearchTrait
             // @todo find out how to do pagination without affecting limit
             if ($search['entities']['result'] instanceof Query) {
                 // fetched from new search result
-                $entities = $search['entities']['result']->all();
+                $data['result'] = $search['entities']['result']->all();
             } else {
                 // as taken from a saved search result
-                $entities = $search['entities']['result'];
+                $data['result'] = $search['entities']['result'];
             }
             $this->set('entities', $entities);
         }
