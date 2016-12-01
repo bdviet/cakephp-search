@@ -107,14 +107,11 @@ trait SearchTrait
                 $entities = $search['entities']['result'];
             }
             $this->set('entities', $entities);
-
-            // set listing fields
-            $listingFields = Hash::get($data, 'display_columns');
         }
 
         $savedSearches = $table->getSavedSearches([$this->Auth->user('id')], [$model]);
 
-        $this->set(compact('searchFields', 'savedSearches', 'listingFields', 'model'));
+        $this->set(compact('searchFields', 'savedSearches', 'model'));
         $this->set('searchData', $data);
 
         $this->render($this->_elementSearch);

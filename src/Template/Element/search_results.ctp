@@ -48,7 +48,7 @@ if (!empty($url)) {
                     <table class="table table-hover table-datatable">
                         <thead>
                             <tr>
-                            <?php foreach ($listingFields as $field) : ?>
+                            <?php foreach ($searchData['display_columns'] as $field) : ?>
                                 <th><?= Inflector::humanize($field); ?></th>
                             <?php endforeach; ?>
                                 <th class="actions"><?= __('Actions') ?></th>
@@ -57,7 +57,7 @@ if (!empty($url)) {
                         <tbody>
                             <?php foreach ($entities as $entity) : ?>
                             <tr>
-                                <?php foreach ($listingFields as $field) : ?>
+                                <?php foreach ($searchData['display_columns'] as $field) : ?>
                                     <td><?= isset($entity[$field]) ? $entity[$field] : null; ?></td>
                                 <?php endforeach; ?>
                                 <td class="actions">

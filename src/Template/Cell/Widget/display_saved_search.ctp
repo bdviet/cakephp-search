@@ -4,6 +4,6 @@
         'searchName' => $renderData->name,
         'model'      => $renderData->model,
         'entities'   => $renderData->entities['result'],
-        'listingFields' => $renderData->entities['display_columns']
+        'searchData' => $renderData->entities
     ]);?>
 </div>

@@ -57,7 +57,11 @@ if (isset($searchData['criteria'])) {
     <hr />
     <div class="row">
         <div class="col-md-8 col-lg-9">
-            <?= $this->element('Search.search_options'); ?>
+            <?php
+            if (!empty($searchFields)) {
+                echo $this->element('Search.search_options');
+            }
+            ?>
             <?= $this->Form->button(__('Search'), ['class' => 'btn btn-primary']) ?>
             <?= $this->Form->end() ?>
         </div>

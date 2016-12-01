@@ -1,4 +1,3 @@
-<?php if (!empty($searchFields) && !empty($listingFields)) : ?>
 <?= $this->Html->css('Search.search_options', ['block' => 'cssBottom']) ?>
 <?= $this->Html->script('Search.search_options', ['block' => 'scriptBottom']) ?>
 <?php
@@ -16,8 +15,8 @@ foreach ($searchFields as $k => $v) {
 // alphabetically sort available columns
 asort($availableColumns);
 
-// sort display columns based on listing fields order
-$displayColumns = array_merge(array_flip($listingFields), $displayColumns);
+// sort display columns based on saved search display_columns order
+$displayColumns = array_merge(array_flip($searchData['display_columns']), $displayColumns);
 
 $sortByOptions = array_merge($availableColumns, $displayColumns);
 // alphabetically sort sortByOptions
@@ -75,4 +74,3 @@ asort($sortByOptions);
         ) ?>
         </div>
     </div>
-<?php endif; ?>
