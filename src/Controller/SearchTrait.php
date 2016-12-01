@@ -123,6 +123,36 @@ trait SearchTrait
     }
 
     /**
+     * Edit action
+     *
+     * @param string|null $id Search id.
+     * @param string|null $preId Presaved Search id.
+     * @return \Cake\Network\Response|null
+     * @throws \Cake\Network\Exception\NotFoundException When record not found.
+     */
+    public function editSearch($id = null, $preId = null)
+    {
+        $this->request->allowMethod(['patch', 'post', 'put']);
+
+        $table = TableRegistry::get($this->_tableSearch);
+
+        // get pre-saved search
+        $preSaved = $table->get($preId);
+        // merge pre-saved search and request data
+        $data = array_merge($preSaved->toArray(), $this->request->data);
+
+        $search = $table->get($id);
+        $search = $table->patchEntity($search, $data);
+        if ($table->save($search)) {
+            $this->Flash->success(__('The search has been edited.'));
+        } else {
+            $this->Flash->error(__('The search could not be edited. Please, try again.'));
+        }
+
+        return $this->redirect(['action' => 'search', $id]);
+    }
+
+    /**
      * Delete method
      *
      * @param string|null $id Saved search id.
