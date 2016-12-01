@@ -32,8 +32,9 @@ if (!empty($model) && !empty($searchId)) {
 if (!empty($url)) {
     $title = '<a href="' . $this->Url->build($url) . '">' . $title . '</a>';
 }
-?>
 
+$uid = uniqid();
+?>
 <?php if (!empty($searchData['result'])) : ?>
 <div class="row">
     <div class="col-xs-12">
@@ -45,7 +46,7 @@ if (!empty($url)) {
             </div>
             <div class="panel-body">
                 <div class="table-responsive">
-                    <table class="table table-hover table-datatable">
+                    <table id="table-datatable-<?= $uid ?>" class="table table-hover">
                         <thead>
                             <tr>
                             <?php foreach ($searchData['display_columns'] as $field) : ?>
@@ -81,4 +82,13 @@ if (!empty($url)) {
         </div>
     </div>
 </div>
+<?= $this->Html->scriptBlock(
+    'view_search_result.init({
+        table_id: \'#table-datatable-' . $uid . '\',
+        sort_by_field: \'' . (int)array_search($searchData['sort_by_field'], $searchData['display_columns']) . '\',
+        sort_by_order: \'' . $searchData['sort_by_order'] . '\'
+    });',
+    ['block' => 'scriptBottom']
+);
+?>
 <?php endif; ?>
