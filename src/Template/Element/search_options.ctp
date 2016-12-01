@@ -4,18 +4,17 @@
 <?php
 $availableColumns = [];
 $displayColumns = [];
+// get display and available columns
 foreach ($searchFields as $k => $v) {
-    if (in_array($k, $listingFields)) {
-        $displayColumns[$k] = $v;
+    if (in_array($k, $searchData['display_columns'])) {
+        $displayColumns[$k] = $v['label'];
     } else {
-        $availableColumns[$k] = $v;
+        $availableColumns[$k] = $v['label'];
     }
 }
 
-// sort available columns by label
-uasort($availableColumns, function($a, $b) {
-    return strcmp($a['label'], $b['label']);
-});
+// alphabetically sort available columns
+asort($availableColumns);
 
 // sort display columns based on listing fields order
 $displayColumns = array_merge(array_flip($listingFields), $displayColumns);
@@ -26,7 +25,7 @@ $displayColumns = array_merge(array_flip($listingFields), $displayColumns);
             <ul id="availableColumns" class="connectedSortable">
             <?php foreach ($availableColumns as $k => $v) : ?>
                 <li data-id="<?= $k ?>">
-                    <?= $v['label'] ?>
+                    <?= $v ?>
                 </li>
             <?php endforeach; ?>
             </ul>
@@ -36,7 +35,7 @@ $displayColumns = array_merge(array_flip($listingFields), $displayColumns);
             <ul id="displayColumns" class="connectedSortable">
             <?php foreach ($displayColumns as $k => $v) : ?>
                 <li data-id="<?= $k ?>">
-                    <?= $v['label'] ?>
+                    <?= $v ?>
                 </li>
             <?php endforeach; ?>
             </ul>
