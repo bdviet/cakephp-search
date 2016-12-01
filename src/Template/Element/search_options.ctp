@@ -18,6 +18,10 @@ asort($availableColumns);
 
 // sort display columns based on listing fields order
 $displayColumns = array_merge(array_flip($listingFields), $displayColumns);
+
+$sortByOptions = array_merge($availableColumns, $displayColumns);
+// alphabetically sort sortByOptions
+asort($sortByOptions);
 ?>
     <div class="row">
         <div class="col-md-4">
@@ -42,12 +46,7 @@ $displayColumns = array_merge(array_flip($listingFields), $displayColumns);
         </div>
         <div class="col-md-4">
         <?= $this->Form->label(__('Sort Field')) ?>
-        <?php
-        $sortByOptions = array_combine(
-            array_keys($searchFields),
-            array_map(function ($v) { return $v['label']; }, $searchFields)
-        );
-        echo $this->Form->select(
+        <?= $this->Form->select(
             'sort_by_field',
              $sortByOptions, [
                 'default' => isset($searchData['sort_by_field']) ? $searchData['sort_by_field'] : key($sortByOptions),
