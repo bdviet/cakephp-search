@@ -75,11 +75,17 @@ trait SearchTrait
                 $data['criteria'] = $table->getSearchCriteria(Hash::get($data, 'criteria'), $model);
             }
 
-            // if id of saved search is provided, fetch search conditions from there
+            // id of saved search has been provided
             if (!is_null($id)) {
                 $search = $table->get($id);
                 $this->set('savedSearch', $search);
-                $data = json_decode($search->content, true);
+                // fetch search conditions from saved search if request data are empty
+                // INFO: this is valid on initial saved search load
+                if (empty($data)) {
+                    $data = json_decode($search->content, true);
+                } else { // INFO: this is valid when a saved search was modified and the form was re-submitted
+                    $data['is_editable'] = true;
+                }
             }
 
             // set display columns before the pre-saving, fixes bug
