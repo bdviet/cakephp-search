@@ -45,7 +45,8 @@ if (isset($searchData['criteria'])) {
             'url' => [
                 'plugin' => $this->request->plugin,
                 'controller' => $this->request->controller,
-                'action' => 'search'
+                'action' => 'search',
+                $this->request->param('pass.0')
             ]
         ]) ?>
         <hr class="visible-xs visible-sm visible-md" />
