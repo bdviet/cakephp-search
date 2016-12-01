@@ -51,6 +51,7 @@ $displayColumns = array_merge(array_flip($listingFields), $displayColumns);
         echo $this->Form->select(
             'sort_by_field',
              $sortByOptions, [
+                'default' => isset($searchData['sort_by_field']) ? $searchData['sort_by_field'] : key($sortByOptions),
                 'class' => 'form-control input-sm'
             ]
         ) ?>
@@ -60,6 +61,7 @@ $displayColumns = array_merge(array_flip($listingFields), $displayColumns);
             'sort_by_order',
              ['asc' => 'Ascending', 'desc' => 'Descending'],
              [
+                'default' => isset($searchData['sort_by_order']) ? $searchData['sort_by_order'] : 'asc',
                 'class' => 'form-control input-sm'
             ]
         ) ?>
@@ -69,7 +71,7 @@ $displayColumns = array_merge(array_flip($listingFields), $displayColumns);
             'limit',
              [0 => 'Unlimited', 1 => 1, 3 => 3, 5 => 5, 10 => 10, 20 => 20, 50 => 50, 100 => 100],
              [
-                'default' => 10,
+                'default' => isset($searchData['limit']) ? $searchData['limit'] : 10,
                 'class' => 'form-control input-sm'
             ]
         ) ?>
