@@ -106,7 +106,6 @@ trait SearchTrait
                 // as taken from a saved search result
                 $data['result'] = $search['entities']['result'];
             }
-            $this->set('entities', $entities);
         }
 
         $savedSearches = $table->getSavedSearches([$this->Auth->user('id')], [$model]);
