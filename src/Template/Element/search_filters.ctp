@@ -8,9 +8,9 @@
     ['block' => 'scriptBottom']
 ); ?>
 <?php
-if (isset($this->request->data['criteria'])) {
+if (isset($searchData['criteria'])) {
     echo $this->Html->scriptBlock(
-        'search.generateCriteriaFields(' . json_encode($this->request->data['criteria']) . ');',
+        'search.generateCriteriaFields(' . json_encode($searchData['criteria']) . ');',
         ['block' => 'scriptBottom']
     );
 }

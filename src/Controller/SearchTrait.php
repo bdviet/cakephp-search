@@ -4,6 +4,7 @@ namespace Search\Controller;
 use Cake\Network\Exception\BadRequestException;
 use Cake\ORM\Query;
 use Cake\ORM\TableRegistry;
+use Cake\Utility\Hash;
 use Search\Controller\Traits\SearchableTrait;
 
 trait SearchTrait
@@ -73,26 +74,28 @@ trait SearchTrait
         // get searchable fields
         $searchFields = $table->getSearchableFields($model);
 
+        $data = $this->request->data();
+
         if ($this->request->is(['post', 'get'])) {
             // basic search query, converted to search criteria
-            if ($this->request->data('criteria.query')) {
-                $this->request->data('criteria', $table->getSearchCriteria($this->request->data('criteria'), $model));
+            if (Hash::get($data, 'criteria.query')) {
+                $data['criteria'] = $table->getSearchCriteria(Hash::get($data, 'criteria'), $model);
             }
 
             // if id of saved search is provided, fetch search conditions from there
             if (!is_null($id)) {
                 $search = $table->get($id);
                 $this->set('savedSearch', $search);
-                $this->request->data = json_decode($search->content, true);
+                $data = json_decode($search->content, true);
             }
 
             // set display columns before the pre-saving, fixes bug
             // with missing display columns when saving a basic search
-            if (!$this->request->data('display_columns')) {
-                $this->request->data('display_columns', $table->getListingFields($model));
+            if (!Hash::get($data, 'display_columns')) {
+                $data['display_columns'] = $table->getListingFields($model);
             }
 
-            $search = $table->search($model, $this->Auth->user(), $this->request->data);
+            $search = $table->search($model, $this->Auth->user(), $data);
 
             if (isset($search['saveSearchCriteriaId'])) {
                 $this->set('saveSearchCriteriaId', $search['saveSearchCriteriaId']);
@@ -113,12 +116,13 @@ trait SearchTrait
             $this->set('entities', $entities);
 
             // set listing fields
-            $listingFields = $this->request->data('display_columns');
+            $listingFields = Hash::get($data, 'display_columns');
         }
 
         $savedSearches = $table->getSavedSearches([$this->Auth->user('id')], [$model]);
 
         $this->set(compact('searchFields', 'savedSearches', 'listingFields', 'model'));
+        $this->set('searchData', $data);
 
         $this->render($this->_elementSearch);
     }
