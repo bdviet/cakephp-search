@@ -6,11 +6,6 @@ if (!empty($savedSearch)) {
     $searchId = $savedSearch->id;
     $searchName = $savedSearch->name;
     $model = $savedSearch->model;
-
-    if ($savedSearch->has('entities')) {
-        $entities = $savedSearch->entities['result'];
-        $listingFields = $savedSearch->entities['display_columns'];
-    }
 }
 
 $title = $this->name;
