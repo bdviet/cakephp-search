@@ -72,7 +72,11 @@ if (isset($searchData['criteria'])) {
                     <?= $this->Form->label(__('Save search')) ?>
                 </div>
                 <div class="col-sm-6 col-md-12">
-                    <?= $this->element('Search.save_search_criterias'); ?>
+                <?php if (isset($saveSearchCriteriaId)) {
+                    echo $this->element('Search.save_search_criterias', [
+                        'saveSearchCriteriaId' => $saveSearchCriteriaId
+                    ]);
+                } ?>
                     <?= $this->element('Search.save_search_results'); ?>
                 </div>
             </div>
