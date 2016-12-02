@@ -80,19 +80,6 @@ if (isset($searchData['criteria'])) {
                     <?= $this->element('Search.save_search_results'); ?>
                 </div>
             </div>
-            <?php if (isset($savedSearch) && isset($saveSearchCriteriaId) && !empty($isEditable)) : ?>
-            <div class="row">
-                <div class="col-sm-6 col-md-12">
-                    <?= $this->Form->label(__('Edit search')) ?>
-                </div>
-                <div class="col-sm-6 col-md-12">
-                        <?= $this->element('Search.edit_search_criterias', [
-                            'savedSearch' => $savedSearch,
-                            'saveSearchCriteriaId' => $saveSearchCriteriaId
-                        ]); ?>
-                </div>
-            </div>
-            <?php endif; ?>
         </div>
     </div>
 </div>
