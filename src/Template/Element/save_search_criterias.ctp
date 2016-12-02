@@ -3,8 +3,9 @@
     'url' => [
         'plugin' => $this->request->plugin,
         'controller' => $this->request->controller,
-        'action' => 'save-search',
-        $saveSearchCriteriaId
+        'action' => ($isEditable ? 'edit': 'save') . '-search',
+        $saveSearchCriteriaId,
+        $isEditable ? $savedSearch->id : null
     ]
 ]); ?>
 <div class="input-group">
@@ -13,12 +14,12 @@
         'class' => 'form-control input-sm',
         'placeholder' => 'Save criteria name',
         'required' => true,
-        'value' => ''
+        'value' => $isEditable ? $savedSearch->name : ''
     ]); ?>
     <span class="input-group-btn">
         <?= $this->Form->button(
             '<span class="glyphicon glyphicon-floppy-save"></span>',
-            ['class' => 'btn btn-primary btn-sm']
+            ['class' => 'btn btn-sm ' . ($isEditable ? 'btn-warning' : 'btn-primary')]
         ) ?>
     </span>
 </div>
