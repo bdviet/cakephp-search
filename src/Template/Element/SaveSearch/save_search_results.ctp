@@ -1,4 +1,3 @@
-<?php if (isset($saveSearchResultsId)) : ?>
     <?= $this->Form->create(null, [
         'class' => 'save-search-form',
         'url' => [
@@ -24,4 +23,3 @@
         </span>
     </div>
     <?= $this->Form->end(); ?>
-<?php endif; ?>

@@ -79,7 +79,9 @@ if (isset($searchData['criteria'])) {
                         'isEditable' => $isEditable
                     ]);
                 } ?>
-                    <?= $this->element('Search.SaveSearch/save_search_results'); ?>
+                <?php if (isset($saveSearchResultsId)) {
+                    echo $this->element('Search.SaveSearch/save_search_results');
+                } ?>
                 </div>
             </div>
         </div>
