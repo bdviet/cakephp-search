@@ -73,13 +73,13 @@ if (isset($searchData['criteria'])) {
                 </div>
                 <div class="col-sm-6 col-md-12">
                 <?php if (isset($saveSearchCriteriaId)) {
-                    echo $this->element('Search.save_search_criterias', [
+                    echo $this->element('Search.SaveSearch/save_search_criterias', [
                         'saveSearchCriteriaId' => $saveSearchCriteriaId,
                         'savedSearch' => $savedSearch,
                         'isEditable' => $isEditable
                     ]);
                 } ?>
-                    <?= $this->element('Search.save_search_results'); ?>
+                    <?= $this->element('Search.SaveSearch/save_search_results'); ?>
                 </div>
             </div>
         </div>
