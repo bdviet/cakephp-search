@@ -1,7 +1,10 @@
 <?php
 use Cake\Event\Event;
-?>
 
+echo $this->Html->css('Search.datatables.min', ['block' => 'cssBottom']);
+echo $this->Html->script('Search.datatables.min', ['block' => 'scriptBottom']);
+echo $this->Html->script('Search.view-search-result', ['block' => 'scriptBottom']);
+?>
 <div class="row">
     <div class="col-xs-6">
         <h3><strong><?= h($dashboard->name) ?></strong></h3>
@@ -20,7 +23,6 @@ use Cake\Event\Event;
     <?php endif; ?>
     </div>
 </div>
-
 <div class="row">
     <?php if( !empty($widgets) ) : ?>
         <?php for($i=0; $i < $columns; $i++) { ?>
@@ -28,7 +30,10 @@ use Cake\Event\Event;
                 <?php if (!empty($widgets[$i])): ?>
                     <?php for ($j = 0; $j < $rows; $j++): ?>
                         <?php if (!empty($widgets[$i][$j])): ?>
-                            <?php echo $this->cell("Search.Widget::{$widgets[$i][$j]->widgetDisplayMethod}" , [ [$widgets[$i][$j]], ['user' => $user] ]); ?>
+                            <?php echo $this->cell("Search.Widget::{$widgets[$i][$j]->widgetDisplayMethod}" , [
+                                [$widgets[$i][$j]],
+                                ['user' => $user, 'rootView' => $this]
+                            ]); ?>
                         <?php endif; ?>
                     <?php endfor;?>
                 <?php endif;?>
@@ -36,5 +41,3 @@ use Cake\Event\Event;
         <?php }?>
     <?php endif; ?>
 </div>
-
-<?= $this->element('Search.common_js_libs'); ?>

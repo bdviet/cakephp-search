@@ -2,22 +2,20 @@
 use Cake\Event\Event;
 use Cake\Utility\Inflector;
 
+// get search information from the saved search (if is set) to construct search results title
 if (!empty($savedSearch)) {
     $searchId = $savedSearch->id;
     $searchName = $savedSearch->name;
     $model = $savedSearch->model;
-
-    if ($savedSearch->has('entities')) {
-        $entities = $savedSearch->entities['result'];
-        $listingFields = $savedSearch->entities['display_columns'];
-    }
 }
 
+// search title
 $title = $this->name;
 if (!empty($searchName)) {
     $title = $searchName;
 }
 
+//search url if is a saved one
 $url = null;
 if (!empty($model) && !empty($searchId)) {
     list($plugin, $controller) = pluginSplit($model);
@@ -34,9 +32,10 @@ if (!empty($model) && !empty($searchId)) {
 if (!empty($url)) {
     $title = '<a href="' . $this->Url->build($url) . '">' . $title . '</a>';
 }
-?>
 
-<?php if (!empty($entities)) : ?>
+$uid = uniqid();
+?>
+<?php if (!empty($searchData['result'])) : ?>
 <div class="row">
     <div class="col-xs-12">
         <div class="panel panel-default">
@@ -47,19 +46,19 @@ if (!empty($url)) {
             </div>
             <div class="panel-body">
                 <div class="table-responsive">
-                    <table class="table table-hover table-datatable">
+                    <table id="table-datatable-<?= $uid ?>" class="table table-hover">
                         <thead>
                             <tr>
-                            <?php foreach ($listingFields as $field) : ?>
+                            <?php foreach ($searchData['display_columns'] as $field) : ?>
                                 <th><?= Inflector::humanize($field); ?></th>
                             <?php endforeach; ?>
                                 <th class="actions"><?= __('Actions') ?></th>
                             </tr>
                         </thead>
                         <tbody>
-                            <?php foreach ($entities as $entity) : ?>
+                            <?php foreach ($searchData['result'] as $entity) : ?>
                             <tr>
-                                <?php foreach ($listingFields as $field) : ?>
+                                <?php foreach ($searchData['display_columns'] as $field) : ?>
                                     <td><?= isset($entity[$field]) ? $entity[$field] : null; ?></td>
                                 <?php endforeach; ?>
                                 <td class="actions">
@@ -83,4 +82,13 @@ if (!empty($url)) {
         </div>
     </div>
 </div>
+<?= $this->Html->scriptBlock(
+    'view_search_result.init({
+        table_id: \'#table-datatable-' . $uid . '\',
+        sort_by_field: \'' . (int)array_search($searchData['sort_by_field'], $searchData['display_columns']) . '\',
+        sort_by_order: \'' . $searchData['sort_by_order'] . '\'
+    });',
+    ['block' => 'scriptBottom']
+);
+?>
 <?php endif; ?>

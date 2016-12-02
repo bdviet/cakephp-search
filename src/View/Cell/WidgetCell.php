@@ -70,6 +70,7 @@ class WidgetCell extends Cell
 
         $this->set('renderData', $renderData);
         $this->set('renderOptions', $renderOptions);
+        $this->set('rootView', $options['rootView']);
     }
 
 
@@ -115,6 +116,7 @@ class WidgetCell extends Cell
         $this->set('widgetData', $widget->widgetData);
         $this->set('renderData', $widgetData);
         $this->set('renderOptions', $renderOptions);
+        $this->set('rootView', $options['rootView']);
     }
 
 

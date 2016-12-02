@@ -8,9 +8,9 @@
     ['block' => 'scriptBottom']
 ); ?>
 <?php
-if (isset($this->request->data['criteria'])) {
+if (isset($searchData['criteria'])) {
     echo $this->Html->scriptBlock(
-        'search.generateCriteriaFields(' . json_encode($this->request->data['criteria']) . ');',
+        'search.generateCriteriaFields(' . json_encode($searchData['criteria']) . ');',
         ['block' => 'scriptBottom']
     );
 }
@@ -45,7 +45,8 @@ if (isset($this->request->data['criteria'])) {
             'url' => [
                 'plugin' => $this->request->plugin,
                 'controller' => $this->request->controller,
-                'action' => 'search'
+                'action' => 'search',
+                $this->request->param('pass.0')
             ]
         ]) ?>
         <hr class="visible-xs visible-sm visible-md" />
@@ -57,7 +58,11 @@ if (isset($this->request->data['criteria'])) {
     <hr />
     <div class="row">
         <div class="col-md-8 col-lg-9">
-            <?= $this->element('Search.search_options'); ?>
+            <?php
+            if (!empty($searchFields)) {
+                echo $this->element('Search.search_options');
+            }
+            ?>
             <?= $this->Form->button(__('Search'), ['class' => 'btn btn-primary']) ?>
             <?= $this->Form->end() ?>
         </div>
@@ -67,8 +72,20 @@ if (isset($this->request->data['criteria'])) {
                     <?= $this->Form->label(__('Save search')) ?>
                 </div>
                 <div class="col-sm-6 col-md-12">
-                    <?= $this->element('Search.save_search_criterias'); ?>
-                    <?= $this->element('Search.save_search_results'); ?>
+                <?php if (isset($saveSearchCriteriaId)) {
+                    echo $this->element('Search.SaveSearch/save_search_criterias', [
+                        'saveSearchCriteriaId' => $saveSearchCriteriaId,
+                        'savedSearch' => $savedSearch,
+                        'isEditable' => $isEditable && 'criteria' === $savedSearch->type
+                    ]);
+                } ?>
+                <?php if (isset($saveSearchResultsId)) {
+                    echo $this->element('Search.SaveSearch/save_search_results', [
+                        'saveSearchCriteriaId' => $saveSearchResultsId,
+                        'savedSearch' => $savedSearch,
+                        'isEditable' => $isEditable && 'result' === $savedSearch->type
+                    ]);
+                } ?>
                 </div>
             </div>
         </div>

@@ -4,6 +4,7 @@ namespace Search\Controller;
 use Cake\Network\Exception\BadRequestException;
 use Cake\ORM\Query;
 use Cake\ORM\TableRegistry;
+use Cake\Utility\Hash;
 use Search\Controller\Traits\SearchableTrait;
 
 trait SearchTrait
@@ -23,13 +24,6 @@ trait SearchTrait
      * @var string
      */
     protected $_elementSearch = 'Search.Search/search';
-
-    /**
-     * Element to be used as Saved Result template.
-     *
-     * @var string
-     */
-    protected $_elementSavedResult = 'Search.Search/search_saved_result';
 
     /**
      * Save action
@@ -73,26 +67,51 @@ trait SearchTrait
         // get searchable fields
         $searchFields = $table->getSearchableFields($model);
 
+        $data = $this->request->data();
+
+        // is editable flag, false by default
+        $isEditable = false;
+
+        // saved search instance, null by default
+        $savedSearch = null;
+
         if ($this->request->is(['post', 'get'])) {
             // basic search query, converted to search criteria
-            if ($this->request->data('criteria.query')) {
-                $this->request->data('criteria', $table->getSearchCriteria($this->request->data('criteria'), $model));
+            if (Hash::get($data, 'criteria.query')) {
+                $data['criteria'] = $table->getSearchCriteria(Hash::get($data, 'criteria'), $model);
             }
 
-            // if id of saved search is provided, fetch search conditions from there
+            // id of saved search has been provided
             if (!is_null($id)) {
-                $search = $table->get($id);
-                $this->set('savedSearch', $search);
-                $this->request->data = json_decode($search->content, true);
+                $savedSearch = $table->get($id);
+                // fetch search conditions from saved search if request data are empty
+                // INFO: this is valid on initial saved search load
+                if (empty($data)) {
+                    $data = json_decode($savedSearch->content, true);
+                } else { // INFO: this is valid when a saved search was modified and the form was re-submitted
+                    $isEditable = true;
+                }
             }
 
             // set display columns before the pre-saving, fixes bug
             // with missing display columns when saving a basic search
-            if (!$this->request->data('display_columns')) {
-                $this->request->data('display_columns', $table->getListingFields($model));
+            if (!Hash::get($data, 'display_columns')) {
+                $data['display_columns'] = $table->getListingFields($model);
+            }
+            // use first field of display columns as sort by field, if empty
+            if (!Hash::get($data, 'sort_by_field')) {
+                $data['sort_by_field'] = current($data['display_columns']);
+            }
+            // set default sort by order, if empty
+            if (!Hash::get($data, 'sort_by_order')) {
+                $data['sort_by_order'] = $table::DEFAULT_SORT_BY_ORDER;
+            }
+            // set default limit, if empty
+            if (!Hash::get($data, 'limit')) {
+                $data['limit'] = $table::DEFAULT_SORT_BY_ORDER;
             }
 
-            $search = $table->search($model, $this->Auth->user(), $this->request->data);
+            $search = $table->search($model, $this->Auth->user(), $data);
 
             if (isset($search['saveSearchCriteriaId'])) {
                 $this->set('saveSearchCriteriaId', $search['saveSearchCriteriaId']);
@@ -105,22 +124,79 @@ trait SearchTrait
             // @todo find out how to do pagination without affecting limit
             if ($search['entities']['result'] instanceof Query) {
                 // fetched from new search result
-                $entities = $search['entities']['result']->all();
+                $data['result'] = $search['entities']['result']->all();
             } else {
                 // as taken from a saved search result
-                $entities = $search['entities']['result'];
+                $data['result'] = $search['entities']['result'];
             }
-            $this->set('entities', $entities);
-
-            // set listing fields
-            $listingFields = $this->request->data('display_columns');
         }
 
         $savedSearches = $table->getSavedSearches([$this->Auth->user('id')], [$model]);
 
-        $this->set(compact('searchFields', 'savedSearches', 'listingFields', 'model'));
+        $this->set(compact('searchFields', 'savedSearches', 'model'));
+        $this->set('searchData', $data);
+        $this->set('savedSearch', $savedSearch);
+        $this->set('isEditable', $isEditable);
 
         $this->render($this->_elementSearch);
+    }
+
+    /**
+     * Edit action
+     *
+     * @param string|null $preId Presaved Search id.
+     * @param string|null $id Search id.
+     * @return \Cake\Network\Response|null
+     * @throws \Cake\Network\Exception\NotFoundException When record not found.
+     */
+    public function editSearch($preId = null, $id = null)
+    {
+        $this->request->allowMethod(['patch', 'post', 'put']);
+
+        $table = TableRegistry::get($this->_tableSearch);
+
+        // get pre-saved search
+        $preSaved = $table->get($preId);
+        // merge pre-saved search and request data
+        $data = array_merge($preSaved->toArray(), $this->request->data);
+
+        $search = $table->get($id);
+        $search = $table->patchEntity($search, $data);
+        if ($table->save($search)) {
+            $this->Flash->success(__('The search has been edited.'));
+        } else {
+            $this->Flash->error(__('The search could not be edited. Please, try again.'));
+        }
+
+        return $this->redirect(['action' => 'search', $id]);
+    }
+    /**
+     * Copy action
+     *
+     * @param string|null $id Search id.
+     * @return \Cake\Network\Response|null
+     * @throws \Cake\Network\Exception\NotFoundException When record not found.
+     */
+    public function copySearch($id = null)
+    {
+        $this->request->allowMethod(['patch', 'post', 'put']);
+
+        $table = TableRegistry::get($this->_tableSearch);
+
+        // get saved search
+        $savedSearch = $table->get($id);
+
+        $search = $table->newEntity();
+
+        // patch new entity with saved search data
+        $search = $table->patchEntity($search, $savedSearch->toArray());
+        if ($table->save($search)) {
+            $this->Flash->success(__('The search has been copied.'));
+        } else {
+            $this->Flash->error(__('The search could not be copied. Please, try again.'));
+        }
+
+        return $this->redirect(['action' => 'search', $search->id]);
     }
 
     /**
