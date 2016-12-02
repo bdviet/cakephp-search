@@ -44,7 +44,7 @@ class DashboardsController extends AppController
         $dashboard = $this->Dashboards->get($id, [
             'contain' => [
                 'Roles', 'Widgets'
-            ],
+            ]
         ]);
 
         if (method_exists($this, '_checkRoleAccess')) {
@@ -53,12 +53,18 @@ class DashboardsController extends AppController
 
         if (!empty($dashboard->widgets)) {
             foreach ($dashboard->widgets as $w) {
-                $widgets[] = WidgetFactory::create(
+                $widgetObject = WidgetFactory::create(
                     $w,
                     $this->request,
                     $this->response,
                     $this->eventManager()
                 );
+                // skip widgets without data
+                if (empty($widgetObject->widgetData)) {
+                    continue;
+                }
+
+                $widgets[] = $widgetObject;
             }
         }
 
