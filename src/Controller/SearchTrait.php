@@ -84,7 +84,7 @@ trait SearchTrait
                 if (empty($data)) {
                     $data = json_decode($search->content, true);
                 } else { // INFO: this is valid when a saved search was modified and the form was re-submitted
-                    $data['is_editable'] = true;
+                    $this->set('isEditable', true);
                 }
             }
 
