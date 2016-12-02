@@ -28,7 +28,10 @@ use Cake\Event\Event;
                 <?php if (!empty($widgets[$i])): ?>
                     <?php for ($j = 0; $j < $rows; $j++): ?>
                         <?php if (!empty($widgets[$i][$j])): ?>
-                            <?php echo $this->cell("Search.Widget::{$widgets[$i][$j]->widgetDisplayMethod}" , [ [$widgets[$i][$j]], ['user' => $user] ]); ?>
+                            <?php echo $this->cell("Search.Widget::{$widgets[$i][$j]->widgetDisplayMethod}" , [
+                                [$widgets[$i][$j]],
+                                ['user' => $user, 'rootView' => $this]
+                            ]); ?>
                         <?php endif; ?>
                     <?php endfor;?>
                 <?php endif;?>
