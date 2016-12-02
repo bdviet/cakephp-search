@@ -19,7 +19,7 @@
     <span class="input-group-btn">
         <?= $this->Form->button(
             '<span class="glyphicon glyphicon-floppy-save"></span>',
-            ['class' => 'btn btn-sm ' . ($isEditable ? 'btn-warning' : 'btn-primary')]
+            ['class' => 'btn btn-sm btn-primary']
         ) ?>
     </span>
 </div>
