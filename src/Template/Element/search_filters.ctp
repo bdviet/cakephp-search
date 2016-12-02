@@ -76,14 +76,14 @@ if (isset($searchData['criteria'])) {
                     echo $this->element('Search.SaveSearch/save_search_criterias', [
                         'saveSearchCriteriaId' => $saveSearchCriteriaId,
                         'savedSearch' => $savedSearch,
-                        'isEditable' => $isEditable
+                        'isEditable' => $isEditable && 'criteria' === $savedSearch->type
                     ]);
                 } ?>
                 <?php if (isset($saveSearchResultsId)) {
                     echo $this->element('Search.SaveSearch/save_search_results', [
                         'saveSearchCriteriaId' => $saveSearchResultsId,
                         'savedSearch' => $savedSearch,
-                        'isEditable' => $isEditable
+                        'isEditable' => $isEditable && 'result' === $savedSearch->type
                     ]);
                 } ?>
                 </div>
