@@ -24,20 +24,19 @@ echo $this->Html->script('Search.view-search-result', ['block' => 'scriptBottom'
     </div>
 </div>
 <div class="row">
-    <?php if( !empty($widgets) ) : ?>
-        <?php for($i=0; $i < $columns; $i++) { ?>
-            <div class="col-md-6">
-                <?php if (!empty($widgets[$i])): ?>
-                    <?php for ($j = 0; $j < $rows; $j++): ?>
-                        <?php if (!empty($widgets[$i][$j])): ?>
-                            <?php echo $this->cell("Search.Widget::{$widgets[$i][$j]->widgetDisplayMethod}" , [
-                                [$widgets[$i][$j]],
-                                ['user' => $user, 'rootView' => $this]
-                            ]); ?>
-                        <?php endif; ?>
-                    <?php endfor;?>
-                <?php endif;?>
+    <?php if (!empty($widgets)) : ?>
+        <?php for ($col = 0; $col < count($columns); $col++) : ?>
+            <div class="col-md-<?= 12 / count($columns) ?>">
+                <?php foreach ($widgets as $widget) {
+                    if ($widget->widgetObject->column !== $col) {
+                        continue;
+                    }
+                    echo $this->cell("Search.Widget::{$widget->widgetDisplayMethod}" , [
+                        [$widget],
+                        ['user' => $user, 'rootView' => $this]
+                    ]);
+                } ?>
             </div>
-        <?php }?>
+        <?php endfor; ?>
     <?php endif; ?>
 </div>

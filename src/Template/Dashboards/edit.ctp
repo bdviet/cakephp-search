@@ -22,18 +22,21 @@
             </div>
             <div class="dashboard-saved-searches">
             <div class="row">
-            <?php foreach (array_keys($dashboardLayout) as $col) : ?>
-                <div class="col-xs-6">
+            <?php for ($col = 0; $col < count($columns); $col++) : ?>
+                <div class="col-xs-<?= 12 / count($columns) ?>">
                     <p class="h3 text-center"><?= $columns[$col] ?></p>
                     <ul class="savetrue droppable-area" data-column=<?= $col ?>>
-                    <?php if (!empty($savedWidgetData[$col])) : ?>
-                        <?php for ($j = 0; $j < count($savedWidgetData[$col]); $j++) : ?>
-                            <?= $this->cell('Search.Widget::displayDroppableBlock', [ $savedWidgetData[$col][$j] ]) ?>
-                        <?php endfor; ?>
-                    <?php endif; ?>
+                    <?php
+                    foreach ($savedWidgetData as $savedWidget) {
+                        if ($savedWidget['data']['column'] !== $col) {
+                            continue;
+                        }
+                        echo $this->cell('Search.Widget::displayDroppableBlock', [$savedWidget]);
+                    }
+                    ?>
                     </ul>
                 </div>
-            <?php endforeach; ?>
+            <?php endfor; ?>
             </div>
         </div>
         <div class="row">
