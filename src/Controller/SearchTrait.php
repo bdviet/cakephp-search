@@ -170,6 +170,34 @@ trait SearchTrait
 
         return $this->redirect(['action' => 'search', $id]);
     }
+    /**
+     * Copy action
+     *
+     * @param string|null $id Search id.
+     * @return \Cake\Network\Response|null
+     * @throws \Cake\Network\Exception\NotFoundException When record not found.
+     */
+    public function copySearch($id = null)
+    {
+        $this->request->allowMethod(['patch', 'post', 'put']);
+
+        $table = TableRegistry::get($this->_tableSearch);
+
+        // get saved search
+        $savedSearch = $table->get($id);
+
+        $search = $table->newEntity();
+
+        // patch new entity with saved search data
+        $search = $table->patchEntity($search, $savedSearch->toArray());
+        if ($table->save($search)) {
+            $this->Flash->success(__('The search has been copied.'));
+        } else {
+            $this->Flash->error(__('The search could not be copied. Please, try again.'));
+        }
+
+        return $this->redirect(['action' => 'search', $search->id]);
+    }
 
     /**
      * Delete method
