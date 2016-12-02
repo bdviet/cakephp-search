@@ -80,7 +80,11 @@ if (isset($searchData['criteria'])) {
                     ]);
                 } ?>
                 <?php if (isset($saveSearchResultsId)) {
-                    echo $this->element('Search.SaveSearch/save_search_results');
+                    echo $this->element('Search.SaveSearch/save_search_results', [
+                        'saveSearchCriteriaId' => $saveSearchResultsId,
+                        'savedSearch' => $savedSearch,
+                        'isEditable' => $isEditable
+                    ]);
                 } ?>
                 </div>
             </div>
