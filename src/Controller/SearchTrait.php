@@ -144,12 +144,12 @@ trait SearchTrait
     /**
      * Edit action
      *
-     * @param string|null $id Search id.
      * @param string|null $preId Presaved Search id.
+     * @param string|null $id Search id.
      * @return \Cake\Network\Response|null
      * @throws \Cake\Network\Exception\NotFoundException When record not found.
      */
-    public function editSearch($id = null, $preId = null)
+    public function editSearch($preId = null, $id = null)
     {
         $this->request->allowMethod(['patch', 'post', 'put']);
 
