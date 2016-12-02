@@ -3,8 +3,9 @@
     'url' => [
         'plugin' => $this->request->plugin,
         'controller' => $this->request->controller,
-        'action' => 'save-search',
-        $saveSearchResultsId
+        'action' => ($isEditable ? 'edit': 'save') . '-search',
+        $saveSearchResultsId,
+        $isEditable ? $savedSearch->id : null
     ]
 ]); ?>
 <div class="input-group">
@@ -13,7 +14,7 @@
         'class' => 'form-control input-sm',
         'placeholder' => 'Save results name',
         'required' => true,
-        'value' => false
+        'value' => $isEditable ? $savedSearch->name : ''
     ]); ?>
     <span class="input-group-btn">
         <?= $this->Form->button(
