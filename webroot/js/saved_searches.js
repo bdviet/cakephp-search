@@ -11,13 +11,16 @@ var saved_searches = saved_searches || {};
         this.resultsSelectId = options.hasOwnProperty('resultsSelectId') ? options.resultsSelectId : '#savedResultsSelect';
         this.resultsViewId = options.hasOwnProperty('resultsViewId') ? options.resultsViewId : '#savedResultsView';
         this.resultsDeleteId = options.hasOwnProperty('resultsDeleteId') ? options.resultsDeleteId : '#savedResultsDelete';
+        this.resultsCopyId = options.hasOwnProperty('resultsCopyId') ? options.resultsCopyId : '#savedResultsCopy';
 
         this.criteriasSelectId = options.hasOwnProperty('criteriasSelectId') ? options.criteriasSelectId : '#savedCriteriasSelect';
         this.criteriasViewId = options.hasOwnProperty('criteriasViewId') ? options.criteriasViewId : '#savedCriteriasView';
         this.criteriasDeleteId = options.hasOwnProperty('criteriasDeleteId') ? options.criteriasDeleteId : '#savedCriteriasDelete';
+        this.criteriasCopyId = options.hasOwnProperty('criteriasCopyId') ? options.criteriasCopyId : '#savedCriteriasCopy';
 
         this.viewPrefixId = options.hasOwnProperty('viewPrefixId') ? options.viewPrefixId : '#view_';
         this.deletePrefixId = options.hasOwnProperty('deletePrefixId') ? options.deletePrefixId : '#delete_';
+        this.copyPrefixId = options.hasOwnProperty('copyPrefixId') ? options.copyPrefixId : '#copy_';
     }
 
     /**
@@ -47,6 +50,11 @@ var saved_searches = saved_searches || {};
             selElement = $(that.resultsSelectId).val();
             $(that.deletePrefixId + selElement).click();
         });
+
+        $(this.resultsCopyId).on('click', function() {
+            selElement = $(that.resultsSelectId).val();
+            $(that.copyPrefixId + selElement).click();
+        });
     };
 
     /**
@@ -66,17 +74,25 @@ var saved_searches = saved_searches || {};
             selElement = $(that.criteriasSelectId).val();
             $(that.deletePrefixId + selElement).click();
         });
+
+        $(this.criteriasCopyId).on('click', function() {
+            selElement = $(that.criteriasSelectId).val();
+            $(that.copyPrefixId + selElement).click();
+        });
     };
 
     saved_searches = new SavedSearches({
         resultsSelectId: '#savedResultsSelect',
         resultsViewId: '#savedResultsView',
         resultsDeleteId: '#savedResultsDelete',
+        resultsCopyId: '#savedResultsCopy',
         criteriasSelectId: '#savedCriteriasSelect',
         criteriasViewId: '#savedCriteriasView',
         criteriasDeleteId: '#savedCriteriasDelete',
+        criteriasCopyId: '#savedCriteriasCopy',
         viewPrefixId: '#view_',
-        deletePrefixId: '#delete_'
+        deletePrefixId: '#delete_',
+        copyPrefixId: '#copy_'
     });
 
     saved_searches.init();

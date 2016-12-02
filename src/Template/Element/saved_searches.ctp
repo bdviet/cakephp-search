@@ -43,7 +43,21 @@
                         ]);
 
                         echo $this->Form->postLink(
-                            '<span class="glyphicon glyphicon-minus"></span>',
+                            null,
+                            [
+                                'action' => 'copy-search',
+                                $search->id
+                            ],
+                            [
+                                'id' => 'copy_' . $search->id,
+                                'title' => __('Copy'),
+                                'class' => 'saved-search-copy-form hidden',
+                                'escape' => false
+                            ]
+                        );
+
+                        echo $this->Form->postLink(
+                            null,
                             [
                                 'action' => 'delete-search',
                                 $search->id
@@ -67,6 +81,7 @@
                             $selectFieldId = 'savedResultsSelect';
                             $buttonViewId = 'savedResultsView';
                             $buttonDeleteId = 'savedResultsDelete';
+                            $buttonCopyId = 'savedResultsCopy';
                             break;
 
                         case 'criteria':
@@ -75,6 +90,7 @@
                             $selectFieldId = 'savedCriteriasSelect';
                             $buttonViewId = 'savedCriteriasView';
                             $buttonDeleteId = 'savedCriteriasDelete';
+                            $buttonCopyId = 'savedCriteriasCopy';
                             break;
                     }
                     echo $this->Form->select($selectFieldName, $selectFieldOptions, [
@@ -87,6 +103,10 @@
                         <?php
                         echo $this->Form->button('<span class=" glyphicon glyphicon-eye-open"></span>', [
                             'id' => $buttonViewId,
+                            'class' => 'btn btn-default btn-sm'
+                        ]);
+                        echo $this->Form->button('<span class=" glyphicon glyphicon-copy"></span>', [
+                            'id' => $buttonCopyId,
                             'class' => 'btn btn-default btn-sm'
                         ]);
                         echo $this->Form->button('<span class="glyphicon glyphicon-trash"></span>', [
