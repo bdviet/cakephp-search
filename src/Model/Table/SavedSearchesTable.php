@@ -302,7 +302,11 @@ class SavedSearchesTable extends Table
             $result = $table->getListingFields();
         } else {
             $result[] = $table->primaryKey();
-            $result[] = $table->displayField();
+            $displayField = $table->displayField();
+            // add display field to the result only if not a virtual field
+            if (in_array($displayField, $table->schema()->columns())) {
+                $result[] = $displayField;
+            }
             foreach ($this->_basicSearchDefaultFields as $field) {
                 if ($table->hasField($field)) {
                     $result[] = $field;
@@ -358,7 +362,7 @@ class SavedSearchesTable extends Table
 
                 $result[$field][] = [
                     'type' => $properties['type'],
-                    'operator' => key($fields[$displayField]['operators']),
+                    'operator' => key($fields[$field]['operators']),
                     'value' => $data['query']
                 ];
             }
