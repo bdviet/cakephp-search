@@ -80,12 +80,12 @@ trait SearchTrait
 
             // id of saved search has been provided
             if (!is_null($id)) {
-                $search = $table->get($id);
-                $this->set('savedSearch', $search);
+                $savedSearch = $table->get($id);
+                $this->set('savedSearch', $savedSearch);
                 // fetch search conditions from saved search if request data are empty
                 // INFO: this is valid on initial saved search load
                 if (empty($data)) {
-                    $data = json_decode($search->content, true);
+                    $data = json_decode($savedSearch->content, true);
                 } else { // INFO: this is valid when a saved search was modified and the form was re-submitted
                     $isEditable = true;
                 }
