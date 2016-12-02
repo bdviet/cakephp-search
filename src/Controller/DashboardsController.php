@@ -39,11 +39,15 @@ class DashboardsController extends AppController
      */
     public function view($id = null)
     {
-        $dashboard = $widgets = [];
-
         $dashboard = $this->Dashboards->get($id, [
             'contain' => [
-                'Roles', 'Widgets'
+                'Roles',
+                'Widgets' => [
+                    'sort' => [
+                        'Widgets.row' => 'ASC',
+                        'Widgets.column' => 'ASC'
+                    ]
+                ]
             ]
         ]);
 
@@ -51,6 +55,7 @@ class DashboardsController extends AppController
             $this->_checkRoleAccess($dashboard->role_id);
         }
 
+        $widgets = [];
         if (!empty($dashboard->widgets)) {
             foreach ($dashboard->widgets as $w) {
                 $widgetObject = WidgetFactory::create(
@@ -161,7 +166,14 @@ class DashboardsController extends AppController
         $dashboardLayout = array_fill(0, count(Configure::read('Search.dashboard.columns')), []);
 
         $dashboard = $this->Dashboards->get($id, [
-            'contain' => ['Widgets']
+            'contain' => [
+                'Widgets' => [
+                    'sort' => [
+                        'Widgets.row' => 'ASC',
+                        'Widgets.column' => 'ASC'
+                    ]
+                ]
+            ]
         ]);
 
         $dashboardWidgets = $dashboard->widgets;
