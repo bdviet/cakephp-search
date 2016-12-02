@@ -69,6 +69,9 @@ trait SearchTrait
 
         $data = $this->request->data();
 
+        // is editable flag, false by default
+        $isEditable = false;
+
         if ($this->request->is(['post', 'get'])) {
             // basic search query, converted to search criteria
             if (Hash::get($data, 'criteria.query')) {
@@ -84,7 +87,7 @@ trait SearchTrait
                 if (empty($data)) {
                     $data = json_decode($search->content, true);
                 } else { // INFO: this is valid when a saved search was modified and the form was re-submitted
-                    $this->set('isEditable', true);
+                    $isEditable = true;
                 }
             }
 
@@ -130,6 +133,7 @@ trait SearchTrait
 
         $this->set(compact('searchFields', 'savedSearches', 'model'));
         $this->set('searchData', $data);
+        $this->set('isEditable', $isEditable);
 
         $this->render($this->_elementSearch);
     }
