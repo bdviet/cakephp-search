@@ -41,6 +41,16 @@ class SavedSearchesTable extends Table
     const DELETE_OLDER_THAN = '-3 hours';
 
     /**
+     * Default sql limit
+     */
+    const DEFAULT_LIMIT = 10;
+
+    /**
+     * Default sql order by direction
+     */
+    const DEFAULT_SORT_BY_ORDER = 'desc';
+
+    /**
      * Target table searchable fields.
      *
      * @var array
@@ -53,17 +63,6 @@ class SavedSearchesTable extends Table
      * @var array
      */
     protected $_skipDisplayFields = ['id'];
-
-    /**
-     * Search query default properties
-     *
-     * @var array
-     */
-    protected $_queryDefaults = [
-        'sort_by_field' => 'created',
-        'sort_by_order' => 'desc',
-        'limit' => 10
-    ];
 
     /**
      * Filter basic search allowed field types
@@ -204,7 +203,7 @@ class SavedSearchesTable extends Table
      */
     public function search($tableName, $user, $requestData)
     {
-        $data = array_merge($this->_queryDefaults, $requestData);
+        $data = $requestData;
 
         if (empty($data['result'])) {
             // get search results
@@ -294,9 +293,7 @@ class SavedSearchesTable extends Table
     public function getListingFields($table)
     {
         $result = [];
-        /*
-        get Table instance
-         */
+        // get Table instance
         if (is_string($table)) {
             $table = TableRegistry::get($table);
         }
@@ -312,10 +309,11 @@ class SavedSearchesTable extends Table
                 }
             }
         }
-        /*
-        skip display fields
-         */
+        // skip display fields
         $result = array_diff($result, $this->_skipDisplayFields);
+
+        // reset numeric indexes
+        $result = array_values($result);
 
         return $result;
     }

@@ -93,6 +93,18 @@ trait SearchTrait
             if (!Hash::get($data, 'display_columns')) {
                 $data['display_columns'] = $table->getListingFields($model);
             }
+            // use first field of display columns as sort by field, if empty
+            if (!Hash::get($data, 'sort_by_field')) {
+                $data['sort_by_field'] = current($data['display_columns']);
+            }
+            // set default sort by order, if empty
+            if (!Hash::get($data, 'sort_by_order')) {
+                $data['sort_by_order'] = $table::DEFAULT_SORT_BY_ORDER;
+            }
+            // set default limit, if empty
+            if (!Hash::get($data, 'limit')) {
+                $data['limit'] = $table::DEFAULT_SORT_BY_ORDER;
+            }
 
             $search = $table->search($model, $this->Auth->user(), $data);
 
