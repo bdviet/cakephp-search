@@ -1,25 +1,25 @@
-    <?= $this->Form->create(null, [
-        'class' => 'save-search-form',
-        'url' => [
-            'plugin' => $this->request->plugin,
-            'controller' => $this->request->controller,
-            'action' => 'save-search',
-            $saveSearchCriteriaId
-        ]
+<?= $this->Form->create(null, [
+    'class' => 'save-search-form',
+    'url' => [
+        'plugin' => $this->request->plugin,
+        'controller' => $this->request->controller,
+        'action' => 'save-search',
+        $saveSearchCriteriaId
+    ]
+]); ?>
+<div class="input-group">
+    <?= $this->Form->input('name', [
+        'label' => false,
+        'class' => 'form-control input-sm',
+        'placeholder' => 'Save criteria name',
+        'required' => true,
+        'value' => ''
     ]); ?>
-    <div class="input-group">
-        <?= $this->Form->input('name', [
-            'label' => false,
-            'class' => 'form-control input-sm',
-            'placeholder' => 'Save criteria name',
-            'required' => true,
-            'value' => ''
-        ]); ?>
-        <span class="input-group-btn">
-            <?= $this->Form->button(
-                '<span class="glyphicon glyphicon-floppy-save"></span>',
-                ['class' => 'btn btn-primary btn-sm']
-            ) ?>
-        </span>
-    </div>
-    <?= $this->Form->end(); ?>
+    <span class="input-group-btn">
+        <?= $this->Form->button(
+            '<span class="glyphicon glyphicon-floppy-save"></span>',
+            ['class' => 'btn btn-primary btn-sm']
+        ) ?>
+    </span>
+</div>
+<?= $this->Form->end(); ?>
