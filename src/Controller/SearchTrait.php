@@ -72,6 +72,9 @@ trait SearchTrait
         // is editable flag, false by default
         $isEditable = false;
 
+        // saved search instance, null by default
+        $savedSearch = null;
+
         if ($this->request->is(['post', 'get'])) {
             // basic search query, converted to search criteria
             if (Hash::get($data, 'criteria.query')) {
@@ -81,7 +84,6 @@ trait SearchTrait
             // id of saved search has been provided
             if (!is_null($id)) {
                 $savedSearch = $table->get($id);
-                $this->set('savedSearch', $savedSearch);
                 // fetch search conditions from saved search if request data are empty
                 // INFO: this is valid on initial saved search load
                 if (empty($data)) {
@@ -133,6 +135,7 @@ trait SearchTrait
 
         $this->set(compact('searchFields', 'savedSearches', 'model'));
         $this->set('searchData', $data);
+        $this->set('savedSearch', $savedSearch);
         $this->set('isEditable', $isEditable);
 
         $this->render($this->_elementSearch);
