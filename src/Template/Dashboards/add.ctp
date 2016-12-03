@@ -22,28 +22,12 @@
             </div>
             <div class="dashboard-saved-searches">
             <div class="row">
-            <?php foreach (array_keys($dashboardLayout) as $col) : ?>
+            <?php for ($col = 0; $col < count($columns); $col++) : ?>
                 <div class="col-xs-6">
                     <p class="h3 text-center"><?= $columns[$col] ?></p>
-                    <ul class="savetrue droppable-area" data-column=<?= $col ?>>
-                    <?php if (!empty($dashboardSavedSearches[$col])) : ?>
-                    <?php foreach ($dashboardSavedSearches[$col] as $rows) : ?>
-                        <?php foreach ($rows as $row) : ?>
-                         <li class="droppable" data-id="<?= $row->id ?>">
-                            <div class="header">
-                            <?php
-                                list($plugin, $model) = pluginSplit($row->model);
-                                echo $model;
-                            ?>
-                            </div>
-                            <div class="content"><?= $row->name ?></div>
-                        </li>
-                        <?php endforeach; ?>
-                    <?php endforeach; ?>
-                    <?php endif ?>
-                    </ul>
+                    <ul class="savetrue droppable-area" data-column=<?= $col ?>></ul>
                 </div>
-            <?php endforeach; ?>
+            <?php endfor; ?>
             </div>
         </div>
         <div class="row">

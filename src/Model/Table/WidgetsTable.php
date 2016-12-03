@@ -169,42 +169,4 @@ class WidgetsTable extends Table
 
         return $result;
     }
-
-    /**
-     * sortWidgets method
-     * @param array $data objects with widgetObject param
-     * @return array $result sorted based on columns/rows
-     */
-    public function sortWidgets(array $data, $options = [])
-    {
-        $widgets = [];
-
-        $gridRows = 0;
-        $gridColumns = count(Configure::read('Search.dashboard.columns'));
-
-        //@TODO: rework this to avoid source parameter
-        if (!empty($options['source']) && $options['source'] == 'widgets') {
-            foreach ($data as $w) {
-                if ($w->widgetObject->row + 1 > $gridRows) {
-                    $gridRows = $w->widgetObject->row + 1;
-                }
-
-                $widgets[$w->widgetObject->column][$w->widgetObject->row] = $w;
-                ksort($widgets[$w->widgetObject->column]);
-            }
-        } else {
-            foreach ($data as $w) {
-                if ($w['data']['row'] + 1 > $gridRows) {
-                    $gridRows = $w['data']['row'] + 1;
-                }
-
-                $widgets[$w['data']['column']][$w['data']['row']] = $w;
-                ksort($widgets[$w['data']['column']]);
-            }
-        }
-
-        ksort($widgets);
-
-        return compact('gridRows', 'gridColumns', 'widgets');
-    }
 }
