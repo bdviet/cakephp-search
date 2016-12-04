@@ -1,8 +1,6 @@
 <?php
 use Cake\Utility\Inflector;
-?>
 
-<?php
 if ('Search' === $this->request->params['plugin'] && 'Search' === $this->request->params['controller']) {
     $lookInModel = $this->request->params['pass'][0];
 } else {
@@ -12,21 +10,19 @@ if ('Search' === $this->request->params['plugin'] && 'Search' === $this->request
     }
     $lookInModel = $modelName;
 }
-?>
-
-<?= $this->Form->create(null, [
+echo $this->Form->create(null, [
     'class' => 'navbar-form navbar-right',
     'url' => [
         'plugin' => $this->request->plugin,
         'controller' => $this->request->controller,
         'action' => 'search'
     ]
-]); ?>
+]);
 
-    <?= $this->Form->input('criteria[query]', [
+echo $this->Form->input('criteria[query]', [
         'label' => false,
         'class' => 'form-control',
         'placeholder' => 'Search'
-    ]); ?>
+]);
 
-<?= $this->Form->end(); ?>
+echo $this->Form->end();

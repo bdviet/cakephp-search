@@ -83,12 +83,12 @@ $uid = uniqid();
     </div>
 </div>
 <?= $this->Html->scriptBlock(
-    'view_search_result.init({
+                            'view_search_result.init({
         table_id: \'#table-datatable-' . $uid . '\',
         sort_by_field: \'' . (int)array_search($searchData['sort_by_field'], $searchData['display_columns']) . '\',
         sort_by_order: \'' . $searchData['sort_by_order'] . '\'
     });',
-    ['block' => 'scriptBottom']
+                            ['block' => 'scriptBottom']
 );
 ?>
 <?php endif; ?>

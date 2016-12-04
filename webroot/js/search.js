@@ -1,12 +1,13 @@
 var search = search || {};
 
-(function($) {
+(function ($) {
     /**
      * Search Logic.
      *
      * @param {object} options configuration options
      */
-    function Search(options) {
+    function Search(options)
+    {
         this.formId = options.hasOwnProperty('formId') ? options.formId : '#SearchFilterForm';
         this.addFieldId = options.hasOwnProperty('addFieldId') ? options.addFieldId : '#addFilter';
         this.fieldProperties = {};
@@ -43,7 +44,7 @@ var search = search || {};
      *
      * @return {undefined}
      */
-    Search.prototype.init = function() {
+    Search.prototype.init = function () {
         this._onfieldSelect();
     };
 
@@ -53,14 +54,14 @@ var search = search || {};
      * @param  {object} criteriaFields preset criteria fields
      * @return {undefined}
      */
-    Search.prototype.generateCriteriaFields = function(criteriaFields) {
+    Search.prototype.generateCriteriaFields = function (criteriaFields) {
         var that = this;
         if (!$.isEmptyObject(criteriaFields)) {
-            $.each(criteriaFields, function(k, v) {
+            $.each(criteriaFields, function (k, v) {
                 if ('object' !== typeof v) {
                     return;
                 }
-                $.each(v, function(i, j) {
+                $.each(v, function (i, j) {
                     that._generateField(k, that.fieldProperties[k], j.value, j.operator);
                 });
             });
@@ -72,7 +73,7 @@ var search = search || {};
      *
      * @param {object} fieldProperties field properties
      */
-    Search.prototype.setFieldProperties = function(fieldProperties) {
+    Search.prototype.setFieldProperties = function (fieldProperties) {
         this.fieldProperties = fieldProperties;
     };
 
@@ -81,9 +82,9 @@ var search = search || {};
      *
      * @return {undefined}
      */
-    Search.prototype._onfieldSelect = function() {
+    Search.prototype._onfieldSelect = function () {
         var that = this;
-        $(this.addFieldId).change(function() {
+        $(this.addFieldId).change(function () {
             if ('' !== this.value) {
                 that._generateField(this.value, that.fieldProperties[this.value]);
                 this.value = '';
@@ -96,8 +97,8 @@ var search = search || {};
      * @param  {string} id button id
      * @return {undefined}
      */
-    Search.prototype._onRemoveBtnClick = function(id) {
-        $('#' + id).on('click', 'a', function(event) {
+    Search.prototype._onRemoveBtnClick = function (id) {
+        $('#' + id).on('click', 'a', function (event) {
             event.preventDefault();
             $('#' + $(this).data('element-id')).remove();
         });
@@ -112,7 +113,7 @@ var search = search || {};
      * @param  {string}    setOperator field set operator
      * @return {undefined}
      */
-    Search.prototype._generateField = function(field, properties, value, setOperator) {
+    Search.prototype._generateField = function (field, properties, value, setOperator) {
         var timestamp = new Date().getUTCMilliseconds();
         var id = field + '_' + timestamp;
 
@@ -143,7 +144,7 @@ var search = search || {};
      * @param  {object} label field label
      * @return {string}
      */
-    Search.prototype._generateFieldLabel = function(label) {
+    Search.prototype._generateFieldLabel = function (label) {
         var input = this.fieldLabelHtml;
 
         return input.replace('{{label}}', label);
@@ -157,7 +158,7 @@ var search = search || {};
      * @param  {string} timestamp timestamp
      * @return {string}
      */
-    Search.prototype._generateFieldType = function(field, type, timestamp) {
+    Search.prototype._generateFieldType = function (field, type, timestamp) {
         var input = this.fieldTypeHtml;
 
         return input.replace('{{field}}', field).replace('{{timestamp}}', timestamp).replace('{{type}}', type);
@@ -172,11 +173,11 @@ var search = search || {};
      * @param  {string} setOperator field set operator
      * @return {string}
      */
-    Search.prototype._generateSearchOperator = function(field, operators, timestamp, setOperator) {
+    Search.prototype._generateSearchOperator = function (field, operators, timestamp, setOperator) {
         var that = this;
 
         var options = '';
-        $.each(operators, function(k, v) {
+        $.each(operators, function (k, v) {
             var option = that.operatorOptionHtml;
             option = option.replace('{{value}}', k);
             option = option.replace('{{label}}', v.label);
@@ -202,7 +203,7 @@ var search = search || {};
      * @param  {string} value      field value
      * @return {string}
      */
-    Search.prototype._generateFieldInput = function(field, input, timestamp, value) {
+    Search.prototype._generateFieldInput = function (field, input, timestamp, value) {
         var name = 'criteria[' + field + '][' + timestamp + '][value]';
         if ('undefined' === typeof value) {
             value = '';
@@ -230,13 +231,13 @@ var search = search || {};
      * @param  {string} value   Input value
      * @return {string}
      */
-    Search.prototype._handleSpecialInputs = function(element, value) {
+    Search.prototype._handleSpecialInputs = function (element, value) {
         var html = $(element);
 
         // handle select element
         var has_select = $(html).find('select');
         if (html.is('select') || 0 < has_select.length) {
-            $(html).find('option').each(function() {
+            $(html).find('option').each(function () {
                 if (this.value !== value) {
                     return true;
                 }
@@ -251,10 +252,10 @@ var search = search || {};
         // handle checkbox element
         var has_checkbox = $(html).find(':checkbox');
         if (html.is(':checkbox') || 0 < has_checkbox.length) {
-            $(html).find(':checkbox').each(function() {
+            $(html).find(':checkbox').each(function () {
                 // convert string to int with + and then to boolean with !!
                 // @link http://stackoverflow.com/a/16313488/2562232
-                var checked = !!+value;
+                var checked = !! + value;
                 $(this).attr('checked', checked);
 
                 return false;
@@ -272,7 +273,7 @@ var search = search || {};
      * @param  {string} id field id
      * @return {string}
      */
-    Search.prototype._generateDeleteButton = function(id) {
+    Search.prototype._generateDeleteButton = function (id) {
         var button = this.deleteBtnHtml;
 
         return button.replace('{{id}}', id);

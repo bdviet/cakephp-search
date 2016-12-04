@@ -1,6 +1,7 @@
-<?= $this->Html->css('Search.search_options', ['block' => 'cssBottom']) ?>
-<?= $this->Html->script('Search.search_options', ['block' => 'scriptBottom']) ?>
 <?php
+echo $this->Html->css('Search.search_options', ['block' => 'cssBottom']);
+echo $this->Html->script('Search.search_options', ['block' => 'scriptBottom']);
+
 $availableColumns = [];
 $displayColumns = [];
 // get display and available columns
@@ -44,33 +45,34 @@ asort($sortByOptions);
         </ul>
     </div>
     <div class="col-md-4">
-    <?= $this->Form->label(__('Sort Field')) ?>
-    <?= $this->Form->select(
-        'sort_by_field',
-         $sortByOptions, [
-            'default' => isset($searchData['sort_by_field']) ? $searchData['sort_by_field'] : key($sortByOptions),
-            'class' => 'form-control input-sm'
-        ]
-    ) ?>
-    <?= $this->Form->label(__('Sort Order')) ?>
     <?php
-    echo $this->Form->select(
-        'sort_by_order',
-         ['asc' => 'Ascending', 'desc' => 'Descending'],
-         [
-            'default' => isset($searchData['sort_by_order']) ? $searchData['sort_by_order'] : 'asc',
-            'class' => 'form-control input-sm'
-        ]
-    ) ?>
-    <?= $this->Form->label(__('Limit results')) ?>
-    <?php
-    echo $this->Form->select(
-        'limit',
-         [0 => 'Unlimited', 1 => 1, 3 => 3, 5 => 5, 10 => 10, 20 => 20, 50 => 50, 100 => 100],
-         [
-            'default' => isset($searchData['limit']) ? $searchData['limit'] : 10,
-            'class' => 'form-control input-sm'
-        ]
-    ) ?>
+        echo $this->Form->label(__('Sort Field'));
+        echo $this->Form->select(
+            'sort_by_field',
+            $sortByOptions,
+            [
+                'default' => isset($searchData['sort_by_field']) ? $searchData['sort_by_field'] : key($sortByOptions),
+                'class' => 'form-control input-sm'
+             ]
+        );
+        echo $this->Form->label(__('Sort Order'));
+        echo $this->Form->select(
+            'sort_by_order',
+            ['asc' => 'Ascending', 'desc' => 'Descending'],
+            [
+                'default' => isset($searchData['sort_by_order']) ? $searchData['sort_by_order'] : 'asc',
+                'class' => 'form-control input-sm'
+             ]
+        );
+        echo $this->Form->label(__('Limit results'));
+        echo $this->Form->select(
+            'limit',
+            [0 => 'Unlimited', 1 => 1, 3 => 3, 5 => 5, 10 => 10, 20 => 20, 50 => 50, 100 => 100],
+            [
+                'default' => isset($searchData['limit']) ? $searchData['limit'] : 10,
+                'class' => 'form-control input-sm'
+             ]
+        );
+    ?>
     </div>
 </div>

@@ -1,13 +1,14 @@
 var saved_searches = saved_searches || {};
 
-(function($) {
+(function ($) {
 
     /**
      * Saved Searches Logic.
      *
      * @param {object} options configuration options
      */
-    function SavedSearches(options) {
+    function SavedSearches(options)
+    {
         this.resultsSelectId = options.hasOwnProperty('resultsSelectId') ? options.resultsSelectId : '#savedResultsSelect';
         this.resultsViewId = options.hasOwnProperty('resultsViewId') ? options.resultsViewId : '#savedResultsView';
         this.resultsDeleteId = options.hasOwnProperty('resultsDeleteId') ? options.resultsDeleteId : '#savedResultsDelete';
@@ -28,7 +29,7 @@ var saved_searches = saved_searches || {};
      *
      * @return {undefined}
      */
-    SavedSearches.prototype.init = function() {
+    SavedSearches.prototype.init = function () {
         this._onResultsSelect();
         this._onCriteriasSelect();
     };
@@ -38,20 +39,20 @@ var saved_searches = saved_searches || {};
      *
      * @return {undefined}
      */
-    SavedSearches.prototype._onResultsSelect = function() {
+    SavedSearches.prototype._onResultsSelect = function () {
         var that = this;
 
-        $(this.resultsViewId).on('click', function() {
+        $(this.resultsViewId).on('click', function () {
             selElement = $(that.resultsSelectId).val();
             window.location.href = $(that.viewPrefixId + selElement).attr('href');
         });
 
-        $(this.resultsDeleteId).on('click', function() {
+        $(this.resultsDeleteId).on('click', function () {
             selElement = $(that.resultsSelectId).val();
             $(that.deletePrefixId + selElement).click();
         });
 
-        $(this.resultsCopyId).on('click', function() {
+        $(this.resultsCopyId).on('click', function () {
             selElement = $(that.resultsSelectId).val();
             $(that.copyPrefixId + selElement).click();
         });
@@ -62,20 +63,20 @@ var saved_searches = saved_searches || {};
      *
      * @return {undefined}
      */
-    SavedSearches.prototype._onCriteriasSelect = function() {
+    SavedSearches.prototype._onCriteriasSelect = function () {
         var that = this;
 
-        $(this.criteriasViewId).on('click', function() {
+        $(this.criteriasViewId).on('click', function () {
             selElement = $(that.criteriasSelectId).val();
             window.location.href = $(that.viewPrefixId + selElement).attr('href');
         });
 
-        $(this.criteriasDeleteId).on('click', function() {
+        $(this.criteriasDeleteId).on('click', function () {
             selElement = $(that.criteriasSelectId).val();
             $(that.deletePrefixId + selElement).click();
         });
 
-        $(this.criteriasCopyId).on('click', function() {
+        $(this.criteriasCopyId).on('click', function () {
             selElement = $(that.criteriasSelectId).val();
             $(that.copyPrefixId + selElement).click();
         });

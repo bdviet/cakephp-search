@@ -2,7 +2,7 @@
     <?php echo $rootView->element('Search.search_results', [
         'searchType' => $renderData->type,
         'searchName' => $renderData->name,
-        'model'      => $renderData->model,
+        'model' => $renderData->model,
         'searchData' => $renderData->entities
     ]);?>
 </div>

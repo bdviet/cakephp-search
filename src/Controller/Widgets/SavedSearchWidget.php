@@ -20,7 +20,7 @@ class SavedSearchWidget extends AbstractWidget
 
     /**
      * preparing widgetData for execution by the cells
-     * @return Cake\ORM\Entity $this->widgetData
+     * @return void
      */
     public function prepareWidget()
     {
