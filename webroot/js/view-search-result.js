@@ -1,19 +1,21 @@
 var view_search_result = view_search_result || {};
 
-(function($) {
+(function ($) {
     /**
      * View Search Result Logic.
      *
      * @param {object} options
      */
-    function ViewSearchResult() {}
+    function ViewSearchResult()
+    {
+    }
 
     /**
      * Initialize method.
      *
      * @return {void}
      */
-    ViewSearchResult.prototype.init = function(options) {
+    ViewSearchResult.prototype.init = function (options) {
         this.table_id = options.hasOwnProperty('table_id') ? options.table_id : null;
         this.sort_by_field = options.hasOwnProperty('sort_by_field') ? options.sort_by_field : 0;
         // set default value, if empty string is passed to the sort_by_field option
@@ -33,7 +35,7 @@ var view_search_result = view_search_result || {};
      *
      * @return {void}
      */
-    ViewSearchResult.prototype.datatable = function() {
+    ViewSearchResult.prototype.datatable = function () {
         var that = this;
         $(this.table_id).DataTable({
             paging: false,

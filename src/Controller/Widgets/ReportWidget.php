@@ -24,7 +24,7 @@ class ReportWidget extends AbstractWidget
 
     /**
      * preparing widgetData for execution by the cells
-     * @return array $this->widgetData
+     * @return void
      */
     public function prepareWidget()
     {

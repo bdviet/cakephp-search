@@ -20,23 +20,28 @@ echo $this->Html->script('Search.view-search-result', ['block' => 'scriptBottom'
         <div class="h3 text-right">
             <?= $event->result; ?>
         </div>
-    <?php endif; ?>
+    <?php
+    endif;
+?>
     </div>
 </div>
 <div class="row">
-    <?php if (!empty($widgets)) : ?>
-        <?php for ($col = 0; $col < count($columns); $col++) : ?>
-            <div class="col-md-<?= 12 / count($columns) ?>">
-                <?php foreach ($widgets as $widget) {
-                    if ($widget->widgetObject->column !== $col) {
-                        continue;
-                    }
-                    echo $this->cell("Search.Widget::{$widget->widgetDisplayMethod}" , [
-                        [$widget],
-                        ['user' => $user, 'rootView' => $this]
-                    ]);
-                } ?>
-            </div>
-        <?php endfor; ?>
-    <?php endif; ?>
+    <?php
+    if (!empty($widgets)) {
+        $columnsCount = count($columns);
+        for ($col = 0; $col < $columnsCount; $col++) {
+            echo '<div class="col-md-' . 12 / $columnsCount . '">';
+            foreach ($widgets as $widget) {
+                if ($widget->widgetObject->column !== $col) {
+                    continue;
+                }
+                echo $this->cell("Search.Widget::{$widget->widgetDisplayMethod}", [
+                    [$widget],
+                    ['user' => $user, 'rootView' => $this]
+                ]);
+            }
+            echo '</div>';
+        }
+    }
+    ?>
 </div>

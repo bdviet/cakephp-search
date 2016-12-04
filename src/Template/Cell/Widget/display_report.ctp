@@ -4,7 +4,7 @@ use Cake\Utility\Inflector;
 use Search\Helper\ChartHelper;
 
 //getting column heads
-$listingFields = explode(',',$widgetData['info']['columns']);
+$listingFields = explode(',', $widgetData['info']['columns']);
 ?>
 <div class='dashboard-widget-display_report'>
         <div class="row">
@@ -15,21 +15,21 @@ $listingFields = explode(',',$widgetData['info']['columns']);
                     </div> <!-- panel-heading -->
 
                     <div class="panel-body">
-                        <?php if($widgetData['info']['renderAs'] == 'table') : ?>
+                        <?php if ($widgetData['info']['renderAs'] == 'table') : ?>
                         <div class="table-responsive">
                             <table class="table table-hover table-datatable">
                                 <thead>
                                     <tr>
-                                    <?php foreach($listingFields as $field) : ?>
+                                    <?php foreach ($listingFields as $field) : ?>
                                         <th><?= Inflector::humanize($field) ?></th>
                                     <?php endforeach; ?>
                                     </tr>
                                 </thead>
                                 <tbody>
                                     <?php //pr($renderData); ?>
-                                    <?php foreach($renderData as $k => $row): ?>
+                                    <?php foreach ($renderData as $k => $row) : ?>
                                     <tr>
-                                        <?php foreach($row as $field): ?>
+                                        <?php foreach ($row as $field) : ?>
                                             <td><?= $field ?></td>
                                         <?php endforeach; ?>
                                     </tr>

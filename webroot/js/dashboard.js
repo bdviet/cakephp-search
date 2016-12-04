@@ -1,12 +1,13 @@
 var dashboard = dashboard || {};
 
-(function($) {
+(function ($) {
     /**
      * Dashboard Logic.
      *
      * @param {object} options configuration options
      */
-    function Dashboard(options) {
+    function Dashboard(options)
+    {
         this.formId = options.hasOwnProperty('formId') ? options.formId : '#dashboardForm';
         this.droppableId = options.hasOwnProperty('droppableId') ? options.droppableId : '.droppable-area';
         this.containerId = options.hasOwnProperty('containerId') ? options.containerId : '.savetrue';
@@ -18,7 +19,7 @@ var dashboard = dashboard || {};
      *
      * @return {undefined}
      */
-    Dashboard.prototype.init = function() {
+    Dashboard.prototype.init = function () {
         that = this;
 
         $(this.droppableId).sortable({
@@ -28,8 +29,9 @@ var dashboard = dashboard || {};
         $(this.droppableId).disableSelection();
 
         // that = this;
-        $(this.formId).submit(function(e) {
+        $(this.formId).submit(function (e) {
             that._generateInputs();
+
             return true;
         });
     };
@@ -39,11 +41,11 @@ var dashboard = dashboard || {};
      *
      * @return {undefined}
      */
-    Dashboard.prototype._generateInputs = function() {
+    Dashboard.prototype._generateInputs = function () {
         that = this;
 
-        $(that.containerId).each(function(i, c) {
-            $(c).find(that.targetId).each(function(k, e) {
+        $(that.containerId).each(function (i, c) {
+            $(c).find(that.targetId).each(function (k, e) {
                 $form = $(that.formId);
                 $form.append(
                     $('<input>')
@@ -53,7 +55,7 @@ var dashboard = dashboard || {};
                 $form.append(
                     $('<input>')
                         .attr('type','hidden')
-                        .attr('name','widgets[widget_type][]').val( $(e).data('type'))
+                        .attr('name','widgets[widget_type][]').val($(e).data('type'))
                 );
                 $form.append(
                     $('<input>')

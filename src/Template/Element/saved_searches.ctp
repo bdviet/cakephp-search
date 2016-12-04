@@ -1,6 +1,9 @@
-<?php use Cake\Utility\Inflector; ?>
-<?php if (!empty($savedSearches)) : ?>
-<?= $this->Html->script('Search.saved_searches', ['block' => 'scriptBottom']); ?>
+<?php
+use Cake\Utility\Inflector;
+
+if (!empty($savedSearches)) :
+    echo $this->Html->script('Search.saved_searches', ['block' => 'scriptBottom']);
+?>
 
 <div class="well">
     <h4><?= __('Saved Searches') ?></h4>
@@ -16,7 +19,7 @@
             ksort($groupedSavedSearches);
 
             foreach ($groupedSavedSearches as $type => $searches) :
-            $count = 12 / count($groupedSavedSearches);
+                $count = 12 / count($groupedSavedSearches);
             ?>
                 <div class="col-sm-<?= $count ?> saved-searches">
                     <strong><?= Inflector::pluralize(Inflector::humanize($type)) ?>:</strong>
@@ -70,8 +73,7 @@
                                 'escape' => false
                             ]
                         );
-                    ?>
-                    <?php endforeach; ?>
+                    endforeach; ?>
                     <div class="input-group">
                     <?php
                     switch ($type) {
@@ -117,9 +119,11 @@
                         </span>
                     </div>
                 </div>
-            <?php endforeach; ?>
+            <?php
+            endforeach;
+            ?>
             </div>
         </div>
     </div>
 </div>
-<?php endif; ?>
+<?php endif;

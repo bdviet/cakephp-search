@@ -63,14 +63,14 @@ $uid = uniqid();
                                 <?php endforeach; ?>
                                 <td class="actions">
                                     <?php
-                                        $event = new Event('Search.View.View.Menu.Actions', $this, [
-                                            'entity' => $entity,
-                                            'model' => $model
-                                        ]);
-                                        $this->eventManager()->dispatch($event);
-                                        if (!empty($event->result)) {
-                                            echo $event->result;
-                                        }
+                                    $event = new Event('Search.View.View.Menu.Actions', $this, [
+                                        'entity' => $entity,
+                                        'model' => $model
+                                    ]);
+                                    $this->eventManager()->dispatch($event);
+                                    if (!empty($event->result)) {
+                                        echo $event->result;
+                                    }
                                     ?>
                                 </td>
                             </tr>
@@ -83,12 +83,12 @@ $uid = uniqid();
     </div>
 </div>
 <?= $this->Html->scriptBlock(
-    'view_search_result.init({
+                            'view_search_result.init({
         table_id: \'#table-datatable-' . $uid . '\',
         sort_by_field: \'' . (int)array_search($searchData['sort_by_field'], $searchData['display_columns']) . '\',
         sort_by_order: \'' . $searchData['sort_by_order'] . '\'
     });',
-    ['block' => 'scriptBottom']
+                            ['block' => 'scriptBottom']
 );
 ?>
 <?php endif; ?>

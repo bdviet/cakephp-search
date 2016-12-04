@@ -1,42 +1,44 @@
-<?php if (!empty($searchFields)) : ?>
-
-<?= $this->Html->css('Search.search', ['block' => true]); ?>
-<?= $this->Html->script('Search.search', ['block' => 'scriptBottom']); ?>
-
-<?= $this->Html->scriptBlock(
-    'search.setFieldProperties(' . json_encode($searchFields) . ');',
-    ['block' => 'scriptBottom']
-); ?>
 <?php
-if (isset($searchData['criteria'])) {
+if (!empty($searchFields)) :
+    echo $this->Html->css('Search.search', ['block' => true]);
+    echo $this->Html->script('Search.search', ['block' => 'scriptBottom']);
+
     echo $this->Html->scriptBlock(
-        'search.generateCriteriaFields(' . json_encode($searchData['criteria']) . ');',
+        'search.setFieldProperties(' . json_encode($searchFields) . ');',
         ['block' => 'scriptBottom']
     );
-}
+    if (isset($searchData['criteria'])) {
+        echo $this->Html->scriptBlock(
+            'search.generateCriteriaFields(' . json_encode($searchData['criteria']) . ');',
+            ['block' => 'scriptBottom']
+        );
+    }
 ?>
 <div class="well">
     <h4><?= __('Search Filters') ?></h4>
     <hr />
     <div class="row">
         <div class="col-lg-3 col-lg-push-9">
-            <?= $this->Form->label(__('Add Filter')) ?>
             <?php
+            echo $this->Form->label(__('Add Filter'));
             $selectOptions = array_combine(
                 array_keys($searchFields),
-                array_map(function ($v) { return $v['label']; }, $searchFields)
+                array_map(function ($v) {
+                    return $v['label'];
+                }, $searchFields)
             );
             //sort the list alphabetically for dropdown
             asort($selectOptions);
 
             echo $this->Form->select(
                 'fields',
-                 $selectOptions, [
+                $selectOptions,
+                [
                     'class' => 'form-control input-sm',
                     'id' => 'addFilter',
                     'empty' => true
-                ]
-            ) ?>
+                 ]
+            ); ?>
         </div>
         <?= $this->Form->create(null, [
             'id' => 'SearchFilterForm',
@@ -48,7 +50,7 @@ if (isset($searchData['criteria'])) {
                 'action' => 'search',
                 $this->request->param('pass.0')
             ]
-        ]) ?>
+        ]); ?>
         <hr class="visible-xs visible-sm visible-md" />
         <div class="col-lg-9 col-lg-pull-3">
             <fieldset></fieldset>
@@ -62,9 +64,9 @@ if (isset($searchData['criteria'])) {
             if (!empty($searchFields)) {
                 echo $this->element('Search.search_options');
             }
+            echo $this->Form->button(__('Search'), ['class' => 'btn btn-primary']);
+            echo $this->Form->end();
             ?>
-            <?= $this->Form->button(__('Search'), ['class' => 'btn btn-primary']) ?>
-            <?= $this->Form->end() ?>
         </div>
         <div class="col-md-4 col-lg-3">
             <div class="row">
@@ -72,20 +74,22 @@ if (isset($searchData['criteria'])) {
                     <?= $this->Form->label(__('Save search')) ?>
                 </div>
                 <div class="col-sm-6 col-md-12">
-                <?php if (isset($saveSearchCriteriaId)) {
+                <?php
+                if (isset($saveSearchCriteriaId)) {
                     echo $this->element('Search.SaveSearch/save_search_criterias', [
-                        'saveSearchCriteriaId' => $saveSearchCriteriaId,
-                        'savedSearch' => $savedSearch,
-                        'isEditable' => $isEditable && 'criteria' === $savedSearch->type
+                    'saveSearchCriteriaId' => $saveSearchCriteriaId,
+                    'savedSearch' => $savedSearch,
+                    'isEditable' => $isEditable && 'criteria' === $savedSearch->type
                     ]);
-                } ?>
-                <?php if (isset($saveSearchResultsId)) {
+                }
+                if (isset($saveSearchResultsId)) {
                     echo $this->element('Search.SaveSearch/save_search_results', [
-                        'saveSearchCriteriaId' => $saveSearchResultsId,
-                        'savedSearch' => $savedSearch,
-                        'isEditable' => $isEditable && 'result' === $savedSearch->type
+                    'saveSearchCriteriaId' => $saveSearchResultsId,
+                    'savedSearch' => $savedSearch,
+                    'isEditable' => $isEditable && 'result' === $savedSearch->type
                     ]);
-                } ?>
+                }
+                ?>
                 </div>
             </div>
         </div>
@@ -121,4 +125,4 @@ foreach ($searchFields as $searchField) {
     }
 }
 ?>
-<?php endif; ?>
+<?php endif;
