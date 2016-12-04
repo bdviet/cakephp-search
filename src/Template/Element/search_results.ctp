@@ -63,14 +63,14 @@ $uid = uniqid();
                                 <?php endforeach; ?>
                                 <td class="actions">
                                     <?php
-                                        $event = new Event('Search.View.View.Menu.Actions', $this, [
-                                            'entity' => $entity,
-                                            'model' => $model
-                                        ]);
-                                        $this->eventManager()->dispatch($event);
-                                        if (!empty($event->result)) {
-                                            echo $event->result;
-                                        }
+                                    $event = new Event('Search.View.View.Menu.Actions', $this, [
+                                        'entity' => $entity,
+                                        'model' => $model
+                                    ]);
+                                    $this->eventManager()->dispatch($event);
+                                    if (!empty($event->result)) {
+                                        echo $event->result;
+                                    }
                                     ?>
                                 </td>
                             </tr>
