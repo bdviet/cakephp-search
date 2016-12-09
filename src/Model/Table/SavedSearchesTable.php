@@ -193,6 +193,27 @@ class SavedSearchesTable extends Table
     {
         return $this->_skipDisplayFields;
     }
+
+    /**
+     * Getter method for default sql limit.
+     *
+     * @return string
+     */
+    public function getDefaultLimit()
+    {
+        return static::DEFAULT_LIMIT;
+    }
+
+    /**
+     * Getter method for default sql sort by order.
+     *
+     * @return string
+     */
+    public function getDefaultSortByOrder()
+    {
+        return static::DEFAULT_SORT_BY_ORDER;
+    }
+
     /**
      * Search method
      *
