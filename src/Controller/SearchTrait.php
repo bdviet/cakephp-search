@@ -104,11 +104,11 @@ trait SearchTrait
             }
             // set default sort by order, if empty
             if (!Hash::get($data, 'sort_by_order')) {
-                $data['sort_by_order'] = $table::DEFAULT_SORT_BY_ORDER;
+                $data['sort_by_order'] = $table->getDefaultSortByOrder();
             }
             // set default limit, if empty
             if (!Hash::get($data, 'limit')) {
-                $data['limit'] = $table::DEFAULT_LIMIT;
+                $data['limit'] = $table->getDefaultLimit();
             }
 
             $search = $table->search($model, $this->Auth->user(), $data);
