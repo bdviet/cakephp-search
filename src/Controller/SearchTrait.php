@@ -108,7 +108,7 @@ trait SearchTrait
             }
             // set default limit, if empty
             if (!Hash::get($data, 'limit')) {
-                $data['limit'] = $table::DEFAULT_SORT_BY_ORDER;
+                $data['limit'] = $table::DEFAULT_LIMIT;
             }
 
             $search = $table->search($model, $this->Auth->user(), $data);
