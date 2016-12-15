@@ -22,7 +22,10 @@ echo $this->Form->create(null, [
 echo $this->Form->input('criteria[query]', [
         'label' => false,
         'class' => 'form-control',
-        'placeholder' => 'Search'
+        'placeholder' => 'Search',
+        'append' => $this->Form->button(
+            $this->Html->icon('search')
+        )
 ]);
 
 echo $this->Form->end();
