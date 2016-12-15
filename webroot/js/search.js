@@ -212,7 +212,9 @@ var search = search || {};
         var result = input.content
             .replace(/{{name}}/g, name)
             .replace(/{{value}}/g, value)
-            .replace(/{{id}}/g, timestamp);
+            .replace(/{{id}}/g, timestamp)
+            .replace(/(["|\s])(input-group)(["|\s])/g, '$1$2 input-group-sm$3')
+            .replace(/(["|\s])(form-control)(["|\s])/g, '$1$2 input-sm$3');
 
         if (value) {
             result = this._handleSpecialInputs(result, value);
