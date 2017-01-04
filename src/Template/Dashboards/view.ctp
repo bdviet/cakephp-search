@@ -1,7 +1,10 @@
 <?php
 use Cake\Event\Event;
-?>
 
+echo $this->Html->css('Search.datatables.min', ['block' => 'cssBottom']);
+echo $this->Html->script('Search.datatables.min', ['block' => 'scriptBottom']);
+echo $this->Html->script('Search.view-search-result', ['block' => 'scriptBottom']);
+?>
 <div class="row">
     <div class="col-xs-6">
         <h3><strong><?= h($dashboard->name) ?></strong></h3>
@@ -17,24 +20,28 @@ use Cake\Event\Event;
         <div class="h3 text-right">
             <?= $event->result; ?>
         </div>
-    <?php endif; ?>
+    <?php
+    endif;
+?>
     </div>
 </div>
-
 <div class="row">
-    <?php if( !empty($widgets) ) : ?>
-        <?php for($i=0; $i < $columns; $i++) { ?>
-            <div class="col-md-6">
-                <?php if (!empty($widgets[$i])): ?>
-                    <?php for ($j = 0; $j < $rows; $j++): ?>
-                        <?php if (!empty($widgets[$i][$j])): ?>
-                            <?php echo $this->cell("Search.Widget::{$widgets[$i][$j]->widgetDisplayMethod}" , [ [$widgets[$i][$j]], ['user' => $user] ]); ?>
-                        <?php endif; ?>
-                    <?php endfor;?>
-                <?php endif;?>
-            </div>
-        <?php }?>
-    <?php endif; ?>
+    <?php
+    if (!empty($widgets)) {
+        $columnsCount = count($columns);
+        for ($col = 0; $col < $columnsCount; $col++) {
+            echo '<div class="col-md-' . 12 / $columnsCount . '">';
+            foreach ($widgets as $widget) {
+                if ($widget->widgetObject->column !== $col) {
+                    continue;
+                }
+                echo $this->cell("Search.Widget::{$widget->widgetDisplayMethod}", [
+                    [$widget],
+                    ['user' => $user, 'rootView' => $this]
+                ]);
+            }
+            echo '</div>';
+        }
+    }
+    ?>
 </div>
-
-<?= $this->element('Search.common_js_libs'); ?>

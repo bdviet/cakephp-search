@@ -1,4 +1,4 @@
-.save-search-form  + .save-search-form {
+.save-search-form + .save-search-form {
     margin-top: 5px;
 }
 
@@ -26,13 +26,4 @@
 
 .search-form .form-group .form-group {
     margin: 0;
-}
-
-.search-form .form-control {
-    height: 30px;
-}
-
-.search-form input,
-.search-form .input-group-addon {
-    padding: 5px 10px;
 }

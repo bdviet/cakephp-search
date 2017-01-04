@@ -1,6 +1,9 @@
-<?php use Cake\Utility\Inflector; ?>
-<?php if (!empty($savedSearches)) : ?>
-<?= $this->Html->script('Search.saved_searches', ['block' => 'scriptBottom']); ?>
+<?php
+use Cake\Utility\Inflector;
+
+if (!empty($savedSearches)) :
+    echo $this->Html->script('Search.saved_searches', ['block' => 'scriptBottom']);
+?>
 
 <div class="well">
     <h4><?= __('Saved Searches') ?></h4>
@@ -16,7 +19,7 @@
             ksort($groupedSavedSearches);
 
             foreach ($groupedSavedSearches as $type => $searches) :
-            $count = 12 / count($groupedSavedSearches);
+                $count = 12 / count($groupedSavedSearches);
             ?>
                 <div class="col-sm-<?= $count ?> saved-searches">
                     <strong><?= Inflector::pluralize(Inflector::humanize($type)) ?>:</strong>
@@ -43,7 +46,21 @@
                         ]);
 
                         echo $this->Form->postLink(
-                            '<span class="glyphicon glyphicon-minus"></span>',
+                            null,
+                            [
+                                'action' => 'copy-search',
+                                $search->id
+                            ],
+                            [
+                                'id' => 'copy_' . $search->id,
+                                'title' => __('Copy'),
+                                'class' => 'saved-search-copy-form hidden',
+                                'escape' => false
+                            ]
+                        );
+
+                        echo $this->Form->postLink(
+                            null,
                             [
                                 'action' => 'delete-search',
                                 $search->id
@@ -56,8 +73,7 @@
                                 'escape' => false
                             ]
                         );
-                    ?>
-                    <?php endforeach; ?>
+                    endforeach; ?>
                     <div class="input-group">
                     <?php
                     switch ($type) {
@@ -67,6 +83,7 @@
                             $selectFieldId = 'savedResultsSelect';
                             $buttonViewId = 'savedResultsView';
                             $buttonDeleteId = 'savedResultsDelete';
+                            $buttonCopyId = 'savedResultsCopy';
                             break;
 
                         case 'criteria':
@@ -75,6 +92,7 @@
                             $selectFieldId = 'savedCriteriasSelect';
                             $buttonViewId = 'savedCriteriasView';
                             $buttonDeleteId = 'savedCriteriasDelete';
+                            $buttonCopyId = 'savedCriteriasCopy';
                             break;
                     }
                     echo $this->Form->select($selectFieldName, $selectFieldOptions, [
@@ -89,6 +107,10 @@
                             'id' => $buttonViewId,
                             'class' => 'btn btn-default btn-sm'
                         ]);
+                        echo $this->Form->button('<span class=" glyphicon glyphicon-copy"></span>', [
+                            'id' => $buttonCopyId,
+                            'class' => 'btn btn-default btn-sm'
+                        ]);
                         echo $this->Form->button('<span class="glyphicon glyphicon-trash"></span>', [
                             'id' => $buttonDeleteId,
                             'class' => 'btn btn-danger btn-sm'
@@ -97,9 +119,11 @@
                         </span>
                     </div>
                 </div>
-            <?php endforeach; ?>
+            <?php
+            endforeach;
+            ?>
             </div>
         </div>
     </div>
 </div>
-<?php endif; ?>
+<?php endif;

@@ -39,35 +39,43 @@ class DashboardsController extends AppController
      */
     public function view($id = null)
     {
-        $dashboard = $widgets = [];
-
         $dashboard = $this->Dashboards->get($id, [
             'contain' => [
-                'Roles', 'Widgets'
-            ],
+                'Roles',
+                'Widgets' => [
+                    'sort' => [
+                        'Widgets.row' => 'ASC',
+                        'Widgets.column' => 'ASC'
+                    ]
+                ]
+            ]
         ]);
 
         if (method_exists($this, '_checkRoleAccess')) {
             $this->_checkRoleAccess($dashboard->role_id);
         }
 
+        $widgets = [];
         if (!empty($dashboard->widgets)) {
             foreach ($dashboard->widgets as $w) {
-                $widgets[] = WidgetFactory::create(
+                $widgetObject = WidgetFactory::create(
                     $w,
                     $this->request,
                     $this->response,
                     $this->eventManager()
                 );
+                // skip widgets without data
+                if (empty($widgetObject->widgetData)) {
+                    continue;
+                }
+
+                $widgets[] = $widgetObject;
             }
         }
 
         $widgetsTable = TableRegistry::get('Search.Widgets');
-        $sortedResults = $widgetsTable->sortWidgets($widgets, ['source' => 'widgets']);
-
-        $this->set('columns', $sortedResults['gridColumns']);
-        $this->set('rows', $sortedResults['gridRows']);
-        $this->set('widgets', $sortedResults['widgets']);
+        $this->set('columns', Configure::readOrFail('Search.dashboard.columns'));
+        $this->set('widgets', $widgets);
         $this->set('user', $this->Auth->user());
         $this->set('dashboard', $dashboard);
         $this->set('_serialize', ['dashboard']);
@@ -86,9 +94,6 @@ class DashboardsController extends AppController
 
         $widgetsTable = TableRegistry::get('Search.Widgets');
         $widgets = $widgetsTable->getWidgets();
-
-        $columns = Configure::read('Search.dashboard.columns');
-        $dashboardLayout = array_fill(0, count(Configure::read('Search.dashboard.columns')), []);
 
         if ($this->request->is('post')) {
             $data = $this->request->data;
@@ -136,7 +141,8 @@ class DashboardsController extends AppController
 
         $roles = $this->Dashboards->Roles->find('list', ['limit' => 200]);
 
-        $this->set(compact('dashboard', 'roles', 'widgets', 'dashboardLayout', 'columns'));
+        $this->set(compact('dashboard', 'roles', 'widgets'));
+        $this->set('columns', Configure::readOrFail('Search.dashboard.columns'));
         $this->set('_serialize', ['dashboard']);
     }
 
@@ -149,35 +155,35 @@ class DashboardsController extends AppController
      */
     public function edit($id = null)
     {
-        $widgets = $savedWidgetData = [];
-
-        $columns = Configure::read('Search.dashboard.columns');
-        $dashboardLayout = array_fill(0, count(Configure::read('Search.dashboard.columns')), []);
-
         $dashboard = $this->Dashboards->get($id, [
-            'contain' => ['Widgets']
+            'contain' => [
+                'Widgets' => [
+                    'sort' => [
+                        'Widgets.row' => 'ASC',
+                        'Widgets.column' => 'ASC'
+                    ]
+                ]
+            ]
         ]);
 
         $dashboardWidgets = $dashboard->widgets;
         unset($dashboard->widgets);
 
         $widgetsTable = TableRegistry::get('Search.Widgets');
+
         $widgets = $widgetsTable->getWidgets();
-
-
-        foreach ($widgets as $k => $w) {
-            foreach ($dashboardWidgets as $dWidget) {
-                if ($dWidget->widget_id == $w['data']['id']) {
-                    $w['data']['column'] = $dWidget->column;
-                    $w['data']['row'] = $dWidget->row;
-                    array_push($savedWidgetData, $w);
-                    unset($widgets[$k]);
+        $savedWidgetData = [];
+        foreach ($dashboardWidgets as $dashboardWidget) {
+            foreach ($widgets as $k => $widget) {
+                if ($dashboardWidget->widget_id !== $widget['data']['id']) {
+                    continue;
                 }
+                $widget['data']['column'] = $dashboardWidget->column;
+                $widget['data']['row'] = $dashboardWidget->row;
+                array_push($savedWidgetData, $widget);
+                unset($widgets[$k]);
             }
         }
-
-        $sortedResults = $widgetsTable->sortWidgets($savedWidgetData);
-        $savedWidgetData = $sortedResults['widgets'];
 
         if ($this->request->is(['patch', 'post', 'put'])) {
             $data = $this->request->data;
@@ -212,7 +218,6 @@ class DashboardsController extends AppController
                     'dashboard_id' => $dashboard->id
                 ]);
 
-
                 if (!empty($widgets)) {
                     foreach ($widgets as $w) {
                         $widget = $widgetTable->newEntity();
@@ -229,7 +234,8 @@ class DashboardsController extends AppController
 
         $roles = $this->Dashboards->Roles->find('list', ['limit' => 200]);
 
-        $this->set(compact('dashboard', 'roles', 'widgets', 'savedWidgetData', 'dashboardLayout', 'columns'));
+        $this->set(compact('dashboard', 'roles', 'widgets', 'savedWidgetData'));
+        $this->set('columns', Configure::readOrFail('Search.dashboard.columns'));
         $this->set('_serialize', ['dashboard']);
     }
 

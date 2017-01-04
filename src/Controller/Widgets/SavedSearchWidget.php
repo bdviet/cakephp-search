@@ -20,22 +20,18 @@ class SavedSearchWidget extends AbstractWidget
 
     /**
      * preparing widgetData for execution by the cells
-     * @return Cake\ORM\Entity $this->widgetData
+     * @return void
      */
     public function prepareWidget()
     {
-        $result = [];
-        $savedSearches = TableRegistry::get('SavedSearches');
+        $savedSearches = TableRegistry::get('Search.SavedSearches');
 
         $widgetId = $this->widgetObject['widget_id'];
 
-        $savedSearch = $savedSearches->findById($widgetId)->toArray();
+        $savedSearch = $savedSearches->findById($widgetId)->first();
 
-        if (!empty($savedSearch)) {
-            $result = array_shift($savedSearch);
-        }
+        $this->widgetData = $savedSearch;
 
         $this->setWidgetDisplayMethod();
-        $this->widgetData = $result;
     }
 }

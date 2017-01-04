@@ -1,12 +1,13 @@
 var search_options = search_options || {};
 
-(function($) {
+(function ($) {
     /**
      * SearchOptions Logic.
      *
      * @param {object} options configuration options
      */
-    function SearchOptions(options) {
+    function SearchOptions(options)
+    {
         this.formId = options.hasOwnProperty('formId') ? options.formId : '#SearchFilterForm';
         this.displayId = options.hasOwnProperty('displayId') ? options.displayId : '#displayColumns';
         this.availableId = options.hasOwnProperty('availableId') ? options.availableId : '#availableColumns';
@@ -18,14 +19,14 @@ var search_options = search_options || {};
      *
      * @return {undefined}
      */
-    SearchOptions.prototype.init = function() {
+    SearchOptions.prototype.init = function () {
         var that = this;
 
         $(this.displayId + ',' + this.availableId).sortable({
             connectWith: this.connectId
         }).disableSelection();
 
-        $(this.formId).submit(function(e) {
+        $(this.formId).submit(function (e) {
             that._getDisplayColumns();
 
             return true;
@@ -37,9 +38,9 @@ var search_options = search_options || {};
      *
      * @return {undefined}
      */
-    SearchOptions.prototype._getDisplayColumns = function() {
+    SearchOptions.prototype._getDisplayColumns = function () {
         var that = this;
-        $(that.displayId).children().each(function(k, v) {
+        $(that.displayId).children().each(function (k, v) {
             $(that.formId).append(
                 $('<input>')
                    .attr('type', 'hidden')

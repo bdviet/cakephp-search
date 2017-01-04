@@ -41,6 +41,16 @@ class SavedSearchesTable extends Table
     const DELETE_OLDER_THAN = '-3 hours';
 
     /**
+     * Default sql limit
+     */
+    const DEFAULT_LIMIT = 10;
+
+    /**
+     * Default sql order by direction
+     */
+    const DEFAULT_SORT_BY_ORDER = 'desc';
+
+    /**
      * Target table searchable fields.
      *
      * @var array
@@ -53,17 +63,6 @@ class SavedSearchesTable extends Table
      * @var array
      */
     protected $_skipDisplayFields = ['id'];
-
-    /**
-     * Search query default properties
-     *
-     * @var array
-     */
-    protected $_queryDefaults = [
-        'sort_by_field' => 'created',
-        'sort_by_order' => 'desc',
-        'limit' => 10
-    ];
 
     /**
      * Filter basic search allowed field types
@@ -194,6 +193,27 @@ class SavedSearchesTable extends Table
     {
         return $this->_skipDisplayFields;
     }
+
+    /**
+     * Getter method for default sql limit.
+     *
+     * @return string
+     */
+    public function getDefaultLimit()
+    {
+        return static::DEFAULT_LIMIT;
+    }
+
+    /**
+     * Getter method for default sql sort by order.
+     *
+     * @return string
+     */
+    public function getDefaultSortByOrder()
+    {
+        return static::DEFAULT_SORT_BY_ORDER;
+    }
+
     /**
      * Search method
      *
@@ -204,7 +224,7 @@ class SavedSearchesTable extends Table
      */
     public function search($tableName, $user, $requestData)
     {
-        $data = array_merge($this->_queryDefaults, $requestData);
+        $data = $requestData;
 
         if (empty($data['result'])) {
             // get search results
@@ -294,9 +314,7 @@ class SavedSearchesTable extends Table
     public function getListingFields($table)
     {
         $result = [];
-        /*
-        get Table instance
-         */
+        // get Table instance
         if (is_string($table)) {
             $table = TableRegistry::get($table);
         }
@@ -305,17 +323,22 @@ class SavedSearchesTable extends Table
             $result = $table->getListingFields();
         } else {
             $result[] = $table->primaryKey();
-            $result[] = $table->displayField();
+            $displayField = $table->displayField();
+            // add display field to the result only if not a virtual field
+            if (in_array($displayField, $table->schema()->columns())) {
+                $result[] = $displayField;
+            }
             foreach ($this->_basicSearchDefaultFields as $field) {
                 if ($table->hasField($field)) {
                     $result[] = $field;
                 }
             }
         }
-        /*
-        skip display fields
-         */
+        // skip display fields
         $result = array_diff($result, $this->_skipDisplayFields);
+
+        // reset numeric indexes
+        $result = array_values($result);
 
         return $result;
     }
@@ -360,7 +383,7 @@ class SavedSearchesTable extends Table
 
                 $result[$field][] = [
                     'type' => $properties['type'],
-                    'operator' => key($fields[$displayField]['operators']),
+                    'operator' => key($fields[$field]['operators']),
                     'value' => $data['query']
                 ];
             }
@@ -417,6 +440,10 @@ class SavedSearchesTable extends Table
 
         if (empty($data['criteria'])) {
             return;
+        }
+
+        if (empty($this->_searchableFields)) {
+            $this->getSearchableFields($model);
         }
 
         foreach ($data['criteria'] as $fieldName => $criterias) {

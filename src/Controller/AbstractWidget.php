@@ -37,7 +37,7 @@ abstract class AbstractWidget extends Cell
      * passing WidgetObject from the Controller
      * and storing it in the AbstractWidget
      * @param Cake\Model\Entity $w widget
-     * @return Cake\Model\Entity $this->widgetObject
+     * @return void
      */
     public function setWidget($w)
     {
@@ -50,7 +50,8 @@ abstract class AbstractWidget extends Cell
      * Following Cake naming conventions we setup
      * Cell view diplay method that will be used for the
      * rendering.
-     * @return string $this->widgetDisplayMethod
+     * @param array $options Options
+     * @return void
      */
     public function setWidgetDisplayMethod($options = [])
     {
@@ -66,6 +67,8 @@ abstract class AbstractWidget extends Cell
 
     /**
      * Each child class should implement prepareWidget method
+     *
+     * @return void
      */
     abstract protected function prepareWidget();
 }

@@ -1,5 +1,7 @@
-<?= $this->Html->css('Search.dashboard', ['block' => 'cssBottom']) ?>
-<?= $this->Html->script('Search.dashboard', ['block' => 'scriptBottom']) ?>
+<?php
+echo $this->Html->css('Search.dashboard', ['block' => 'cssBottom']);
+echo $this->Html->script('Search.dashboard', ['block' => 'scriptBottom']);
+?>
 <div class="row">
     <div class="col-xs-12">
         <?= $this->Form->create($dashboard, ['id' => 'dashboardForm']) ?>
@@ -22,18 +24,26 @@
             </div>
             <div class="dashboard-saved-searches">
             <div class="row">
-            <?php foreach (array_keys($dashboardLayout) as $col) : ?>
-                <div class="col-xs-6">
-                    <p class="h3 text-center"><?= $columns[$col] ?></p>
-                    <ul class="savetrue droppable-area" data-column=<?= $col ?>>
-                    <?php if (!empty($savedWidgetData[$col])) : ?>
-                        <?php for ($j = 0; $j < count($savedWidgetData[$col]); $j++) : ?>
-                            <?= $this->cell('Search.Widget::displayDroppableBlock', [ $savedWidgetData[$col][$j] ]) ?>
-                        <?php endfor; ?>
-                    <?php endif; ?>
-                    </ul>
+            <?php
+            $columnsCount = count($columns);
+            for ($col = 0; $col < $columnsCount; $col++) :
+                ?>
+                <div class="col-xs-<?= 12 / $columnsCount ?>">
+                <p class="h3 text-center"><?= $columns[$col] ?></p>
+                <ul class="savetrue droppable-area" data-column=<?= $col ?>>
+                <?php
+                foreach ($savedWidgetData as $savedWidget) {
+                    if ($savedWidget['data']['column'] !== $col) {
+                        continue;
+                    }
+                    echo $this->cell('Search.Widget::displayDroppableBlock', [$savedWidget]);
+                }
+                ?>
+                </ul>
                 </div>
-            <?php endforeach; ?>
+            <?php
+            endfor;
+            ?>
             </div>
         </div>
         <div class="row">
@@ -48,7 +58,9 @@
             </div>
         </div>
         </fieldset>
-        <?= $this->Form->button(__('Submit'), ['class' => 'btn btn-primary']) ?>
-        <?= $this->Form->end() ?>
+        <?php
+        echo $this->Form->button(__('Submit'), ['class' => 'btn btn-primary']);
+        echo $this->Form->end();
+        ?>
     </div>
 </div>
