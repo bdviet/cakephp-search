@@ -282,10 +282,6 @@ class SavedSearchesTable extends Table
      */
     public function getSearchableFields($table)
     {
-        if (!empty($this->_searchableFields)) {
-            return $this->_searchableFields;
-        }
-
         // get Table instance
         if (is_string($table)) {
             $table = TableRegistry::get($table);
@@ -440,9 +436,7 @@ class SavedSearchesTable extends Table
             return $result;
         }
 
-        if (empty($this->_searchableFields)) {
-            $this->getSearchableFields($model);
-        }
+        $this->getSearchableFields($model);
 
         foreach ($data['criteria'] as $fieldName => $criterias) {
             if (empty($criterias)) {
