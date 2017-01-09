@@ -18,7 +18,7 @@
     ]); ?>
     <span class="input-group-btn">
         <?= $this->Form->button(
-            '<span class="glyphicon glyphicon-floppy-save"></span>',
+            '<i class="fa fa-floppy-o"></i>',
             ['class' => 'btn btn-sm btn-primary']
         ) ?>
     </span>
