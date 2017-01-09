@@ -18,10 +18,8 @@ $this->eventManager()->dispatch($event);
 </section>
 <section class="content">
     <div class="row">
-    <?php
-    if (!empty($widgets)) :
-        $columnsCount = count($columns);
-        for ($col = 0; $col < $columnsCount; $col++) : ?>
+    <?php if (!empty($widgets)) : ?>
+        <?php $columnsCount = count($columns); for ($col = 0; $col < $columnsCount; $col++) : ?>
             <div class="col-md-<?= 12 / $columnsCount ?>">
             <?php
             foreach ($widgets as $widget) {

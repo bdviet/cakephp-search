@@ -43,9 +43,9 @@ echo $this->Html->script('Search.dashboard', ['block' => 'scriptBotton']);
             </div>
             <p class="h3 text-center saved-searches-title"><?= __('Widgets') ?></p>
             <ul class="list-inline droppable-area saved-searches-area">
-                <?php foreach ($widgets as $widget) {
-                    echo $this->cell('Search.Widget::displayDroppableBlock', [$widget]);
-                } ?>
+                <?php foreach ($widgets as $widget) : ?>
+                    <?= $this->cell('Search.Widget::displayDroppableBlock', [$widget]); ?>
+                <?php endforeach; ?>
             </ul>
         </div>
     </div>
