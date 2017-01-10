@@ -1,8 +1,22 @@
+<section class="content-header">
+    <h1>Search</h1>
+</section>
+<section class="content">
 <?php
-echo $this->Html->css('Search.datatables.min', ['block' => 'cssBottom']);
-echo $this->Html->script('Search.datatables.min', ['block' => 'scriptBottom']);
-echo $this->Html->script('Search.view-search-result', ['block' => 'scriptBottom']);
+echo $this->Html->css('AdminLTE./plugins/datatables/dataTables.bootstrap', ['block' => 'css']);
+echo $this->Html->script(
+    [
+        'AdminLTE./plugins/datatables/jquery.dataTables.min',
+        'AdminLTE./plugins/datatables/dataTables.bootstrap.min',
+        'Search.view-search-result'
+    ],
+    [
+        'block' => 'scriptBotton'
+    ]
+);
 
 echo $this->element('Search.saved_searches');
 echo $this->element('Search.search_filters');
 echo $this->element('Search.search_results');
+?>
+</section>

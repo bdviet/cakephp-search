@@ -107,7 +107,7 @@ trait SearchTrait
                 $data['sort_by_order'] = $table->getDefaultSortByOrder();
             }
             // set default limit, if empty
-            if (!Hash::get($data, 'limit')) {
+            if (is_null(Hash::get($data, 'limit'))) {
                 $data['limit'] = $table->getDefaultLimit();
             }
 

@@ -1,9 +1,17 @@
 <?php
 use Cake\Event\Event;
 
-echo $this->Html->css('Search.datatables.min', ['block' => 'css']);
-echo $this->Html->script('Search.datatables.min', ['block' => 'scriptBotton']);
-echo $this->Html->script('Search.view-search-result', ['block' => 'scriptBotton']);
+echo $this->Html->css('AdminLTE./plugins/datatables/dataTables.bootstrap', ['block' => 'css']);
+echo $this->Html->script(
+    [
+        'AdminLTE./plugins/datatables/jquery.dataTables.min',
+        'AdminLTE./plugins/datatables/dataTables.bootstrap.min',
+        'Search.view-search-result'
+    ],
+    [
+        'block' => 'scriptBotton'
+    ]
+);
 $event = new Event('Search.Dashboards.View.View.Menu.Top', $this, [
     'request' => $this->request,
     $dashboard
