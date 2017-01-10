@@ -36,56 +36,59 @@ if (!empty($url)) {
 $uid = uniqid();
 ?>
 <?php if (!empty($searchData['result'])) : ?>
-<div class="box box-default">
-    <div class="box-header">
-        <h3 class="box-title"><?= $title; ?></h3>
-        <div class="box-tools pull-right">
-            <button type="button" class="btn btn-box-tool" data-widget="collapse">
-                <i class="fa fa-minus"></i>
-            </button>
+<div class="row">
+    <div class="col-xs-12">
+        <div class="panel panel-default">
+            <div class="panel-heading">
+                <h3 class="panel-title">
+                    <strong><?= $title; ?></strong>
+                </h3>
+            </div>
+            <div class="panel-body">
+                <div class="table-responsive">
+                    <table id="table-datatable-<?= $uid ?>" class="table table-hover">
+                        <thead>
+                            <tr>
+                            <?php foreach ($searchData['display_columns'] as $field) : ?>
+                                <th><?= Inflector::humanize($field); ?></th>
+                            <?php endforeach; ?>
+                                <th class="actions"><?= __('Actions') ?></th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <?php foreach ($searchData['result'] as $entity) : ?>
+                            <tr>
+                                <?php foreach ($searchData['display_columns'] as $field) : ?>
+                                    <td><?= isset($entity[$field]) ? $entity[$field] : null; ?></td>
+                                <?php endforeach; ?>
+                                <td class="actions">
+                                    <?php
+                                    $event = new Event('Search.View.View.Menu.Actions', $this, [
+                                        'entity' => $entity,
+                                        'model' => $model
+                                    ]);
+                                    $this->eventManager()->dispatch($event);
+                                    if (!empty($event->result)) {
+                                        echo $event->result;
+                                    }
+                                    ?>
+                                </td>
+                            </tr>
+                            <?php endforeach; ?>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
         </div>
     </div>
-    <div class="box-body table-responsive">
-        <table id="table-datatable-<?= $uid ?>" class="table table-hover table-condensed table-vertical-align">
-            <thead>
-                <tr>
-                <?php foreach ($searchData['display_columns'] as $field) : ?>
-                    <th><?= Inflector::humanize($field); ?></th>
-                <?php endforeach; ?>
-                    <th class="actions"><?= __('Actions') ?></th>
-                </tr>
-            </thead>
-            <tbody>
-                <?php foreach ($searchData['result'] as $entity) : ?>
-                <tr>
-                    <?php foreach ($searchData['display_columns'] as $field) : ?>
-                        <td><?= isset($entity[$field]) ? $entity[$field] : null; ?></td>
-                    <?php endforeach; ?>
-                    <td class="actions">
-                        <?php
-                        $event = new Event('Search.View.View.Menu.Actions', $this, [
-                            'entity' => $entity,
-                            'model' => $model
-                        ]);
-                        $this->eventManager()->dispatch($event);
-                        if (!empty($event->result)) {
-                            echo $event->result;
-                        }
-                        ?>
-                    </td>
-                </tr>
-                <?php endforeach; ?>
-            </tbody>
-        </table>
-    </div>
 </div>
-<?php
-echo $this->Html->scriptBlock(
-    'view_search_result.init({
+<?= $this->Html->scriptBlock(
+                            'view_search_result.init({
         table_id: \'#table-datatable-' . $uid . '\',
         sort_by_field: \'' . (int)array_search($searchData['sort_by_field'], $searchData['display_columns']) . '\',
         sort_by_order: \'' . $searchData['sort_by_order'] . '\'
     });',
-    ['block' => 'scriptBotton']
-); ?>
+                            ['block' => 'scriptBottom']
+);
+?>
 <?php endif; ?>
