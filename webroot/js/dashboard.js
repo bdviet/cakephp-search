@@ -23,10 +23,7 @@ var dashboard = dashboard || {};
         that = this;
 
         $(this.droppableId).sortable({
-            placeholder: "sort-highlight",
-            connectWith: this.droppableId,
-            forcePlaceholderSize: true,
-            zIndex: 999999
+            connectWith: 'ul'
         });
 
         $(this.droppableId).disableSelection();
