@@ -21,7 +21,12 @@ $this->eventManager()->dispatch($event);
 <section class="content-header">
     <h1>
         Dashboard
-        <small><?= h($dashboard->name) ?> <?= $event->result; ?></small>
+        <small><?= h($dashboard->name) ?></small>
+        <div class="pull-right">
+            <div class="btn-group btn-group-sm" role="group">
+                <?= $event->result; ?>
+            </div>
+        </div>
     </h1>
 </section>
 <section class="content">

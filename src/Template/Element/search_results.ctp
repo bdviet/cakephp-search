@@ -45,7 +45,7 @@ $uid = uniqid();
             </button>
         </div>
     </div>
-    <div class="box-body table-responsive">
+    <div class="box-body">
         <table id="table-datatable-<?= $uid ?>" class="table table-hover table-condensed table-vertical-align">
             <thead>
                 <tr>
@@ -68,10 +68,10 @@ $uid = uniqid();
                             'model' => $model
                         ]);
                         $this->eventManager()->dispatch($event);
-                        if (!empty($event->result)) {
-                            echo $event->result;
-                        }
                         ?>
+                        <div class="btn-group btn-group-xs" role="group">
+                        <?= $event->result; ?>
+                        </div>
                     </td>
                 </tr>
                 <?php endforeach; ?>
