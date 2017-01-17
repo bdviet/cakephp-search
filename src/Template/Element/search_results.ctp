@@ -68,10 +68,10 @@ $uid = uniqid();
                             'model' => $model
                         ]);
                         $this->eventManager()->dispatch($event);
-                        if (!empty($event->result)) {
-                            echo $event->result;
-                        }
                         ?>
+                        <div class="btn-group btn-group-xs" role="group">
+                        <?= $event->result; ?>
+                        </div>
                     </td>
                 </tr>
                 <?php endforeach; ?>
