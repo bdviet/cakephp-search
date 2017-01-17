@@ -45,7 +45,7 @@ $uid = uniqid();
             </button>
         </div>
     </div>
-    <div class="box-body table-responsive">
+    <div class="box-body">
         <table id="table-datatable-<?= $uid ?>" class="table table-hover table-condensed table-vertical-align">
             <thead>
                 <tr>
