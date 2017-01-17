@@ -1,6 +1,7 @@
 <?php
-echo $this->Html->css('Search.search_options', ['block' => 'cssBottom']);
-echo $this->Html->script('Search.search_options', ['block' => 'scriptBottom']);
+echo $this->Html->css('Search.search_options', ['block' => 'css']);
+echo $this->Html->script('AdminLTE./plugins/jQueryUI/jquery-ui.min', ['block' => 'script']);
+echo $this->Html->script('Search.search_options', ['block' => 'scriptBotton']);
 
 $availableColumns = [];
 $displayColumns = [];
