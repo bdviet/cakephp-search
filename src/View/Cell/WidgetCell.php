@@ -4,6 +4,7 @@ namespace Search\View\Cell;
 use Cake\Datasource\ConnectionManager;
 use Cake\ORM\Table;
 use Cake\ORM\TableRegistry;
+use Cake\Utility\Inflector;
 use Cake\View\Cell;
 use Search\Model\Entity\SavedSearch;
 
@@ -13,6 +14,8 @@ use Search\Model\Entity\SavedSearch;
 class WidgetCell extends Cell
 {
 
+    const GRAPH_PREFIX = 'graph_';
+
     /**
      * List of valid options that can be passed into this
      * cell's constructor.
@@ -20,6 +23,12 @@ class WidgetCell extends Cell
      * @var array
      */
     protected $_validCellOptions = [];
+
+    /**
+     * Storing Array dara on the chart settings
+     * @var array
+     */
+    public $chartData = null;
 
     /**
      * Default display method.
@@ -64,7 +73,14 @@ class WidgetCell extends Cell
             }
         }
 
+        //setting the data for the graph rendering
+        $this->chartData = $this->getChartData($renderData, [
+            'data' => $widget->widgetData,
+            'renderAs' => $widget->widgetData['info']['renderAs']
+        ]);
 
+        $this->set('containerPrefix', self::GRAPH_PREFIX);
+        $this->set('chartData', $this->chartData);
         $this->set('widget', $widget);
         $this->set('widgetData', $widget->widgetData);
 
@@ -130,5 +146,41 @@ class WidgetCell extends Cell
     public function displayDroppableBlock(array $widget)
     {
         $this->set('widget', $widget);
+    }
+
+
+    /**
+     * getChartData method
+     *
+     * Assembles all required data for the graph to be drawn.
+     *
+     * @param array $renderData containing winget information
+     * @param array $chartOptions containing rendering and graph data
+     *
+     * @return array $chartData
+     */
+    protected function getChartData($renderData, $chartOptions = [])
+    {
+        $labels = [];
+        $columns = explode(',', $chartOptions['data']['info']['columns']);
+
+        foreach ($columns as $column) {
+            array_push($labels, Inflector::humanize($column));
+        }
+
+        $chartData = [
+            'chart' => $chartOptions['renderAs'],
+            'options' => [
+                'element' => self::GRAPH_PREFIX . $chartOptions['data']['slug'],
+                'data' => $renderData,
+                'resize' => true,
+                'barColors' => ['#00a65a', '#f56954'],
+                'labels' => $labels,
+                'xkey' => explode(',', $chartOptions['data']['info']['x_axis']),
+                'ykeys' => explode(',', $chartOptions['data']['info']['y_axis']),
+            ]
+        ];
+
+        return $chartData;
     }
 }
