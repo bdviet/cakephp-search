@@ -17,7 +17,7 @@ $listingFields = explode(',', $widgetData['info']['columns']);
             </div>
         </div>
         <div class="box-body">
-            <?php if ($widgetData['info']['renderAs'] == 'barChart') : ?>
+            <?php if ($widgetData['info']['renderAs'] !== 'table') : ?>
                 <div id="<?= $containerPrefix . $widgetData['slug'];?>"></div>
             <?php endif; ?>
         </div> <!-- panel-body -->

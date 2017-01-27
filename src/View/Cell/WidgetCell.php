@@ -161,25 +161,48 @@ class WidgetCell extends Cell
      */
     protected function getChartData($renderData, $chartOptions = [])
     {
-        $labels = [];
-        $columns = explode(',', $chartOptions['data']['info']['columns']);
-
-        foreach ($columns as $column) {
-            array_push($labels, Inflector::humanize($column));
-        }
-
         $chartData = [
             'chart' => $chartOptions['renderAs'],
             'options' => [
                 'element' => self::GRAPH_PREFIX . $chartOptions['data']['slug'],
-                'data' => $renderData,
                 'resize' => true,
+            ],
+        ];
+
+        if ($chartOptions['renderAs'] == 'donutChart') {
+            $data = [];
+
+            if (isset($chartOptions['data']['info']['label']) && isset($chartOptions['data']['info']['value'])) {
+                foreach ($renderData as $item) {
+                    $data[] = [
+                        'label' => $item[$chartOptions['data']['info']['label']],
+                        'value' => $item[$chartOptions['data']['info']['value']],
+                    ];
+                }
+            }
+
+            $options = [
+                'data' => $data,
+            ];
+
+            $chartData['options'] = array_merge($chartData['options'], $options);
+        } else {
+            $labels = [];
+            $columns = explode(',', $chartOptions['data']['info']['columns']);
+
+            foreach ($columns as $column) {
+                array_push($labels, Inflector::humanize($column));
+            }
+
+            $options = [
+                'data' => $renderData,
                 'barColors' => ['#00a65a', '#f56954'],
                 'labels' => $labels,
                 'xkey' => explode(',', $chartOptions['data']['info']['x_axis']),
-                'ykeys' => explode(',', $chartOptions['data']['info']['y_axis']),
-            ]
-        ];
+                'ykeys' => explode(',', $chartOptions['data']['info']['y_axis'])
+            ];
+            $chartData['options'] = array_merge($chartData['options'], $options);
+        }
 
         return $chartData;
     }
