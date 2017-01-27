@@ -72,7 +72,8 @@ if (!empty($chartOptions)) {
     ], [
         'block' => 'scriptBotton'
     ]);
+
+    //after we collected all required graph data we can do the rendering.
+    echo $this->Html->scriptBlock('var chartsData = ' . json_encode($chartOptions) . ';');
 }
-//after we collected all required graph data we can do the rendering.
-echo $this->Html->scriptBlock('var chartsData = ' . json_encode($chartOptions) . ';');
 ?>
