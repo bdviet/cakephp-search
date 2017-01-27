@@ -72,24 +72,4 @@ class WidgetsTableTest extends TestCase
         $this->assertNotEmpty($res);
         $this->assertInternalType('array', $res);
     }
-
-    /**
-     * Test validationDefault method
-     *
-     * @return void
-     */
-    public function testValidationDefault()
-    {
-        $this->markTestIncomplete('Not implemented yet.');
-    }
-
-    /**
-     * Test buildRules method
-     *
-     * @return void
-     */
-    public function testBuildRules()
-    {
-        $this->markTestIncomplete('Not implemented yet.');
-    }
 }
