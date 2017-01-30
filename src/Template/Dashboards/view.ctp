@@ -68,6 +68,7 @@ if (!empty($chartOptions)) {
     echo $this->Html->script([
         'https://cdnjs.cloudflare.com/ajax/libs/raphael/2.1.0/raphael-min.js',
         'AdminLTE./plugins/morris/morris.min',
+        'AdminLTE./plugins/knob/jquery.knob',
         'Search.reportGraphs',
     ], [
         'block' => 'scriptBotton'
