@@ -1,11 +1,3 @@
-<?php
-//humanizing Column Heads
-use Cake\Utility\Inflector;
-use Search\Helper\ChartHelper;
-
-//getting column heads
-$listingFields = explode(',', $widgetData['info']['columns']);
-?>
 <div class='dashboard-widget-display_report'>
     <div class="box box-default">
         <div class="box-header with-border">
@@ -17,9 +9,18 @@ $listingFields = explode(',', $widgetData['info']['columns']);
             </div>
         </div>
         <div class="box-body">
-            <?php if ($widgetData['info']['renderAs'] !== 'table') : ?>
-                <div id="<?= $containerPrefix . $widgetData['slug'];?>"></div>
-            <?php endif; ?>
+            <div id="<?= $containerPrefix . $widgetData['slug'];?>">
+                <div class="row">
+                <?php if ($widgetData['info']['renderAs'] == 'knobChart') : ?>
+                    <?php foreach ($chartData['options']['data'] as $k => $item) : ?>
+                        <div class="col-xs-6 col-md-3 text-center">
+                            <input type="text" class="knob-graph knob-<?=$k?>" data-skin="tron" value="<?=$item['value']?>" data-max="<?=$item['max']?>">
+                            <div class="knob-label"><?= $item['label']?></div>
+                        </div>
+                    <?php endforeach; ?>
+                <?php endif; ?>
+                </div>
+            </div>
         </div> <!-- panel-body -->
     </div> <!-- panel-default -->
 </div> <!-- dashboard-widget-display_report -->

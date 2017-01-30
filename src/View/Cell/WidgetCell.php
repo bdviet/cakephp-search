@@ -186,6 +186,23 @@ class WidgetCell extends Cell
             ];
 
             $chartData['options'] = array_merge($chartData['options'], $options);
+        } elseif ($chartOptions['renderAs'] == 'knobChart') {
+            $data = [];
+            if (isset($chartOptions['data']['info']['max']) && isset($chartOptions['data']['info']['value'])) {
+                foreach ($renderData as $item) {
+                    $data[] = [
+                        'max' => $item[$chartOptions['data']['info']['max']],
+                        'value' => $item[$chartOptions['data']['info']['value']],
+                        'label' => $item[$chartOptions['data']['info']['label']],
+                    ];
+                }
+            }
+
+            $options = [
+                'data' => $data,
+            ];
+
+            $chartData['options'] = array_merge($chartData['options'], $options);
         } else {
             $labels = [];
             $columns = explode(',', $chartOptions['data']['info']['columns']);
