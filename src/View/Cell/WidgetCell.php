@@ -193,6 +193,7 @@ class WidgetCell extends Cell
                     $data[] = [
                         'max' => $item[$chartOptions['data']['info']['max']],
                         'value' => $item[$chartOptions['data']['info']['value']],
+                        'label' => $item[$chartOptions['data']['info']['label']],
                     ];
                 }
             }

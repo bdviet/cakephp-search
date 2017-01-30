@@ -47,8 +47,11 @@
             if (graph.options.data.length) {
                 $('.knob-graph').knob({
                     'width': 85,
+                    'height': 85,
+                    'linecap': 'round',
                     'thickness': '.2',
                     'readOnly': true,
+                    'cursor': false,
                     'draw': function () {
                         var randomColor = Math.floor(Math.random() * colorGradients.length);
                         this.o.fgColor = colorGradients[randomColor];

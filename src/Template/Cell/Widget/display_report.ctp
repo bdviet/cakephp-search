@@ -15,6 +15,7 @@
                     <?php foreach ($chartData['options']['data'] as $k => $item) : ?>
                         <div class="col-xs-6 col-md-3 text-center">
                             <input type="text" class="knob-graph knob-<?=$k?>" data-skin="tron" value="<?=$item['value']?>" data-max="<?=$item['max']?>">
+                            <div class="knob-label"><?= $item['label']?></div>
                         </div>
                     <?php endforeach; ?>
                 <?php endif; ?>
