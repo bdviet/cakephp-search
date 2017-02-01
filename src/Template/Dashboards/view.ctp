@@ -50,12 +50,10 @@ $this->eventManager()->dispatch($event);
                     }
 
                     try {
-                        $widgetHandler = WidgetHandlerFactory::create($dw->widget_type, [
-                            'entity' => $dw,
-                            'rootView' => $this,
-                        ]);
+                        $widgetHandler = WidgetHandlerFactory::create($dw->widget_type, ['entity' => $dw]);
 
-                        $widgetHandler->getResults(['user' => $user, 'rootView' => $this]);
+                        $widgetHandler->getResults(['entity' => $dw, 'user' => $user, 'rootView' => $this]);
+
                         $dataOptions = $widgetHandler->getDataOptions();
                         if (!empty($dataOptions)) {
                             if ($widgetHandler->getType() == 'report') {

@@ -5,16 +5,14 @@ use Cake\Utility\Inflector;
 
 class WidgetHandlerFactory
 {
-    const WIDGET_INTERFACE = 'WidgetInterface';
-    const WIDGET_VIEW_BLOCK = 'WidgetViewBlock';
-
-    public static $suffix = 'WidgetHandler';
+    const WIDGET_SUFFIX = 'WidgetHandler';
+    const WIDGET_INTERFACE = 'WidgetHandlerInterface';
 
     public static function create($type, array $options = [])
     {
         $handlerName = Inflector::camelize($type);
 
-        $className = __NAMESPACE__ . '\\' . $handlerName . self::$suffix;
+        $className = __NAMESPACE__ . '\\' . $handlerName . self::WIDGET_SUFFIX;
         $interface = __NAMESPACE__ . '\\' . self::WIDGET_INTERFACE;
 
         try {

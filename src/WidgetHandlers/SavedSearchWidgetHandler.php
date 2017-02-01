@@ -2,9 +2,9 @@
 namespace Search\WidgetHandlers;
 
 use Cake\ORM\TableRegistry;
-use Search\WidgetHandlers\BaseSavedSearchWidget;
+use Search\WidgetHandlers\BaseWidgetHandler;
 
-class SavedSearchWidgetHandler extends BaseSavedSearchWidget
+class SavedSearchWidgetHandler extends BaseWidgetHandler
 {
     protected $_type = 'saved_search';
 
@@ -16,13 +16,29 @@ class SavedSearchWidgetHandler extends BaseSavedSearchWidget
 
     protected $_tableInstance = null;
 
+    protected $_dataOptions = [];
+
     public function __construct($options = [])
     {
         if (!empty($options['entity'])) {
             $this->_entity = $options['entity'];
         }
-
         $this->_tableInstance = TableRegistry::get($this->_tableName);
+    }
+
+    public function getDataOptions()
+    {
+        return $this->_dataOptions;
+    }
+
+    public function getSavedSearchType()
+    {
+        return $this->getData()->type;
+    }
+
+    public function getData()
+    {
+        return $this->_data;
     }
 
     public function getResults(array $options = [])

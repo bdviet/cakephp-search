@@ -1,7 +1,7 @@
 <?php
 namespace Search\WidgetHandlers;
 
-interface WidgetInterface
+interface WidgetHandlerInterface
 {
     public function getResults(array $options = []);
 }
