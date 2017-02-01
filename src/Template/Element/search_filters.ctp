@@ -114,33 +114,15 @@ if (!empty($searchFields)) :
     </div>
 </div>
 <?php
-$duplicates = [];
+$scripts = [];
+
 foreach ($searchFields as $searchField) {
     if (empty($searchField['input']['post'])) {
         continue;
     }
-
-    $md5 = md5(serialize($searchField['input']['post']));
-    // skip duplicates
-    if (in_array($md5, $duplicates)) {
-        continue;
-    }
-
-    $duplicates[] = $md5;
-
-    foreach ($searchField['input']['post'] as $item) {
-        if (empty($item['type']) || empty($item['content'])) {
-            continue;
-        }
-
-        if (!method_exists($this->Html, $item['type'])) {
-            continue;
-        }
-
-        echo $this->Html->{$item['type']}($item['content'], [
-            'block' => !empty($item['block']) ? $item['block'] : true
-        ]);
-    }
+    array_push($scripts, ['post' => $searchField['input']['post']]);
 }
+
+echo $this->element('Search.footer_libraries', ['scripts' => $scripts]);
 ?>
 <?php endif;

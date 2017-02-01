@@ -33,7 +33,7 @@ echo $this->Html->script('Search.dashboard', ['block' => 'scriptBotton']);
                             if ($savedWidget['data']['column'] !== $col) {
                                 continue;
                             }
-                            echo $this->cell('Search.Widget::displayDroppableBlock', [$savedWidget]);
+                            echo $this->element('Search.Widgets/droppable_block', ['widget' => $savedWidget]);
                         }
                         ?>
                         </ul>
@@ -44,7 +44,7 @@ echo $this->Html->script('Search.dashboard', ['block' => 'scriptBotton']);
             <p class="h3 text-center saved-searches-title"><?= __('Widgets') ?></p>
             <ul class="list-inline droppable-area saved-searches-area">
                 <?php foreach ($widgets as $widget) : ?>
-                    <?= $this->cell('Search.Widget::displayDroppableBlock', [$widget]); ?>
+                    <?php echo $this->element('Search.Widgets/droppable_block', ['widget' => $widget]);?>
                 <?php endforeach; ?>
             </ul>
         </div>
