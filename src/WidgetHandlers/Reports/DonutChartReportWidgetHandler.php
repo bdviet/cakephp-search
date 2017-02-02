@@ -27,8 +27,8 @@ class DonutChartReportWidgetHandler extends ReportWidgetHandler
 
         foreach ($data as $item) {
             array_push($options['data'], [
-                'label' => $item[ $report['info']['label'] ],
-                'value' => $item[ $report['info']['value'] ],
+                'label' => $item[$report['info']['label']],
+                'value' => $item[$report['info']['value']],
             ]);
         }
 

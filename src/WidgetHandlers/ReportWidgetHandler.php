@@ -48,12 +48,14 @@ class ReportWidgetHandler extends BaseWidgetHandler
     public function setData($data = [])
     {
         $this->_instance->_data = $data;
+
         return $this->_instance->_data;
     }
 
     public function setDataOptions($data = [])
     {
         $this->_instance->_dataOptions = $data;
+
         return $this->_instance->_dataOptions;
     }
 
@@ -148,5 +150,4 @@ class ReportWidgetHandler extends BaseWidgetHandler
 
         return $this->getData();
     }
-
 }
