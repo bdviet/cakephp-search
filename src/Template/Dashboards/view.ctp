@@ -40,13 +40,13 @@ $this->eventManager()->dispatch($event);
 
                         $dataOptions = $widgetHandler->getDataOptions();
                         if (!empty($dataOptions)) {
-                            if ($widgetHandler->getType() == 'report') {
+                            if ($widgetHandler->getRenderElement() == 'report') {
                                 $chartData[] = $widgetHandler->getData();
                             }
                             $scripts[] = $dataOptions;
                         }
 
-                        echo $this->element('Search.Widgets/' . $widgetHandler->getType(), ['widget' => $widgetHandler]);
+                        echo $this->element('Search.Widgets/' . $widgetHandler->getRenderElement(), ['widget' => $widgetHandler]);
                     } catch (\Exception $e) {
                         echo $this->element('Search.missing_element', ['exception' => $e]);
                     }
@@ -58,4 +58,4 @@ $this->eventManager()->dispatch($event);
     </div>
 </section>
 
-<?php echo $this->element('Search.footer_libraries', ['scripts' => $scripts, 'chartData' => $chartData]); ?>
+<?php echo $this->element('Search.widget_libraries', ['scripts' => $scripts, 'chartData' => $chartData]); ?>

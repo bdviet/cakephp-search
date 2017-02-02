@@ -6,6 +6,8 @@ use Search\WidgetHandlers\BaseWidgetHandler;
 
 class SavedSearchWidgetHandler extends BaseWidgetHandler
 {
+    public $renderElement = 'saved_search';
+
     protected $_type = 'saved_search';
 
     protected $_entity = null;
@@ -98,7 +100,7 @@ class SavedSearchWidgetHandler extends BaseWidgetHandler
         );
 
         $this->_data = $results;
-        $this->_dataOptions = $this->prepareChartOptions();
+        $this->_dataOptions = $this->getScripts(['data' => $this->_data]);
 
         return $results;
     }
@@ -108,10 +110,11 @@ class SavedSearchWidgetHandler extends BaseWidgetHandler
      * @param array $data passed
      * @return array $content with CSS/JS libs.
      */
-    public function prepareChartOptions($data = [])
+    public function getScripts(array $options = [])
     {
-        $entities = $this->getData()->entities;
-        $uid = md5($this->getData()->id);
+        $entities = $options['data']->entities;
+
+        $uid = md5($options['data']->id);
 
         $content = [
             'post' => [

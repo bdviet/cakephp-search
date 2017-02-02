@@ -2,21 +2,22 @@
 namespace Search\WidgetHandlers\Reports;
 
 use Cake\Utility\Inflector;
+use Search\WidgetHandlers\Reports\ReportGraphsInterface;
 use Search\WidgetHandlers\ReportWidgetHandler;
 
-class DonutChartReportWidgetHandler extends ReportWidgetHandler
+class DonutChartReportWidgetHandler extends ReportWidgetHandler implements ReportGraphsInterface
 {
     protected $_type = 'donutChart';
 
     /**
-     * prepareChartData method
+     * getChartData method
      *
      * Specifies chart data/config of the DonutChart.
      *
      * @param array $data containing configs.
      * @return array $chartData for graph rendering.
      */
-    public function prepareChartData($data = [])
+    public function getChartData(array $data = [])
     {
         $report = $this->_report;
 
@@ -45,14 +46,14 @@ class DonutChartReportWidgetHandler extends ReportWidgetHandler
     }
 
     /**
-     * prepareChartOptions method
+     * getScripts method
      *
      * Assembles JS/CSS libs for the graph rendering.
      *
      * @param array $data containing widgetHandler info.
      * @return array $content with the scripts.
      */
-    public function prepareChartOptions($data = [])
+    public function getScripts(array $data = [])
     {
         $content = [];
 
@@ -70,7 +71,6 @@ class DonutChartReportWidgetHandler extends ReportWidgetHandler
                     'content' => [
                         'https://cdnjs.cloudflare.com/ajax/libs/raphael/2.1.0/raphael-min.js',
                         'AdminLTE./plugins/morris/morris.min',
-                        'Search.reportGraphs',
                     ],
                     'block' => 'scriptBotton',
                 ],

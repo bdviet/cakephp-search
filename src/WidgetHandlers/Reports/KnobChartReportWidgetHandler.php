@@ -1,13 +1,12 @@
 <?php
 namespace Search\WidgetHandlers\Reports;
 
-use Cake\Utility\Inflector;
 use Search\WidgetHandlers\Reports\ReportGraphsInterface;
 use Search\WidgetHandlers\ReportWidgetHandler;
 
-class BarChartReportWidgetHandler extends ReportWidgetHandler implements ReportGraphsInterface
+class KnobChartReportWidgetHandler extends ReportWidgetHandler implements ReportGraphsInterface
 {
-    protected $_type = 'barChart';
+    protected $_type = 'knobChart';
 
     /**
      * getChartData method
@@ -29,19 +28,19 @@ class BarChartReportWidgetHandler extends ReportWidgetHandler implements ReportG
                 'resize' => true,
             ],
         ];
-
-        $columns = explode(',', $report['info']['columns']);
-
-        foreach ($columns as $column) {
-            array_push($labels, Inflector::humanize($column));
+        $tmp = [];
+        if (isset($report['info']['max']) && isset($report['info']['value'])) {
+            foreach ($data as $item) {
+                $tmp[] = [
+                    'max' => $item[$report['info']['max']],
+                    'value' => $item[$report['info']['value']],
+                    'label' => $item[$report['info']['label']],
+                ];
+            }
         }
 
         $options = [
-            'data' => $data,
-            'barColors' => ['#00a65a', '#f56954'],
-            'labels' => $labels,
-            'xkey' => explode(',', $report['info']['x_axis']),
-            'ykeys' => explode(',', $report['info']['y_axis'])
+            'data' => $tmp,
         ];
 
         $chartData['options'] = array_merge($chartData['options'], $options);
@@ -72,7 +71,7 @@ class BarChartReportWidgetHandler extends ReportWidgetHandler implements ReportG
                     'type' => 'script',
                     'content' => [
                         'https://cdnjs.cloudflare.com/ajax/libs/raphael/2.1.0/raphael-min.js',
-                        'AdminLTE./plugins/morris/morris.min',
+                        'AdminLTE./plugins/knob/jquery.knob',
                     ],
                     'block' => 'scriptBotton',
                 ],

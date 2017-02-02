@@ -2,21 +2,22 @@
 namespace Search\WidgetHandlers\Reports;
 
 use Cake\Utility\Inflector;
+use Search\WidgetHandlers\Reports\ReportGraphsInterface;
 use Search\WidgetHandlers\ReportWidgetHandler;
 
-class LineChartReportWidgetHandler extends ReportWidgetHandler
+class LineChartReportWidgetHandler extends ReportWidgetHandler implements ReportGraphsInterface
 {
     protected $_type = 'lineChart';
 
     /**
-     * prepareChartData method
+     * getChartData method
      *
      * Assembles the chart data for the LineChart widget
      *
      * @param array $data with report config and data.
      * @return array $chartData.
      */
-    public function prepareChartData($data = [])
+    public function getChartData(array $data = [])
     {
         $labels = [];
         $report = $this->_report;
@@ -48,14 +49,14 @@ class LineChartReportWidgetHandler extends ReportWidgetHandler
     }
 
     /**
-     * prepareChartOptions method
+     * getScripts method
      *
      * Specifies required JS/CSS libs for given chart
      *
      * @param array $data passed in the method.
      * @return array $content with JS/CSS libs.
      */
-    public function prepareChartOptions($data = [])
+    public function getScripts(array $data = [])
     {
         $content = [];
 
@@ -73,7 +74,6 @@ class LineChartReportWidgetHandler extends ReportWidgetHandler
                     'content' => [
                         'https://cdnjs.cloudflare.com/ajax/libs/raphael/2.1.0/raphael-min.js',
                         'AdminLTE./plugins/morris/morris.min',
-                        'Search.reportGraphs',
                     ],
                     'block' => 'scriptBotton',
                 ],

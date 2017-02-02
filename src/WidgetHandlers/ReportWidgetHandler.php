@@ -8,7 +8,7 @@ use Search\WidgetHandlers\BaseWidgetHandler;
 
 class ReportWidgetHandler extends BaseWidgetHandler
 {
-    protected $_type = 'report';
+    public $renderElement = 'report';
 
     /**
      * @return array $report configuration.
@@ -37,28 +37,28 @@ class ReportWidgetHandler extends BaseWidgetHandler
     /**
      * @return string $type of the Report widget.
      */
-    public function getChartType()
+    public function getType()
     {
         return $this->_instance->_type;
     }
 
     /**
-     * prepareChartOptions method.
+     * getScripts method.
      *
      * @param array $options with data.
      * @return array $_dataOptions.
      */
-    public function prepareChartOptions($options = [])
+    public function getScripts(array $options = [])
     {
-        return $this->_instance->prepareChartOptions($options);
+        return $this->_instance->getScripts(['data' => $options]);
     }
 
     /**
      * @return array $chartData of the instance.
      */
-    public function prepareChartData($data = [])
+    public function getChartData(array $data = [])
     {
-        return $this->_instance->prepareChartData($data);
+        return $this->_instance->getChartData($data);
     }
 
     /**
@@ -198,8 +198,8 @@ class ReportWidgetHandler extends BaseWidgetHandler
         }
 
         if (!empty($result)) {
-            $data = $this->prepareChartData($result);
-            $dataOptions = $this->prepareChartOptions($data);
+            $data = $this->getChartData($result);
+            $dataOptions = $this->getScripts(['data' => $data]);
 
             $this->setData($data);
             $this->setDataOptions($dataOptions);

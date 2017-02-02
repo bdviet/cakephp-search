@@ -123,6 +123,6 @@ foreach ($searchFields as $searchField) {
     array_push($scripts, ['post' => $searchField['input']['post']]);
 }
 
-echo $this->element('Search.footer_libraries', ['scripts' => $scripts]);
+echo $this->element('Search.widget_libraries', ['scripts' => $scripts]);
 ?>
 <?php endif;

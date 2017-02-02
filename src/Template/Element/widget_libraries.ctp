@@ -24,6 +24,8 @@ if (!empty($scripts)) {
             ]);
         }
     }
+
+    echo $this->Html->script('Search.reportGraphs', ['block' => 'scriptBotton']);
 }
 
 if (isset($chartData) && !empty($chartData)) {

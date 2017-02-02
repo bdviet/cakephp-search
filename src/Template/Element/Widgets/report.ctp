@@ -1,7 +1,7 @@
 <?php
     $report = $widget->getReport();
     $data = $widget->getData();
-    $type = $widget->getChartType();
+    $type = $widget->getType();
 ?>
 <div class='dashboard-widget-display_report'>
     <div class="box box-default">
@@ -25,7 +25,7 @@
                     <?php endforeach; ?>
                     </div>
                 <?php endif; ?>
-            </div>
+            </div> <!-- .graph_ container -->
         </div>
     </div>
 </div>
