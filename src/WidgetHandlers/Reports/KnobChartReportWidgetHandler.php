@@ -2,11 +2,11 @@
 namespace Search\WidgetHandlers\Reports;
 
 use Search\WidgetHandlers\Reports\ReportGraphsInterface;
-use Search\WidgetHandlers\ReportWidgetHandler;
+use Search\WidgetHandlers\Reports\BaseReportGraphs;
 
-class KnobChartReportWidgetHandler extends ReportWidgetHandler implements ReportGraphsInterface
+class KnobChartReportWidgetHandler extends BaseReportGraphs
 {
-    protected $_type = 'knobChart';
+    public $_type = 'knobChart';
 
     /**
      * getChartData method

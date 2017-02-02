@@ -38,6 +38,10 @@ $this->eventManager()->dispatch($event);
 
                         $widgetHandler->getResults(['entity' => $dw, 'user' => $user, 'rootView' => $this]);
 
+                        if ($widgetHandler->getType() == 'knobChart') {
+                            //debug($widgetHandler);
+                        }
+
                         $dataOptions = $widgetHandler->getDataOptions();
                         if (!empty($dataOptions)) {
                             if ($widgetHandler->getRenderElement() == 'report') {
