@@ -1,8 +1,8 @@
 <?php
 namespace Search\Test\TestCase\WidgetHandlers;
 
-use Search\WidgetHandlers\Reports\LineChartReportWidgetHandler;
 use Cake\TestSuite\TestCase;
+use Search\WidgetHandlers\Reports\LineChartReportWidgetHandler;
 
 class LineChartReportWidgetHandlerTest extends TestCase
 {

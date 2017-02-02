@@ -1,8 +1,8 @@
 <?php
 namespace Search\Test\TestCase\WidgetHandlers;
 
-use Search\WidgetHandlers\Reports\BarChartReportWidgetHandler;
 use Cake\TestSuite\TestCase;
+use Search\WidgetHandlers\Reports\BarChartReportWidgetHandler;
 
 class BarChartReportWidgetHandlerTest extends TestCase
 {

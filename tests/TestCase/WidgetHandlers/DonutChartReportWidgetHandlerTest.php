@@ -1,8 +1,8 @@
 <?php
 namespace Search\Test\TestCase\WidgetHandlers;
 
-use Search\WidgetHandlers\Reports\DonutChartReportWidgetHandler;
 use Cake\TestSuite\TestCase;
+use Search\WidgetHandlers\Reports\DonutChartReportWidgetHandler;
 
 class DonutChartReportWidgetHandlerTest extends TestCase
 {
