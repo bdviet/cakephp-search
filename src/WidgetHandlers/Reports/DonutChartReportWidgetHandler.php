@@ -10,7 +10,6 @@ class DonutChartReportWidgetHandler extends ReportWidgetHandler
 
     public function prepareChartData($data = [])
     {
-        $labels = [];
         $report = $this->_report;
 
         $chartData = [

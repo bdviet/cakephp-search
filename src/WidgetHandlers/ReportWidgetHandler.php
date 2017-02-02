@@ -62,9 +62,12 @@ class ReportWidgetHandler extends BaseWidgetHandler
     public function getReportConfig($options = [])
     {
         $config = [];
+
+        if (empty($options['rootView'])) {
+            return $config;
+        }
         $rootView = $options['rootView'];
         $event = new Event('Search.Report.getReports', $rootView->request);
-
         $rootView->EventManager()->dispatch($event);
 
         $widgetId = $options['entity']->widget_id;
@@ -129,7 +132,7 @@ class ReportWidgetHandler extends BaseWidgetHandler
         $resultSet = $sth->fetchAll('assoc');
 
         if (!empty($resultSet)) {
-            foreach ($resultSet as $k => $row) {
+            foreach ($resultSet as $row) {
                 $renderRow = [];
                 foreach ($row as $column => $value) {
                     if (in_array($column, $columns)) {
