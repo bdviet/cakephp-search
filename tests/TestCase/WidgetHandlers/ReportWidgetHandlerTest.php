@@ -34,12 +34,6 @@ class ReportWidgetHandlerTest extends TestCase
         $this->appView->EventManager()->trackEvents(true);
         $this->appView->EventManager()->setEventList(new EventList());
 
-/*
-        $this->eventManager = new EventManager();
-
-        $this->eventManager->trackEvents(true);
-        $this->eventManager->setEventList(new EventList());
-*/
         $this->fixtureManager = new FixtureManager();
         $this->fixtureManager->fixturize($this);
 
@@ -55,12 +49,12 @@ class ReportWidgetHandlerTest extends TestCase
     public function tearDown()
     {
         parent::tearDown();
-        //unset($this->eventManager, $this->fixtureManager);
+        unset($this->eventManager, $this->fixtureManager);
     }
 
-    public function testGetType()
+    public function testGetRenderElement()
     {
-        $result = $this->widgetHandler->getType();
+        $result = $this->widgetHandler->getRenderElement();
         $this->assertEquals($result, 'report');
     }
 
