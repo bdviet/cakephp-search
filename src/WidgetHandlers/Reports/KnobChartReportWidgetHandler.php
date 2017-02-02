@@ -1,7 +1,6 @@
 <?php
 namespace Search\WidgetHandlers\Reports;
 
-use Search\WidgetHandlers\Reports\ReportGraphsInterface;
 use Search\WidgetHandlers\Reports\BaseReportGraphs;
 
 class KnobChartReportWidgetHandler extends BaseReportGraphs
