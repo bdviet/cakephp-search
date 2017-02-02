@@ -2,12 +2,11 @@
 namespace Search\WidgetHandlers\Reports;
 
 use Cake\Utility\Inflector;
-use Search\WidgetHandlers\Reports\ReportGraphsInterface;
-use Search\WidgetHandlers\ReportWidgetHandler;
+use Search\WidgetHandlers\Reports\BaseReportGrahs;
 
-class BarChartReportWidgetHandler extends ReportWidgetHandler implements ReportGraphsInterface
+class BarChartReportWidgetHandler extends BaseReportGraphs
 {
-    protected $_type = 'barChart';
+    public $_type = 'barChart';
 
     /**
      * getChartData method

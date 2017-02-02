@@ -154,7 +154,7 @@ class ReportWidgetHandler extends BaseWidgetHandler
             $handlerName = Inflector::camelize($renderAs);
 
             $className = __NAMESPACE__ . '\\Reports\\' . $handlerName . self::WIDGET_REPORT_SUFFIX;
-            $interface = __NAMESPACE__ . '\\' . self::WIDGET_INTERFACE;
+            $interface = __NAMESPACE__ . '\\Reports\\' . 'ReportGraphsInterface';
 
             if (class_exists($className) && in_array($interface, class_implements($className))) {
                 return new $className($options);
