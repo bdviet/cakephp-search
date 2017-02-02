@@ -11,4 +11,9 @@ abstract class BaseReportGraphs implements ReportGraphsInterface
     public $_data = [];
     public $_report = [];
     public $_dataOptions = [];
+
+    public function getType()
+    {
+        return $this->_type;
+    }
 }
