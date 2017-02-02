@@ -8,7 +8,7 @@ use Search\WidgetHandlers\BaseWidgetHandler;
 
 class ReportWidgetHandler extends BaseWidgetHandler
 {
-    public $renderElement = 'report';
+    public $renderElement = 'graph';
 
     /**
      * @return array $report configuration.

@@ -6,9 +6,9 @@ use Search\WidgetHandlers\BaseWidgetHandler;
 
 class SavedSearchWidgetHandler extends BaseWidgetHandler
 {
-    public $renderElement = 'saved_search';
+    public $renderElement = 'table';
 
-    protected $_type = 'saved_search';
+    public $_type = 'saved_search';
 
     protected $_entity = null;
 

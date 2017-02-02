@@ -55,7 +55,7 @@ class ReportWidgetHandlerTest extends TestCase
     public function testGetRenderElement()
     {
         $result = $this->widgetHandler->getRenderElement();
-        $this->assertEquals($result, 'report');
+        $this->assertEquals($result, 'graph');
     }
 
     public function testGetReportConfigWithoutRootView()

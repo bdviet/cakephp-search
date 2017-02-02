@@ -42,6 +42,6 @@ class SavedSearchWidgetHandlerTest extends TestCase
     public function testGetRenderElement()
     {
         $result = $this->widgetHandler->getRenderElement();
-        $this->assertEquals($result, 'saved_search');
+        $this->assertEquals($result, 'table');
     }
 }
