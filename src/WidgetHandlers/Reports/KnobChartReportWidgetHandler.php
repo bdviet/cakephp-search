@@ -57,7 +57,7 @@ class KnobChartReportWidgetHandler extends BaseReportGraphs
      */
     public function getScripts(array $data = [])
     {
-        $content = [
+        return [
             'post' => [
                 'css' => [
                     'type' => 'css',
@@ -76,7 +76,5 @@ class KnobChartReportWidgetHandler extends BaseReportGraphs
                 ],
             ]
         ];
-
-        return $content;
     }
 }

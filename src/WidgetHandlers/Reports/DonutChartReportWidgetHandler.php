@@ -54,9 +54,7 @@ class DonutChartReportWidgetHandler extends BaseReportGraphs
      */
     public function getScripts(array $data = [])
     {
-        $content = [];
-
-        $content = [
+        return [
             'post' => [
                 'css' => [
                     'type' => 'css',
@@ -75,7 +73,5 @@ class DonutChartReportWidgetHandler extends BaseReportGraphs
                 ],
             ]
         ];
-
-        return $content;
     }
 }

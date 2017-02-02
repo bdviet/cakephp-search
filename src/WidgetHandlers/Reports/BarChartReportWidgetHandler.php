@@ -58,7 +58,7 @@ class BarChartReportWidgetHandler extends BaseReportGraphs
      */
     public function getScripts(array $data = [])
     {
-        $content = [
+        return [
             'post' => [
                 'css' => [
                     'type' => 'css',
@@ -77,7 +77,5 @@ class BarChartReportWidgetHandler extends BaseReportGraphs
                 ],
             ]
         ];
-
-        return $content;
     }
 }
