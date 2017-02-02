@@ -37,7 +37,7 @@ if (!empty($url)) {
     $title = '<a href="' . $this->Url->build($url) . '">' . $title . '</a>';
 }
 
-$uid = uniqid();
+$uid = md5($savedSearch->id);
 ?>
 <?php if (!empty($searchData['result'])) : ?>
 <div class="dashboard-widget-saved_search">
@@ -85,13 +85,4 @@ $uid = uniqid();
         </div>
     </div>
 </div>
-<?php
-echo $this->Html->scriptBlock(
-    'view_search_result.init({
-        table_id: \'#table-datatable-' . $uid . '\',
-        sort_by_field: \'' . (int)array_search($searchData['sort_by_field'], $searchData['display_columns']) . '\',
-        sort_by_order: \'' . $searchData['sort_by_order'] . '\'
-    });',
-    ['block' => 'scriptBotton']
-); ?>
 <?php endif; ?>

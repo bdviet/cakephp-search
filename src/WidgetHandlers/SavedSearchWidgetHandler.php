@@ -98,7 +98,51 @@ class SavedSearchWidgetHandler extends BaseWidgetHandler
         );
 
         $this->_data = $results;
+        $this->_dataOptions = $this->prepareChartOptions();
 
         return $results;
+    }
+
+    /**
+     * prepareChartOptions
+     * @param array $data passed
+     * @return array $content with CSS/JS libs.
+     */
+    public function prepareChartOptions($data = [])
+    {
+        $entities = $this->getData()->entities;
+        $uid = md5($this->getData()->id);
+
+        $content = [
+            'post' => [
+                'css' => [
+                    'type' => 'css',
+                    'content' => [
+                        'AdminLTE./plugins/datatables/dataTables.bootstrap',
+                    ],
+                    'block' => 'css',
+                ],
+                'javascript' => [
+                    'type' => 'script',
+                    'content' => [
+                        'AdminLTE./plugins/datatables/jquery.dataTables.min',
+                        'AdminLTE./plugins/datatables/dataTables.bootstrap.min',
+                        'Search.view-search-result',
+                    ],
+                    'block' => 'scriptBotton',
+                ],
+                'scriptBlock' => [
+                    'type' => 'scriptBlock',
+                    'content' => 'view_search_result.init({
+                        table_id: \'#table-datatable-' . $uid . '\',
+                        sort_by_field: \'' . (int)array_search($entities['sort_by_field'], $entities['display_columns']) . '\',
+                        sort_by_order: \'' . $entities['sort_by_order'] . '\'
+                        });',
+                    'block' => 'scriptBotton',
+                ],
+            ]
+        ];
+
+        return $content;
     }
 }
