@@ -18,6 +18,11 @@ class SavedSearchWidgetHandler extends BaseWidgetHandler
 
     protected $_dataOptions = [];
 
+    /**
+     * construct method
+     * @param array $options containing widget entity.
+     * @return void.
+     */
     public function __construct($options = [])
     {
         if (!empty($options['entity'])) {
@@ -26,21 +31,35 @@ class SavedSearchWidgetHandler extends BaseWidgetHandler
         $this->_tableInstance = TableRegistry::get($this->_tableName);
     }
 
+    /**
+     * @return array $_dataOptions containing JS/CSS libs.
+     */
     public function getDataOptions()
     {
         return $this->_dataOptions;
     }
 
+    /**
+     * @return string $type of the widget.
+     */
     public function getSavedSearchType()
     {
         return $this->getData()->type;
     }
 
+    /**
+     * @return array $_data of the widget.
+     */
     public function getData()
     {
         return $this->_data;
     }
 
+    /**
+     * getResults method
+     * @param array $options containing entity and view params.
+     * @return array $results from $this->_data.
+     */
     public function getResults(array $options = [])
     {
         $results = [];

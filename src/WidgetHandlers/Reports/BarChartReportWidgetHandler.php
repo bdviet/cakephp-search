@@ -8,6 +8,14 @@ class BarChartReportWidgetHandler extends ReportWidgetHandler
 {
     protected $_type = 'barChart';
 
+    /**
+     * prepareChartData method
+     *
+     * Assembles graphs data from the reports config and data.
+     *
+     * @param array $data containing report configs and data.
+     * @return array $chartData with defined chart information.
+     */
     public function prepareChartData($data = [])
     {
         $labels = [];
@@ -40,6 +48,14 @@ class BarChartReportWidgetHandler extends ReportWidgetHandler
         return $chartData;
     }
 
+    /**
+     * prepareChartOptions method
+     *
+     * Specifies JS/CSS libs for the content loading
+     *
+     * @param array $data passed from the widgetHandler.
+     * @return array $content with the libs.
+     */
     public function prepareChartOptions($data = [])
     {
         $content = [];

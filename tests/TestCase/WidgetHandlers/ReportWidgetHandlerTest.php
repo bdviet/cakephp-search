@@ -7,7 +7,6 @@ use Cake\ORM\TableRegistry;
 use Cake\TestSuite\Fixture\FixtureManager;
 use Cake\TestSuite\TestCase;
 use Search\WidgetHandlers\ReportWidgetHandler;
-//use PHPUnit_Framework_TestCase;
 
 class ReportWidgetHandlerTest extends TestCase
 {
@@ -81,5 +80,4 @@ class ReportWidgetHandlerTest extends TestCase
 
         $this->assertEventFired('Search.Report.getReports', $this->appView->EventManager());
     }
-
 }

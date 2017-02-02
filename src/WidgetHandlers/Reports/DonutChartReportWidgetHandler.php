@@ -8,6 +8,14 @@ class DonutChartReportWidgetHandler extends ReportWidgetHandler
 {
     protected $_type = 'donutChart';
 
+    /**
+     * prepareChartData method
+     *
+     * Specifies chart data/config of the DonutChart.
+     *
+     * @param array $data containing configs.
+     * @return array $chartData for graph rendering.
+     */
     public function prepareChartData($data = [])
     {
         $report = $this->_report;
@@ -36,6 +44,14 @@ class DonutChartReportWidgetHandler extends ReportWidgetHandler
         return $chartData;
     }
 
+    /**
+     * prepareChartOptions method
+     *
+     * Assembles JS/CSS libs for the graph rendering.
+     *
+     * @param array $data containing widgetHandler info.
+     * @return array $content with the scripts.
+     */
     public function prepareChartOptions($data = [])
     {
         $content = [];

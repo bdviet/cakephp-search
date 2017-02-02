@@ -11,6 +11,9 @@ abstract class BaseWidgetHandler implements WidgetHandlerInterface
 
     const GRAPH_PREFIX = 'graph_';
 
+    /**
+     * @return string $type of the WidgetHandler.
+     */
     public function getType()
     {
         return $this->_type;

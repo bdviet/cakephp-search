@@ -10,41 +10,73 @@ class ReportWidgetHandler extends BaseWidgetHandler
 {
     protected $_type = 'report';
 
+    /**
+     * @return array $report configuration.
+     */
     public function getReport()
     {
         return $this->_instance->_report;
     }
 
+    /**
+     * @return array $data of the report.
+     */
     public function getData()
     {
         return $this->_instance->_data;
     }
 
+    /**
+     * @return array $_dataOptions of the widget for rendering.
+     */
     public function getDataOptions()
     {
         return $this->_instance->_dataOptions;
     }
 
+    /**
+     * @return string $type of the Report widget.
+     */
     public function getChartType()
     {
         return $this->_instance->_type;
     }
 
+    /**
+     * prepareChartOptions method.
+     *
+     * @param array $options with data.
+     * @return array $_dataOptions.
+     */
     public function prepareChartOptions($options = [])
     {
         return $this->_instance->prepareChartOptions($options);
     }
 
+    /**
+     * @return array $chartData of the instance.
+     */
     public function prepareChartData($data = [])
     {
         return $this->_instance->prepareChartData($data);
     }
 
+    /**
+     * Setting report configuration to the report instance.
+     *
+     * @param array $report to be set for _report property.
+     * @retrun array $report config of the widget.
+     */
     public function setReport($report)
     {
         $this->_instance->_report = $report;
     }
 
+    /**
+     * setData method
+     * @param array $data containing widget data.
+     * @return array $_data after being set.
+     */
     public function setData($data = [])
     {
         $this->_instance->_data = $data;
@@ -52,6 +84,12 @@ class ReportWidgetHandler extends BaseWidgetHandler
         return $this->_instance->_data;
     }
 
+    /**
+     * setDataOptions method
+     * Setting up report JS/CSS libs.
+     * @param array $data for being set.
+     * @return array $_dataOptions property.
+     */
     public function setDataOptions($data = [])
     {
         $this->_instance->_dataOptions = $data;
@@ -59,6 +97,12 @@ class ReportWidgetHandler extends BaseWidgetHandler
         return $this->_instance->_dataOptions;
     }
 
+    /**
+     * getReportConfig method
+     * Parses the config of the report for widgetHandler.
+     * @param array $options with entity data.
+     * @return array $config of the $_report.
+     */
     public function getReportConfig($options = [])
     {
         $config = [];
@@ -89,8 +133,12 @@ class ReportWidgetHandler extends BaseWidgetHandler
         return $config;
     }
 
-
-
+    /**
+     * ReportWidgetHandler operates via $_instance variable
+     * that we set based on the renderAs parameter of the report.
+     * @param array $options containing reports
+     * @return mixed $className of the $_instance.
+     */
     public function getReportInstance($options = [])
     {
         $result = null;
@@ -114,8 +162,14 @@ class ReportWidgetHandler extends BaseWidgetHandler
         }
     }
 
-
-
+    /**
+     * getResults method
+     *
+     * Establish report data for the widgetHandler.
+     *
+     * @param array $options with entity and view data.
+     * @return array $result containing $_data.
+     */
     public function getResults(array $options = [])
     {
         $result = [];

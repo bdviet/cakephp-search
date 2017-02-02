@@ -8,6 +8,16 @@ class WidgetHandlerFactory
     const WIDGET_SUFFIX = 'WidgetHandler';
     const WIDGET_INTERFACE = 'WidgetHandlerInterface';
 
+    /**
+     * create method
+     *
+     * Factory method to initialize widget handler instance
+     * base on the widget type field.
+     *
+     * @param string $type containing the widget handler type.
+     * @param array $options containing entity and view data.
+     * @return mixed $className of the widgetHandler.
+     */
     public static function create($type, array $options = [])
     {
         $handlerName = Inflector::camelize($type);

@@ -2,12 +2,20 @@
 namespace Search\WidgetHandlers\Reports;
 
 use Cake\Utility\Inflector;
-use Search\WidgetHandlers\ReportWidgetHandler;
+use Search\WidgetHandlers\BaseGraphWidgetHandler;
 
-class LineChartReportWidgetHandler extends ReportWidgetHandler
+class LineChartReportWidgetHandler extends BaseGraphWidgetHandler
 {
     protected $_type = 'lineChart';
 
+    /**
+     * prepareChartData method
+     *
+     * Assembles the chart data for the LineChart widget
+     *
+     * @param array $data with report config and data.
+     * @return array $chartData.
+     */
     public function prepareChartData($data = [])
     {
         $labels = [];
@@ -39,6 +47,14 @@ class LineChartReportWidgetHandler extends ReportWidgetHandler
         return $chartData;
     }
 
+    /**
+     * prepareChartOptions method
+     *
+     * Specifies required JS/CSS libs for given chart
+     *
+     * @param array $data passed in the method.
+     * @return array $content with JS/CSS libs.
+     */
     public function prepareChartOptions($data = [])
     {
         $content = [];
