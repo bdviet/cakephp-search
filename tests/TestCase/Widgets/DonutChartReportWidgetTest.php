@@ -31,6 +31,6 @@ class DonutChartReportWidgetTest extends TestCase
         ];
 
         $containerId = $this->widget->setContainerId($config);
-        $this->assertEquals($containerId, $this->widget::GRAPH_PREFIX . $config['slug']);
+        $this->assertEquals($containerId, 'graph_' . $config['slug']);
     }
 }

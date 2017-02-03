@@ -32,6 +32,6 @@ class LineChartReportWidgetTest extends TestCase
         ];
 
         $containerId = $this->widget->setContainerId($config);
-        $this->assertEquals($containerId, $this->widget::GRAPH_PREFIX . 'testLineChartGraph');
+        $this->assertEquals($containerId, 'graph_' . 'testLineChartGraph');
     }
 }
