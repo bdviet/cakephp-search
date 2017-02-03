@@ -6,7 +6,7 @@ use Cake\Event\EventManager;
 use Cake\ORM\TableRegistry;
 use Cake\TestSuite\Fixture\FixtureManager;
 use Cake\TestSuite\TestCase;
-use Search\Widgets\ReportWidgetHandler;
+use Search\Widgets\ReportWidget;
 
 class ReportWidgetTest extends TestCase
 {
@@ -37,7 +37,7 @@ class ReportWidgetTest extends TestCase
         $this->fixtureManager = new FixtureManager();
         $this->fixtureManager->fixturize($this);
 
-        $this->widget = new ReportWidgetHandler();
+        $this->widget = new ReportWidget();
 
         $config = TableRegistry::exists('Widgets') ? [] : ['className' => 'Search\Model\Table\WidgetsTable'];
         $this->Widgets = TableRegistry::get('Widgets', $config);
