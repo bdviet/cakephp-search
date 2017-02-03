@@ -100,5 +100,4 @@ class ReportWidgetTest extends TestCase
 
         return $configs;
     }
-
 }
