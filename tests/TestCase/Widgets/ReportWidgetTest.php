@@ -74,18 +74,31 @@ class ReportWidgetTest extends TestCase
 
         $this->widget->_instance = $instance;
 
+        $this->widget->setContainerId($config['config']);
+
         $this->assertEquals($config['config']['info']['renderAs'], $this->widget->getType());
+        $this->assertEquals('graph_' . $config['config']['slug'], $this->widget->getContainerId());
+        $this->assertEquals([], $this->widget->getOptions());
+        $this->assertEquals([], $this->widget->getData());
+
+        $dummyData = ['foo' => 'bar'];
+
+        $this->widget->setData($dummyData);
+        $this->assertEquals($dummyData, $this->widget->getData());
     }
+
+
 
     public function getInstancesList()
     {
         $configs = [
-           [['config' => ['info' => ['renderAs' => 'barChart']]], '\Search\Widgets\Reports\BarChartReportWidget'],
-           [['config' => ['info' => ['renderAs' => 'lineChart']]], '\Search\Widgets\Reports\LineChartReportWidget'],
-           [['config' => ['info' => ['renderAs' => 'donutChart']]], '\Search\Widgets\Reports\DonutChartReportWidget'],
-           [['config' => ['info' => ['renderAs' => 'knobChart']]], '\Search\Widgets\Reports\KnobChartReportWidget'],
+           [['config' => ['slug' => 'barChartTest', 'info' => ['renderAs' => 'barChart']]], '\Search\Widgets\Reports\BarChartReportWidget'],
+           [['config' => ['slug' => 'lineChartTest', 'info' => ['renderAs' => 'lineChart']]], '\Search\Widgets\Reports\LineChartReportWidget'],
+           [['config' => ['slug' => 'donutChartTest', 'info' => ['renderAs' => 'donutChart']]], '\Search\Widgets\Reports\DonutChartReportWidget'],
+           [['config' => ['slug' => 'knobChartTest', 'info' => ['renderAs' => 'knobChart']]], '\Search\Widgets\Reports\KnobChartReportWidget'],
         ];
 
         return $configs;
     }
+
 }

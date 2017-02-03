@@ -179,6 +179,17 @@ class ReportWidget extends BaseWidget
     }
 
     /**
+     * setData for the widget.
+     * @param array $data with information related
+     * to widget.
+     * @return void.
+     */
+    public function setData($data = [])
+    {
+        $this->_instance->setData($data);
+    }
+
+    /**
      * @return string $containerId of the widget instance.
      */
     public function getContainerId()
