@@ -51,7 +51,7 @@ class SavedSearchWidgetTest extends TestCase
         $this->widget->setContainerId($entity);
         $result = $this->widget->getContainerId();
 
-        $expected = $this->widget::TABLE_PREFIX . md5($entity->id);
+        $expected = 'table-datatable-' . md5($entity->id);
         $this->assertEquals($result, $expected);
     }
 }
