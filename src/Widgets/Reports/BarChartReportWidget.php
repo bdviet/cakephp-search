@@ -1,10 +1,10 @@
 <?php
-namespace Search\WidgetHandlers\Reports;
+namespace Search\Widgets\Reports;
 
 use Cake\Utility\Inflector;
-use Search\WidgetHandlers\Reports\BaseReportGraphs;
+use Search\Widgets\Reports\BaseReportGraphs;
 
-class BarChartReportWidgetHandler extends BaseReportGraphs
+class BarChartReportWidget extends BaseReportGraphs
 {
     public $_type = 'barChart';
 

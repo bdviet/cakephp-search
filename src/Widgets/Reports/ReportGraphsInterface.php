@@ -1,5 +1,5 @@
 <?php
-namespace Search\WidgetHandlers\Reports;
+namespace Search\Widgets\Reports;
 
 interface ReportGraphsInterface
 {

@@ -1,19 +1,20 @@
 <?php
-namespace Search\WidgetHandlers\Reports;
+namespace Search\Widgets\Reports;
 
-use Search\WidgetHandlers\Reports\BaseReportGraphs;
+use Cake\Utility\Inflector;
+use Search\Widgets\Reports\BaseReportGraphs;
 
-class KnobChartReportWidgetHandler extends BaseReportGraphs
+class LineChartReportWidget extends BaseReportGraphs
 {
-    public $_type = 'knobChart';
+    public $_type = 'lineChart';
 
     /**
      * getChartData method
      *
-     * Assembles graphs data from the reports config and data.
+     * Assembles the chart data for the LineChart widget
      *
-     * @param array $data containing report configs and data.
-     * @return array $chartData with defined chart information.
+     * @param array $data with report config and data.
+     * @return array $chartData.
      */
     public function getChartData(array $data = [])
     {
@@ -27,19 +28,18 @@ class KnobChartReportWidgetHandler extends BaseReportGraphs
                 'resize' => true,
             ],
         ];
-        $tmp = [];
-        if (isset($report['info']['max']) && isset($report['info']['value'])) {
-            foreach ($data as $item) {
-                $tmp[] = [
-                    'max' => $item[$report['info']['max']],
-                    'value' => $item[$report['info']['value']],
-                    'label' => $item[$report['info']['label']],
-                ];
-            }
-        }
 
+        $columns = explode(',', $report['info']['columns']);
+
+        foreach ($columns as $column) {
+            array_push($labels, Inflector::humanize($column));
+        }
         $options = [
-            'data' => $tmp,
+            'data' => $data,
+            'barColors' => ['#00a65a', '#f56954'],
+            'labels' => $labels,
+            'xkey' => explode(',', $report['info']['x_axis']),
+            'ykeys' => explode(',', $report['info']['y_axis'])
         ];
 
         $chartData['options'] = array_merge($chartData['options'], $options);
@@ -48,12 +48,12 @@ class KnobChartReportWidgetHandler extends BaseReportGraphs
     }
 
     /**
-     * prepareChartOptions method
+     * getScripts method
      *
-     * Specifies JS/CSS libs for the content loading
+     * Specifies required JS/CSS libs for given chart
      *
-     * @param array $data passed from the widgetHandler.
-     * @return array $content with the libs.
+     * @param array $data passed in the method.
+     * @return array $content with JS/CSS libs.
      */
     public function getScripts(array $data = [])
     {
@@ -70,7 +70,7 @@ class KnobChartReportWidgetHandler extends BaseReportGraphs
                     'type' => 'script',
                     'content' => [
                         'https://cdnjs.cloudflare.com/ajax/libs/raphael/2.1.0/raphael-min.js',
-                        'AdminLTE./plugins/knob/jquery.knob',
+                        'AdminLTE./plugins/morris/morris.min',
                     ],
                     'block' => 'scriptBotton',
                 ],

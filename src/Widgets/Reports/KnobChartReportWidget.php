@@ -1,23 +1,23 @@
 <?php
-namespace Search\WidgetHandlers\Reports;
+namespace Search\Widgets\Reports;
 
-use Cake\Utility\Inflector;
-use Search\WidgetHandlers\Reports\BaseReportGraphs;
+use Search\Widgets\Reports\BaseReportGraphs;
 
-class DonutChartReportWidgetHandler extends BaseReportGraphs
+class KnobChartReportWidget extends BaseReportGraphs
 {
-    public $_type = 'donutChart';
+    public $_type = 'knobChart';
 
     /**
      * getChartData method
      *
-     * Specifies chart data/config of the DonutChart.
+     * Assembles graphs data from the reports config and data.
      *
-     * @param array $data containing configs.
-     * @return array $chartData for graph rendering.
+     * @param array $data containing report configs and data.
+     * @return array $chartData with defined chart information.
      */
     public function getChartData(array $data = [])
     {
+        $labels = [];
         $report = $this->_config;
 
         $chartData = [
@@ -27,17 +27,20 @@ class DonutChartReportWidgetHandler extends BaseReportGraphs
                 'resize' => true,
             ],
         ];
+        $tmp = [];
+        if (isset($report['info']['max']) && isset($report['info']['value'])) {
+            foreach ($data as $item) {
+                $tmp[] = [
+                    'max' => $item[$report['info']['max']],
+                    'value' => $item[$report['info']['value']],
+                    'label' => $item[$report['info']['label']],
+                ];
+            }
+        }
 
         $options = [
-            'data' => []
+            'data' => $tmp,
         ];
-
-        foreach ($data as $item) {
-            array_push($options['data'], [
-                'label' => $item[$report['info']['label']],
-                'value' => $item[$report['info']['value']],
-            ]);
-        }
 
         $chartData['options'] = array_merge($chartData['options'], $options);
 
@@ -45,12 +48,12 @@ class DonutChartReportWidgetHandler extends BaseReportGraphs
     }
 
     /**
-     * getScripts method
+     * prepareChartOptions method
      *
-     * Assembles JS/CSS libs for the graph rendering.
+     * Specifies JS/CSS libs for the content loading
      *
-     * @param array $data containing widgetHandler info.
-     * @return array $content with the scripts.
+     * @param array $data passed from the widgetHandler.
+     * @return array $content with the libs.
      */
     public function getScripts(array $data = [])
     {
@@ -67,7 +70,7 @@ class DonutChartReportWidgetHandler extends BaseReportGraphs
                     'type' => 'script',
                     'content' => [
                         'https://cdnjs.cloudflare.com/ajax/libs/raphael/2.1.0/raphael-min.js',
-                        'AdminLTE./plugins/morris/morris.min',
+                        'AdminLTE./plugins/knob/jquery.knob',
                     ],
                     'block' => 'scriptBotton',
                 ],

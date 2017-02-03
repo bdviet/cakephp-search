@@ -1,24 +1,23 @@
 <?php
-namespace Search\WidgetHandlers\Reports;
+namespace Search\Widgets\Reports;
 
 use Cake\Utility\Inflector;
-use Search\WidgetHandlers\Reports\BaseReportGraphs;
+use Search\Widgets\Reports\BaseReportGraphs;
 
-class LineChartReportWidgetHandler extends BaseReportGraphs
+class DonutChartReportWidget extends BaseReportGraphs
 {
-    public $_type = 'lineChart';
+    public $_type = 'donutChart';
 
     /**
      * getChartData method
      *
-     * Assembles the chart data for the LineChart widget
+     * Specifies chart data/config of the DonutChart.
      *
-     * @param array $data with report config and data.
-     * @return array $chartData.
+     * @param array $data containing configs.
+     * @return array $chartData for graph rendering.
      */
     public function getChartData(array $data = [])
     {
-        $labels = [];
         $report = $this->_config;
 
         $chartData = [
@@ -29,18 +28,16 @@ class LineChartReportWidgetHandler extends BaseReportGraphs
             ],
         ];
 
-        $columns = explode(',', $report['info']['columns']);
-
-        foreach ($columns as $column) {
-            array_push($labels, Inflector::humanize($column));
-        }
         $options = [
-            'data' => $data,
-            'barColors' => ['#00a65a', '#f56954'],
-            'labels' => $labels,
-            'xkey' => explode(',', $report['info']['x_axis']),
-            'ykeys' => explode(',', $report['info']['y_axis'])
+            'data' => []
         ];
+
+        foreach ($data as $item) {
+            array_push($options['data'], [
+                'label' => $item[$report['info']['label']],
+                'value' => $item[$report['info']['value']],
+            ]);
+        }
 
         $chartData['options'] = array_merge($chartData['options'], $options);
 
@@ -50,10 +47,10 @@ class LineChartReportWidgetHandler extends BaseReportGraphs
     /**
      * getScripts method
      *
-     * Specifies required JS/CSS libs for given chart
+     * Assembles JS/CSS libs for the graph rendering.
      *
-     * @param array $data passed in the method.
-     * @return array $content with JS/CSS libs.
+     * @param array $data containing widgetHandler info.
+     * @return array $content with the scripts.
      */
     public function getScripts(array $data = [])
     {

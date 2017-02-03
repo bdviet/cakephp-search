@@ -1,12 +1,12 @@
 <?php
-namespace Search\WidgetHandlers;
+namespace Search\Widgets;
 
 /**
  * WidgetHandlerInterface
  *
  * Contracts global WidgetHandlers.
  */
-interface WidgetHandlerInterface
+interface WidgetInterface
 {
     /**
      * getResults method

@@ -1,10 +1,10 @@
 <?php
-namespace Search\WidgetHandlers;
+namespace Search\Widgets;
 
 use Cake\ORM\TableRegistry;
-use Search\WidgetHandlers\BaseWidgetHandler;
+use Search\Widgets\BaseWidget;
 
-class SavedSearchWidgetHandler extends BaseWidgetHandler
+class SavedSearchWidget extends BaseWidget
 {
     public $renderElement = 'table';
 

@@ -1,6 +1,6 @@
 <?php
 use Cake\Event\Event;
-use Search\WidgetHandlers\WidgetHandlerFactory;
+use Search\Widgets\WidgetFactory;
 
 $scripts = [];
 $chartData = [];
@@ -34,7 +34,7 @@ $this->eventManager()->dispatch($event);
                     }
 
                     try {
-                        $widgetHandler = WidgetHandlerFactory::create($dw->widget_type, ['entity' => $dw]);
+                        $widgetHandler = WidgetFactory::create($dw->widget_type, ['entity' => $dw]);
 
                         $widgetHandler->getResults(['entity' => $dw, 'user' => $user, 'rootView' => $this]);
 

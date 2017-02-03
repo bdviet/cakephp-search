@@ -1,16 +1,16 @@
 <?php
-namespace Search\WidgetHandlers;
+namespace Search\Widgets;
 
-use Search\WidgetHandlers\WidgetHandlerInterface;
+use Search\Widgets\WidgetInterface;
 
-abstract class BaseWidgetHandler implements WidgetHandlerInterface
+abstract class BaseWidget implements WidgetInterface
 {
-    const WIDGET_INTERFACE = 'WidgetHandlerInterface';
+    const WIDGET_INTERFACE = 'WidgetInterface';
 
-    const WIDGET_SUFFIX = 'WidgetHandler';
+    const WIDGET_SUFFIX = 'Widget';
 
     /** @const WIDGET_REPORT_SUFFIX file naming suffix of widget files */
-    const WIDGET_REPORT_SUFFIX = 'ReportWidgetHandler';
+    const WIDGET_REPORT_SUFFIX = 'ReportWidget';
 
     /** @const GRAPH_PREFIX for prefixing div containers of graphs */
     const GRAPH_PREFIX = 'graph_';

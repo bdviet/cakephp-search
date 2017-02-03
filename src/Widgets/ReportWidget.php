@@ -1,12 +1,12 @@
 <?php
-namespace Search\WidgetHandlers;
+namespace Search\Widgets;
 
 use Cake\Datasource\ConnectionManager;
 use Cake\Event\Event;
 use Cake\Utility\Inflector;
-use Search\WidgetHandlers\BaseWidgetHandler;
+use Search\Widgets\BaseWidget;
 
-class ReportWidgetHandler extends BaseWidgetHandler
+class ReportWidget extends BaseWidget
 {
     public $renderElement = 'graph';
 

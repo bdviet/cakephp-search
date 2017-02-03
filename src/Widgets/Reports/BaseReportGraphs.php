@@ -1,7 +1,7 @@
 <?php
-namespace Search\WidgetHandlers\Reports;
+namespace Search\Widgets\Reports;
 
-use Search\WidgetHandlers\Reports\ReportGraphsInterface;
+use Search\Widgets\Reports\ReportGraphsInterface;
 
 abstract class BaseReportGraphs implements ReportGraphsInterface
 {

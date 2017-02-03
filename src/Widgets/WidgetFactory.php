@@ -1,12 +1,12 @@
 <?php
-namespace Search\WidgetHandlers;
+namespace Search\Widgets;
 
 use Cake\Utility\Inflector;
 
-class WidgetHandlerFactory
+class WidgetFactory
 {
-    const WIDGET_SUFFIX = 'WidgetHandler';
-    const WIDGET_INTERFACE = 'WidgetHandlerInterface';
+    const WIDGET_SUFFIX = 'Widget';
+    const WIDGET_INTERFACE = 'WidgetInterface';
 
     /**
      * create method
