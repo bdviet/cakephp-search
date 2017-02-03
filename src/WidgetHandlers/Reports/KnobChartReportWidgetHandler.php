@@ -18,7 +18,7 @@ class KnobChartReportWidgetHandler extends BaseReportGraphs
     public function getChartData(array $data = [])
     {
         $labels = [];
-        $report = $this->_report;
+        $report = $this->_config;
 
         $chartData = [
             'chart' => $this->_type,

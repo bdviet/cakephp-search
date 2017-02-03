@@ -9,7 +9,7 @@ abstract class BaseReportGraphs implements ReportGraphsInterface
 
     public $_type;
     public $_data = [];
-    public $_report = [];
+    public $_config = [];
     public $_dataOptions = [];
 
     /**
@@ -21,5 +21,15 @@ abstract class BaseReportGraphs implements ReportGraphsInterface
     public function getType()
     {
         return $this->_type;
+    }
+
+    public function getConfig()
+    {
+        return $this->_config;
+    }
+
+    public function setConfig($data = [])
+    {
+        $this->_config = $data;
     }
 }

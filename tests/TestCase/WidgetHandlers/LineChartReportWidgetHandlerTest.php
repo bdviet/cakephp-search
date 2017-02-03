@@ -23,4 +23,13 @@ class LineChartReportWidgetHandlerTest extends TestCase
         $content = $this->widgetHandler->getScripts([]);
         $this->assertNotEmpty($content);
     }
+
+    public function testGetChartData()
+    {
+        $_configData = [
+            'info' => [
+
+            ]
+        ];
+    }
 }

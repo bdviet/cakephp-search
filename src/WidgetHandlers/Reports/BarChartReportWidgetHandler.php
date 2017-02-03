@@ -2,7 +2,7 @@
 namespace Search\WidgetHandlers\Reports;
 
 use Cake\Utility\Inflector;
-use Search\WidgetHandlers\Reports\BaseReportGrahs;
+use Search\WidgetHandlers\Reports\BaseReportGraphs;
 
 class BarChartReportWidgetHandler extends BaseReportGraphs
 {
@@ -19,7 +19,7 @@ class BarChartReportWidgetHandler extends BaseReportGraphs
     public function getChartData(array $data = [])
     {
         $labels = [];
-        $report = $this->_report;
+        $report = $this->_config;
 
         $chartData = [
             'chart' => $this->_type,

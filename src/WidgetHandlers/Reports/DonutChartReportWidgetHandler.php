@@ -18,7 +18,7 @@ class DonutChartReportWidgetHandler extends BaseReportGraphs
      */
     public function getChartData(array $data = [])
     {
-        $report = $this->_report;
+        $report = $this->_config;
 
         $chartData = [
             'chart' => $this->_type,

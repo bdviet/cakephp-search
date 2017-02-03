@@ -13,9 +13,9 @@ class ReportWidgetHandler extends BaseWidgetHandler
     /**
      * @return array $report configuration.
      */
-    public function getReport()
+    public function getConfig()
     {
-        return $this->_instance->_report;
+        return $this->_instance->getConfig();
     }
 
     /**
@@ -64,12 +64,12 @@ class ReportWidgetHandler extends BaseWidgetHandler
     /**
      * Setting report configuration to the report instance.
      *
-     * @param array $report to be set for _report property.
+     * @param array $report to be set for _config property.
      * @retrun array $report config of the widget.
      */
-    public function setReport($report)
+    public function setConfig($config)
     {
-        $this->_instance->_report = $report;
+        $this->_instance->setConfig($config);
     }
 
     /**
@@ -101,7 +101,7 @@ class ReportWidgetHandler extends BaseWidgetHandler
      * getReportConfig method
      * Parses the config of the report for widgetHandler.
      * @param array $options with entity data.
-     * @return array $config of the $_report.
+     * @return array $config of the $_config.
      */
     public function getReportConfig($options = [])
     {
@@ -175,14 +175,14 @@ class ReportWidgetHandler extends BaseWidgetHandler
         $result = [];
         $this->_instance = $this->getReportInstance($options);
 
-        $report = $this->getReportConfig($options);
+        $config = $this->getReportConfig($options);
 
-        $this->setReport($report);
+        $this->setConfig($config);
 
-        $columns = explode(',', $report['info']['columns']);
+        $columns = explode(',', $config['info']['columns']);
 
         $dbh = ConnectionManager::get('default');
-        $sth = $dbh->execute($report['info']['query']);
+        $sth = $dbh->execute($config['info']['query']);
         $resultSet = $sth->fetchAll('assoc');
 
         if (!empty($resultSet)) {

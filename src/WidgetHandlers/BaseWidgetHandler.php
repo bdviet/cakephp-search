@@ -15,9 +15,6 @@ abstract class BaseWidgetHandler implements WidgetHandlerInterface
     /** @const GRAPH_PREFIX for prefixing div containers of graphs */
     const GRAPH_PREFIX = 'graph_';
 
-    public $_type = 'saved_search';
-    public $renderElement = 'saved_search';
-
     /**
      * getType method
      *

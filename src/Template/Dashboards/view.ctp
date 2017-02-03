@@ -40,7 +40,7 @@ $this->eventManager()->dispatch($event);
 
                         $dataOptions = $widgetHandler->getDataOptions();
                         if (!empty($dataOptions)) {
-                            if ($widgetHandler->getRenderElement() == 'report') {
+                            if ($widgetHandler->getRenderElement() == 'graph') {
                                 $chartData[] = $widgetHandler->getData();
                             }
                             $scripts[] = $dataOptions;
