@@ -20,7 +20,7 @@ class SavedSearchWidget extends BaseWidget
 
     public $options = [];
 
-    public $_type = 'saved_search';
+    public $type = 'saved_search';
 
     /**
      * construct method

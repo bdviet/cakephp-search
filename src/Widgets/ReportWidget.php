@@ -43,13 +43,13 @@ class ReportWidget extends BaseWidget
      */
     public function getType()
     {
-        return $this->_instance->_type;
+        return $this->_instance->getType();
     }
 
     /**
      * Setting report configuration to the report instance.
      *
-     * @param array $report to be set for _config property.
+     * @param array $report to be set for config property.
      * @retrun array $report config of the widget.
      */
     public function setConfig($config)
@@ -61,7 +61,7 @@ class ReportWidget extends BaseWidget
      * getReportConfig method
      * Parses the config of the report for widgetHandler.
      * @param array $options with entity data.
-     * @return array $config of the $_config.
+     * @return array $config of the widget.
      */
     public function getReportConfig($options = [])
     {

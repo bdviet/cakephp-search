@@ -6,7 +6,7 @@ use Search\Widgets\Reports\BaseReportGraphs;
 
 class DonutChartReportWidget extends BaseReportGraphs
 {
-    public $_type = 'donutChart';
+    public $type = 'donutChart';
 
     /**
      * getChartData method
@@ -18,10 +18,10 @@ class DonutChartReportWidget extends BaseReportGraphs
      */
     public function getChartData(array $data = [])
     {
-        $report = $this->_config;
+        $report = $this->config;
 
         $chartData = [
-            'chart' => $this->_type,
+            'chart' => $this->type,
             'options' => [
                 'element' => $this->getContainerId(),
                 'resize' => true,

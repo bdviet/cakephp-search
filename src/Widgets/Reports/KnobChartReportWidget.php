@@ -5,7 +5,7 @@ use Search\Widgets\Reports\BaseReportGraphs;
 
 class KnobChartReportWidget extends BaseReportGraphs
 {
-    public $_type = 'knobChart';
+    public $type = 'knobChart';
 
     /**
      * getChartData method
@@ -17,10 +17,10 @@ class KnobChartReportWidget extends BaseReportGraphs
      */
     public function getChartData(array $data = [])
     {
-        $report = $this->_config;
+        $report = $this->config;
 
         $chartData = [
-            'chart' => $this->_type,
+            'chart' => $this->type,
             'options' => [
                 'element' => $this->getContainerId(),
                 'resize' => true,

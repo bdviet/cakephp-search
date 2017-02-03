@@ -6,7 +6,7 @@ use Search\Widgets\Reports\BaseReportGraphs;
 
 class LineChartReportWidget extends BaseReportGraphs
 {
-    public $_type = 'lineChart';
+    public $type = 'lineChart';
 
     /**
      * getChartData method
@@ -19,10 +19,10 @@ class LineChartReportWidget extends BaseReportGraphs
     public function getChartData(array $data = [])
     {
         $labels = [];
-        $report = $this->_config;
+        $report = $this->config;
 
         $chartData = [
-            'chart' => $this->_type,
+            'chart' => $this->type,
             'options' => [
                 'element' => $this->getContainerId(),
                 'resize' => true,
@@ -36,7 +36,7 @@ class LineChartReportWidget extends BaseReportGraphs
         }
         $options = [
             'data' => $data,
-            'barColors' => ['#00a65a', '#f56954'],
+            'lineColors' => ['#00a65a', '#f56954'],
             'labels' => $labels,
             'xkey' => explode(',', $report['info']['x_axis']),
             'ykeys' => explode(',', $report['info']['y_axis'])

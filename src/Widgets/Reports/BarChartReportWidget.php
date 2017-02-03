@@ -6,7 +6,7 @@ use Search\Widgets\Reports\BaseReportGraphs;
 
 class BarChartReportWidget extends BaseReportGraphs
 {
-    public $_type = 'barChart';
+    public $type = 'barChart';
 
     /**
      * getChartData method
@@ -19,10 +19,10 @@ class BarChartReportWidget extends BaseReportGraphs
     public function getChartData(array $data = [])
     {
         $labels = [];
-        $report = $this->_config;
+        $report = $this->config;
 
         $chartData = [
-            'chart' => $this->_type,
+            'chart' => $this->type,
             'options' => [
                 'element' => $this->getContainerId(),
                 'resize' => true,
