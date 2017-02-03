@@ -64,6 +64,12 @@ class ReportWidgetTest extends TestCase
         $this->assertEquals($result, []);
     }
 
+    public function testGetReportInstanceWithoutArgs()
+    {
+        $instance = $this->widget->getReportInstance();
+        $this->assertEquals($instance, null);
+    }
+
     /**
      * @dataProvider getInstancesList
      */
@@ -81,13 +87,14 @@ class ReportWidgetTest extends TestCase
         $this->assertEquals([], $this->widget->getOptions());
         $this->assertEquals([], $this->widget->getData());
 
+        $this->widget->setConfig($config['config']);
+        $this->assertEquals($this->widget->getConfig(), $config['config']);
+
         $dummyData = ['foo' => 'bar'];
 
         $this->widget->setData($dummyData);
         $this->assertEquals($dummyData, $this->widget->getData());
     }
-
-
 
     public function getInstancesList()
     {
@@ -99,5 +106,26 @@ class ReportWidgetTest extends TestCase
         ];
 
         return $configs;
+    }
+
+    /**
+     * @dataProvider getInstancesList
+     */
+    public function testGetReportConfigWithEvent($config, $expectedClass)
+    {
+        $entity = (object)[
+            'widget_id' => '123123',
+        ];
+
+        $instance = $this->widget->getReportInstance($config);
+        $this->assertInstanceOf($expectedClass, $instance);
+
+        $this->widget->_instance = $instance;
+
+        $result = $this->widget->getReportConfig(['rootView' => $this->appView, 'entity' => $entity]);
+
+        $events = $this->appView->EventManager()->getEventList();
+        $events[0]->result = ['foo' => 'bar'];
+        $this->assertEventFired('Search.Report.getReports', $this->appView->EventManager());
     }
 }

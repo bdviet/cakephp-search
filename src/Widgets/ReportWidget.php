@@ -70,22 +70,26 @@ class ReportWidget extends BaseWidget
         if (empty($options['rootView'])) {
             return $config;
         }
+
         $rootView = $options['rootView'];
+
         $event = new Event('Search.Report.getReports', $rootView->request);
         $rootView->EventManager()->dispatch($event);
 
         $widgetId = $options['entity']->widget_id;
 
-        if (!empty($event->result)) {
-            foreach ($event->result as $modelName => $reports) {
-                foreach ($reports as $slug => $reportInfo) {
-                    if ($reportInfo['id'] == $widgetId) {
-                        $config = [
-                            'modelName' => $modelName,
-                            'slug' => $slug,
-                            'info' => $reportInfo
-                        ];
-                    }
+        if (empty($event->result)) {
+            return $config;
+        }
+
+        foreach ($event->result as $modelName => $reports) {
+            foreach ($reports as $slug => $reportInfo) {
+                if ($reportInfo['id'] == $widgetId) {
+                    $config = [
+                        'modelName' => $modelName,
+                        'slug' => $slug,
+                        'info' => $reportInfo
+                    ];
                 }
             }
         }
@@ -119,9 +123,11 @@ class ReportWidget extends BaseWidget
             $interface = __NAMESPACE__ . '\\Reports\\' . 'ReportGraphsInterface';
 
             if (class_exists($className) && in_array($interface, class_implements($className))) {
-                return new $className($options);
+                $result = new $className($options);
             }
         }
+
+        return $result;
     }
 
     /**
