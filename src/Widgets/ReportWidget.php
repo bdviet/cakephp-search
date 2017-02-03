@@ -10,6 +10,9 @@ class ReportWidget extends BaseWidget
 {
     public $renderElement = 'graph';
 
+    /** @const WIDGET_REPORT_SUFFIX file naming suffix of widget files */
+    const WIDGET_REPORT_SUFFIX = 'ReportWidget';
+
     /**
      * @return array $report configuration.
      */
@@ -177,6 +180,8 @@ class ReportWidget extends BaseWidget
 
         $config = $this->getReportConfig($options);
 
+        $this->containerId = $this->setContainerId($config);
+
         $this->setConfig($config);
 
         $columns = explode(',', $config['info']['columns']);
@@ -206,5 +211,24 @@ class ReportWidget extends BaseWidget
         }
 
         return $this->getData();
+    }
+
+    /**
+     * @return string $containerId of the widget instance.
+     */
+    public function getContainerId()
+    {
+        return $this->_instance->getContainerId();
+    }
+
+    /**
+     * setContainerId method.
+     * Setting unique identifier of the Widget object.
+     * @param array $config of the widget.
+     * @return string $containerId property of widget instance.
+     */
+    public function setContainerId($config = [])
+    {
+        return $this->_instance->setContainerId($config);
     }
 }

@@ -41,7 +41,17 @@ class SavedSearchWidgetTest extends TestCase
 
     public function testGetRenderElement()
     {
-        $result = $this->widget->getRenderElement();
-        $this->assertEquals($result, 'table');
+        $entity = (object)[
+            'id' => '123',
+        ];
+
+        $result = $this->widget->getContainerId();
+        $this->assertEquals($result, 'default-widget-container');
+
+        $this->widget->setContainerId($entity);
+        $result = $this->widget->getContainerId();
+
+        $expected = $this->widget::TABLE_PREFIX . md5($entity->id);
+        $this->assertEquals($result, $expected);
     }
 }

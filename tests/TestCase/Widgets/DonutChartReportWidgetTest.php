@@ -23,4 +23,14 @@ class DonutChartReportWidgetTest extends TestCase
         $content = $this->widget->getScripts([]);
         $this->assertNotEmpty($content);
     }
+
+    public function testSetContainerId()
+    {
+        $config = [
+            'slug' => 'barChart',
+        ];
+
+        $containerId = $this->widget->setContainerId($config);
+        $this->assertEquals($containerId, $this->widget::GRAPH_PREFIX . $config['slug']);
+    }
 }

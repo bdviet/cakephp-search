@@ -23,4 +23,25 @@ class BarChartReportWidgetTest extends TestCase
         $content = $this->widget->getScripts([]);
         $this->assertNotEmpty($content);
     }
+
+    public function testGetContainerId()
+    {
+        $config = [
+            'slug' => 'TestGraph',
+        ];
+
+        $result = $this->widget->setContainerId($config);
+        $this->assertEquals($result, $this->widget::GRAPH_PREFIX . 'TestGraph');
+    }
+
+    public function testSetConfig()
+    {
+        $data = [
+            'foo' => 'bar',
+        ];
+
+        $this->widget->setConfig($data);
+
+        $this->assertEquals($data, $this->widget->getConfig());
+    }
 }

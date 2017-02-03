@@ -6,6 +6,8 @@ use Search\Widgets\BaseWidget;
 
 class SavedSearchWidget extends BaseWidget
 {
+    const TABLE_PREFIX = 'table-datatable-';
+
     public $renderElement = 'table';
 
     public $_type = 'saved_search';
@@ -66,6 +68,8 @@ class SavedSearchWidget extends BaseWidget
     {
         $results = [];
 
+        $this->setContainerId($options['entity']);
+
         try {
             $query = $this->_tableInstance->findById($this->_entity->widget_id);
             $resultSet = $query->first();
@@ -106,6 +110,19 @@ class SavedSearchWidget extends BaseWidget
     }
 
     /**
+     * setContainerId method.
+     * Setting unique identifier of the widget.
+     * @param array $entity used for setting id of widget.
+     * @return string $containerId of the widget.
+     */
+    public function setContainerId($entity = null)
+    {
+        $this->containerId = self::TABLE_PREFIX . md5($entity->id);
+
+        return $this->containerId;
+    }
+
+    /**
      * prepareChartOptions
      * @param array $data passed
      * @return array $content with CSS/JS libs.
@@ -114,7 +131,7 @@ class SavedSearchWidget extends BaseWidget
     {
         $entities = $options['data']->entities;
 
-        $uid = md5($options['data']->id);
+        $uid = $this->getContainerId();
 
         $content = [
             'post' => [

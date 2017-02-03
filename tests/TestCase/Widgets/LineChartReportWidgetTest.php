@@ -24,12 +24,14 @@ class LineChartReportWidgetTest extends TestCase
         $this->assertNotEmpty($content);
     }
 
-    public function testGetChartData()
-    {
-        $_configData = [
-            'info' => [
 
-            ]
+    public function testGetContainerId()
+    {
+        $config = [
+            'slug' => 'testLineChartGraph',
         ];
+
+        $containerId = $this->widget->setContainerId($config);
+        $this->assertEquals($containerId, $this->widget::GRAPH_PREFIX . 'testLineChartGraph');
     }
 }

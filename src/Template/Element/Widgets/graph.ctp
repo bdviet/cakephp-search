@@ -14,7 +14,7 @@
             </div>
         </div>
         <div class="box-body">
-            <div id="<?= $widget::GRAPH_PREFIX . $config['slug'];?>">
+            <div id="<?= $widget->getContainerId()?>">
                 <?php if ($type == 'knobChart') : ?>
                     <div class="row">
                     <?php foreach ($data['options']['data'] as $k => $item) : ?>

@@ -12,6 +12,8 @@ abstract class BaseReportGraphs implements ReportGraphsInterface
     public $_config = [];
     public $_dataOptions = [];
 
+    public $chartData = [];
+    public $containerId = '';
     /**
      * getType
      *
@@ -29,6 +31,30 @@ abstract class BaseReportGraphs implements ReportGraphsInterface
     public function getConfig()
     {
         return $this->_config;
+    }
+
+    /**
+     * setContainerId method.
+     * Sets the placeholder unique identifier for
+     * the widget.
+     * @param array $data of the config.
+     * @return string $containerId of the object.
+     */
+    public function setContainerId($data = [])
+    {
+        $config = empty($data) ? $this->getConfig() : $data;
+
+        $this->containerId = self::GRAPH_PREFIX . $config['slug'];
+
+        return $this->containerId;
+    }
+
+    /**
+     * @return string $containerId property of the widget.
+     */
+    public function getContainerId()
+    {
+        return $this->containerId;
     }
 
     /**

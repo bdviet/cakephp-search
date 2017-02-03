@@ -23,7 +23,7 @@ class DonutChartReportWidget extends BaseReportGraphs
         $chartData = [
             'chart' => $this->_type,
             'options' => [
-                'element' => self::GRAPH_PREFIX . $report['slug'],
+                'element' => $this->getContainerId(),
                 'resize' => true,
             ],
         ];

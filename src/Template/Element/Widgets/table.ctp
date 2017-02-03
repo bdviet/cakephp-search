@@ -37,7 +37,6 @@ if (!empty($url)) {
     $title = '<a href="' . $this->Url->build($url) . '">' . $title . '</a>';
 }
 
-$uid = md5($savedSearch->id);
 ?>
 <?php if (!empty($searchData['result'])) : ?>
 <div class="dashboard-widget-saved_search">
@@ -51,7 +50,7 @@ $uid = md5($savedSearch->id);
             </div>
         </div>
         <div class="box-body">
-            <table id="table-datatable-<?= $uid ?>" class="table table-hover table-condensed table-vertical-align">
+            <table id="<?= $widget->getContainerId()?>" class="table table-hover table-condensed table-vertical-align">
                 <thead>
                     <tr>
                     <?php foreach ($searchData['display_columns'] as $field) : ?>
