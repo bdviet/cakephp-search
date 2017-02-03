@@ -9,6 +9,7 @@ use Search\Widgets\BaseWidget;
 class ReportWidget extends BaseWidget
 {
     public $renderElement = 'graph';
+    public $options = [];
 
     /** @const WIDGET_REPORT_SUFFIX file naming suffix of widget files */
     const WIDGET_REPORT_SUFFIX = 'ReportWidget';
@@ -24,17 +25,17 @@ class ReportWidget extends BaseWidget
     /**
      * @return array $data of the report.
      */
-    public function getData()
+    public function getChartData($data = [])
     {
-        return $this->_instance->_data;
+        return $this->_instance->getChartData($data);
     }
 
     /**
-     * @return array $_dataOptions of the widget for rendering.
+     * @return array $options of widget instance.
      */
-    public function getDataOptions()
+    public function getOptions()
     {
-        return $this->_instance->_dataOptions;
+        return $this->_instance->getOptions();
     }
 
     /**
@@ -46,25 +47,6 @@ class ReportWidget extends BaseWidget
     }
 
     /**
-     * getScripts method.
-     *
-     * @param array $options with data.
-     * @return array $_dataOptions.
-     */
-    public function getScripts(array $options = [])
-    {
-        return $this->_instance->getScripts(['data' => $options]);
-    }
-
-    /**
-     * @return array $chartData of the instance.
-     */
-    public function getChartData(array $data = [])
-    {
-        return $this->_instance->getChartData($data);
-    }
-
-    /**
      * Setting report configuration to the report instance.
      *
      * @param array $report to be set for _config property.
@@ -73,31 +55,6 @@ class ReportWidget extends BaseWidget
     public function setConfig($config)
     {
         $this->_instance->setConfig($config);
-    }
-
-    /**
-     * setData method
-     * @param array $data containing widget data.
-     * @return array $_data after being set.
-     */
-    public function setData($data = [])
-    {
-        $this->_instance->_data = $data;
-
-        return $this->_instance->_data;
-    }
-
-    /**
-     * setDataOptions method
-     * Setting up report JS/CSS libs.
-     * @param array $data for being set.
-     * @return array $_dataOptions property.
-     */
-    public function setDataOptions($data = [])
-    {
-        $this->_instance->_dataOptions = $data;
-
-        return $this->_instance->_dataOptions;
     }
 
     /**
@@ -146,12 +103,14 @@ class ReportWidget extends BaseWidget
     {
         $result = null;
 
-        $options['report'] = $this->getReportConfig($options);
+        if (empty($options['config'])) {
+            $options['config'] = $this->getReportConfig($options);
+        }
 
-        if (empty($options['report'])) {
+        if (empty($options['config'])) {
             return $result;
         }
-        $renderAs = $options['report']['info']['renderAs'];
+        $renderAs = $options['config']['info']['renderAs'];
 
         if (!empty($renderAs)) {
             $handlerName = Inflector::camelize($renderAs);
@@ -180,9 +139,9 @@ class ReportWidget extends BaseWidget
 
         $config = $this->getReportConfig($options);
 
-        $this->containerId = $this->setContainerId($config);
-
         $this->setConfig($config);
+
+        $this->containerId = $this->setContainerId($config);
 
         $columns = explode(',', $config['info']['columns']);
 
@@ -203,14 +162,20 @@ class ReportWidget extends BaseWidget
         }
 
         if (!empty($result)) {
-            $data = $this->getChartData($result);
-            $dataOptions = $this->getScripts(['data' => $data]);
-
-            $this->setData($data);
-            $this->setDataOptions($dataOptions);
+            $this->_instance->getChartData($result);
+            $this->_instance->options['scripts'] = $this->_instance->getScripts();
         }
 
         return $this->getData();
+    }
+
+    /**
+     * Wrapper of report widget data.
+     * @return array $data of the report widget instance.
+     */
+    public function getData()
+    {
+        return $this->_instance->getData();
     }
 
     /**

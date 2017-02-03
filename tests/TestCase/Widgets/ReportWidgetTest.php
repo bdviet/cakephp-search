@@ -64,14 +64,28 @@ class ReportWidgetTest extends TestCase
         $this->assertEquals($result, []);
     }
 
-
-    public function testGetReportConfigWithEventFired()
+    /**
+     * @dataProvider getInstancesList
+     */
+    public function testGetReportInstance($config, $expectedClass)
     {
-        $query = $this->Widgets->findById('00000000-0000-0000-0000-000000000002');
-        $entity = $query->first();
+        $instance = $this->widget->getReportInstance($config);
+        $this->assertInstanceOf($expectedClass, $instance);
 
-        $result = $this->widget->getReportConfig(['rootView' => $this->appView, 'entity' => $entity]);
+        $this->widget->_instance = $instance;
 
-        $this->assertEventFired('Search.Report.getReports', $this->appView->EventManager());
+        $this->assertEquals($config['config']['info']['renderAs'], $this->widget->getType());
+    }
+
+    public function getInstancesList()
+    {
+        $configs = [
+           [['config' => ['info' => ['renderAs' => 'barChart']]], '\Search\Widgets\Reports\BarChartReportWidget'],
+           [['config' => ['info' => ['renderAs' => 'lineChart']]], '\Search\Widgets\Reports\LineChartReportWidget'],
+           [['config' => ['info' => ['renderAs' => 'donutChart']]], '\Search\Widgets\Reports\DonutChartReportWidget'],
+           [['config' => ['info' => ['renderAs' => 'knobChart']]], '\Search\Widgets\Reports\KnobChartReportWidget'],
+        ];
+
+        return $configs;
     }
 }

@@ -20,6 +20,15 @@ interface WidgetInterface
     public function getResults(array $options = []);
 
     /**
+     * getContainerId
+     * Each widget contains unique identifier
+     * for the DOM object, by which JS/CSS styling
+     * is applied.
+     * @return string $containerId of the widget.
+     */
+    public function getContainerId();
+
+    /**
      * getType method
      * Each widget has its unique type that is assigned
      * to each instance.
@@ -35,15 +44,9 @@ interface WidgetInterface
     public function getRenderElement();
 
     /**
-     * getScripts method.
+     * getOptions method.
      *
-     * Retrieves the list of JS/CSS scripts that might
-     * be required for the widget rendering.
-     * Examples: dataTables widgets (aka save_search), and
-     * report widgets with graph libs.
-     *
-     * @param array $options for extra settings
      * @return array $content of all widget scripts listed with scriptBlocks.
      */
-    public function getScripts(array $options = []);
+    public function getOptions();
 }

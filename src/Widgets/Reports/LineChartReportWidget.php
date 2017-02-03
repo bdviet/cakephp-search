@@ -44,6 +44,10 @@ class LineChartReportWidget extends BaseReportGraphs
 
         $chartData['options'] = array_merge($chartData['options'], $options);
 
+        if (!empty($data)) {
+            $this->setData($chartData);
+        }
+
         return $chartData;
     }
 

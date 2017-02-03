@@ -38,12 +38,13 @@ $this->eventManager()->dispatch($event);
 
                         $widgetHandler->getResults(['entity' => $dw, 'user' => $user, 'rootView' => $this]);
 
-                        $dataOptions = $widgetHandler->getDataOptions();
-                        if (!empty($dataOptions)) {
-                            if ($widgetHandler->getRenderElement() == 'graph') {
-                                $chartData[] = $widgetHandler->getData();
-                            }
-                            $scripts[] = $dataOptions;
+                        if ($widgetHandler->getRenderElement() == 'graph') {
+                            $chartData[] = $widgetHandler->getData();
+                        }
+
+                        $dataOptions = $widgetHandler->getOptions();
+                        if (!empty($dataOptions['scripts'])) {
+                            $scripts[] = $dataOptions['scripts'];
                         }
 
                         echo $this->element('Search.Widgets/' . $widgetHandler->getRenderElement(), ['widget' => $widgetHandler]);

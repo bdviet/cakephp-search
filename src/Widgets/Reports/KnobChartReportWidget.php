@@ -25,24 +25,27 @@ class KnobChartReportWidget extends BaseReportGraphs
             'options' => [
                 'element' => $this->getContainerId(),
                 'resize' => true,
+                'data' => [],
             ],
         ];
-        $tmp = [];
+
+        $options['data'] = [];
+
         if (isset($report['info']['max']) && isset($report['info']['value'])) {
             foreach ($data as $item) {
-                $tmp[] = [
+                array_push($options['data'], [
                     'max' => $item[$report['info']['max']],
                     'value' => $item[$report['info']['value']],
                     'label' => $item[$report['info']['label']],
-                ];
+                ]);
             }
         }
 
-        $options = [
-            'data' => $tmp,
-        ];
-
         $chartData['options'] = array_merge($chartData['options'], $options);
+
+        if (!empty($options['data'])) {
+            $this->setData($chartData);
+        }
 
         return $chartData;
     }

@@ -8,19 +8,19 @@ class SavedSearchWidget extends BaseWidget
 {
     const TABLE_PREFIX = 'table-datatable-';
 
-    public $renderElement = 'table';
-
-    public $_type = 'saved_search';
-
     protected $_entity = null;
 
     protected $_tableName = 'Search.SavedSearches';
 
-    protected $_data = [];
-
     protected $_tableInstance = null;
 
-    protected $_dataOptions = [];
+    protected $_data = [];
+
+    public $renderElement = 'table';
+
+    public $options = [];
+
+    public $_type = 'saved_search';
 
     /**
      * construct method
@@ -36,11 +36,12 @@ class SavedSearchWidget extends BaseWidget
     }
 
     /**
-     * @return array $_dataOptions containing JS/CSS libs.
+     * getOptions method.
+     * @return array $options of the widget.
      */
-    public function getDataOptions()
+    public function getOptions()
     {
-        return $this->_dataOptions;
+        return $this->options;
     }
 
     /**
@@ -104,7 +105,7 @@ class SavedSearchWidget extends BaseWidget
         );
 
         $this->_data = $results;
-        $this->_dataOptions = $this->getScripts(['data' => $this->_data]);
+        $this->options['scripts'] = $this->getScripts(['data' => $this->_data]);
 
         return $results;
     }

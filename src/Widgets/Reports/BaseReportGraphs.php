@@ -7,13 +7,11 @@ abstract class BaseReportGraphs implements ReportGraphsInterface
 {
     const GRAPH_PREFIX = 'graph_';
 
-    public $_type;
+    public $containerId = '';
+    public $_type = null;
     public $_data = [];
     public $_config = [];
-    public $_dataOptions = [];
-
-    public $chartData = [];
-    public $containerId = '';
+    public $options = [];
     /**
      * getType
      *
@@ -31,6 +29,14 @@ abstract class BaseReportGraphs implements ReportGraphsInterface
     public function getConfig()
     {
         return $this->_config;
+    }
+
+    /**
+     * @return array $options
+     */
+    public function getOptions()
+    {
+        return $this->options;
     }
 
     /**
@@ -66,5 +72,23 @@ abstract class BaseReportGraphs implements ReportGraphsInterface
     public function setConfig($data = [])
     {
         $this->_config = $data;
+    }
+
+    /**
+     * setData method.
+     * @param array $data for the report widget.
+     * @return void.
+     */
+    public function setData($data = [])
+    {
+        $this->data = $data;
+    }
+
+    /**
+     * @return array $data of the widget.
+     */
+    public function getData()
+    {
+        return $this->data;
     }
 }
