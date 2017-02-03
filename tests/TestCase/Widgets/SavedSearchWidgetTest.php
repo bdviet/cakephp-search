@@ -1,14 +1,14 @@
 <?php
-namespace Search\Test\TestCase\WidgetHandlers;
+namespace Search\Test\TestCase\Widgets;
 
 use Cake\ORM\TableRegistry;
 use Cake\TestSuite\Fixture\FixtureManager;
 use Cake\TestSuite\TestCase;
-use Search\WidgetHandlers\SavedSearchWidgetHandler;
+use Search\Widgets\SavedSearchWidget;
 
-class SavedSearchWidgetHandlerTest extends TestCase
+class SavedSearchWidgetTest extends TestCase
 {
-    protected $widgetHandler;
+    protected $widget;
 
     public $Widgets;
 
@@ -26,7 +26,7 @@ class SavedSearchWidgetHandlerTest extends TestCase
         $this->fixtureManager = new FixtureManager();
         $this->fixtureManager->fixturize($this);
 
-        $this->widgetHandler = new SavedSearchWidgetHandler();
+        $this->widget = new SavedSearchWidget();
 
         $config = TableRegistry::exists('Widgets') ? [] : ['className' => 'Search\Model\Table\WidgetsTable'];
         $this->Widgets = TableRegistry::get('Widgets', $config);
@@ -41,7 +41,7 @@ class SavedSearchWidgetHandlerTest extends TestCase
 
     public function testGetRenderElement()
     {
-        $result = $this->widgetHandler->getRenderElement();
+        $result = $this->widget->getRenderElement();
         $this->assertEquals($result, 'table');
     }
 }
