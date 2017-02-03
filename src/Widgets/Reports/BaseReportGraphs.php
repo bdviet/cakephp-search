@@ -23,11 +23,20 @@ abstract class BaseReportGraphs implements ReportGraphsInterface
         return $this->_type;
     }
 
+    /**
+     * @return array $_config of the reports.
+     */
     public function getConfig()
     {
         return $this->_config;
     }
 
+    /**
+     * setConfig.
+     * Setting report configurations
+     * @param array $data of report.
+     * @return array $_config of the report.
+     */
     public function setConfig($data = [])
     {
         $this->_config = $data;
