@@ -191,4 +191,10 @@ class ReportWidgetTest extends TestCase
 
         $this->assertEquals($report, $expectedReport);
     }
+
+    public function testGetResults()
+    {
+        $result = $this->widget->getResults([]);
+        $this->assertEquals($result, []);
+    }
 }

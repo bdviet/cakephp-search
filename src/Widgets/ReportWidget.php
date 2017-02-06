@@ -169,6 +169,10 @@ class ReportWidget extends BaseWidget
 
         $config = $this->getReport($options);
 
+        if (empty($config)) {
+            return $result;
+        }
+
         $this->setConfig($config);
 
         $this->containerId = $this->setContainerId($config);
