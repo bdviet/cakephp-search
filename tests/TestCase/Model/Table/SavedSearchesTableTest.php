@@ -88,6 +88,38 @@ class SavedSearchesTableTest extends TestCase
         $this->assertEquals($expected, $result);
     }
 
+    /**
+     * @expectedException \RuntimeException
+     */
+    public function testGetSearchableFields()
+    {
+        $result = $this->SavedSearches->getSearchableFields('Widgets');
+        $this->assertEventFired('Search.Model.Search.searchabeFields', $this->EventManager());
+    }
+
+    public function testGetListingFields()
+    {
+        $result = $this->SavedSearches->getListingFields('Dashboards');
+        $this->assertNotEmpty($result);
+        $this->assertEquals($result, ['name', 'modified', 'created']);
+    }
+
+    /**
+     * @expectedException \RuntimeException
+     * @dataProvider dataProviderGetSearchCriteria
+     */
+    public function testGetSearchCriteria($config)
+    {
+        $result = $this->SavedSearches->getSearchCriteria(['query' => $config['query']], $config['table']);
+    }
+
+    public function dataProviderGetSearchCriteria()
+    {
+        return [
+            [['query' => 'SELECT id,created FROM dashboards LIMIT 2', 'table' => 'Dashboards']],
+        ];
+    }
+
     public function testGetSavedSearchesFindAll()
     {
         $resultset = $this->SavedSearches->getSavedSearches();
