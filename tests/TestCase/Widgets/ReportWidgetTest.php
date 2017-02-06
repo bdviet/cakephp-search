@@ -60,7 +60,7 @@ class ReportWidgetTest extends TestCase
 
     public function testGetReportConfigWithoutRootView()
     {
-        $result = $this->widget->getReportConfig();
+        $result = $this->widget->getReport();
         $this->assertEquals($result, []);
     }
 
@@ -122,10 +122,73 @@ class ReportWidgetTest extends TestCase
 
         $this->widget->_instance = $instance;
 
-        $result = $this->widget->getReportConfig(['rootView' => $this->appView, 'entity' => $entity]);
+        $result = $this->widget->getReport(['rootView' => $this->appView, 'entity' => $entity]);
 
         $events = $this->appView->EventManager()->getEventList();
         $events[0]->result = ['foo' => 'bar'];
         $this->assertEventFired('Search.Report.getReports', $this->appView->EventManager());
+    }
+
+    public function testGetReportWithMock()
+    {
+        $dummyReports = [
+            'Reports' => [
+                'foo_graph_by_assigned_to' => [
+                    'id' => '00000000-0000-0000-0000-000000000001',
+                    'model' => 'Foo',
+                    'widget_type' => 'report',
+                    'name' => 'Report Foo',
+                    'query' => '',
+                    'columns' => '',
+                    'renderAs' => 'barChart',
+                    'y_axis' => 'a',
+                    'x_axis' => 'b',
+                ],
+                'bar_assigned_by_year' => [
+                    'id' => '00000000-0000-0000-0000-000000000002',
+                    'model' => 'Bar',
+                    'widget_type' => 'report',
+                    'name' => 'Report Bar',
+                    'query' => '',
+                    'columns' => '',
+                    'renderAs' => 'lineChart',
+                    'y_axis' => '',
+                    'x_axis' => '',
+                ]
+            ]
+        ];
+
+        $expectedReport = [
+            'modelName' => 'Reports',
+            'slug' => 'bar_assigned_by_year',
+            'info' => [
+                'id' => '00000000-0000-0000-0000-000000000002',
+                'model' => 'Bar',
+                'widget_type' => 'report',
+                'name' => 'Report Bar',
+                'query' => '',
+                'columns' => '',
+                'renderAs' => 'lineChart',
+                'y_axis' => '',
+                'x_axis' => ''
+            ]
+        ];
+
+        $entity = (object)[
+            'widget_id' => '00000000-0000-0000-0000-000000000002',
+        ];
+
+        $widget = $this->getMockBuilder('Search\Widgets\ReportWidget')->getMock();
+
+        $widget->expects($this->any())
+            ->method('getReports')
+            ->with(['rootView' => $this->appView])
+            ->will($this->returnValue($dummyReports));
+
+        $reports = $widget->getReports(['rootView' => $this->appView]);
+
+        $report = $this->widget->getReport(['entity' => $entity, 'reports' => $reports]);
+
+        $this->assertEquals($report, $expectedReport);
     }
 }

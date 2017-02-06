@@ -58,31 +58,53 @@ class ReportWidget extends BaseWidget
     }
 
     /**
-     * getReportConfig method
+     * getReports method.
+     * Basic reports getter that uses Events
+     * to get reports application-wise.
+     * @parram array $options containing \Cake\View\View.
+     * @retrun array $result with reports array.
+     */
+    public function getReports($options = [])
+    {
+        $result = [];
+
+        if (empty($options['rootView'])) {
+            return $result;
+        }
+
+        $event = new Event('Search.Report.getReports', $options['rootView']->request);
+        $options['rootView']->EventManager()->dispatch($event);
+
+        $result = $event->result;
+
+        return $result;
+    }
+
+    /**
+     * getReport method
      * Parses the config of the report for widgetHandler.
      * @param array $options with entity data.
      * @return array $config of the widget.
      */
-    public function getReportConfig($options = [])
+    public function getReport($options = [])
     {
         $config = [];
 
-        if (empty($options['rootView'])) {
+        if (empty($options['entity'])) {
             return $config;
         }
 
-        $rootView = $options['rootView'];
-
-        $event = new Event('Search.Report.getReports', $rootView->request);
-        $rootView->EventManager()->dispatch($event);
+        if (empty($options['reports'])) {
+            $options['reports'] = $this->getReports($options);
+        }
 
         $widgetId = $options['entity']->widget_id;
 
-        if (empty($event->result)) {
+        if (empty($options['reports'])) {
             return $config;
         }
 
-        foreach ($event->result as $modelName => $reports) {
+        foreach ($options['reports'] as $modelName => $reports) {
             foreach ($reports as $slug => $reportInfo) {
                 if ($reportInfo['id'] == $widgetId) {
                     $config = [
@@ -93,6 +115,8 @@ class ReportWidget extends BaseWidget
                 }
             }
         }
+
+
 
         return $config;
     }
@@ -108,7 +132,7 @@ class ReportWidget extends BaseWidget
         $result = null;
 
         if (empty($options['config'])) {
-            $options['config'] = $this->getReportConfig($options);
+            $options['config'] = $this->getReport($options);
         }
 
         if (empty($options['config'])) {
@@ -143,7 +167,7 @@ class ReportWidget extends BaseWidget
         $result = [];
         $this->_instance = $this->getReportInstance($options);
 
-        $config = $this->getReportConfig($options);
+        $config = $this->getReport($options);
 
         $this->setConfig($config);
 
