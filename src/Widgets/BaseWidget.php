@@ -21,7 +21,7 @@ abstract class BaseWidget implements WidgetInterface
      */
     public function getType()
     {
-        return $this->_type;
+        return $this->type;
     }
 
     /**
