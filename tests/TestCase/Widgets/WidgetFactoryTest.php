@@ -14,21 +14,27 @@ class WidgetFactoryTest extends TestCase
     /**
      * @dataProvider dataProviderWidgets
      */
-    public function testCreate($type, $widgetConfig, $expectedClass)
+    public function testCreate($widgetConfig, $expectedClass)
     {
         $entity = (object)[
             'widget_type' => $widgetConfig['widget_type'],
         ];
 
-        $widget = WidgetFactory::create($type, ['entity' => $entity]);
-        $this->assertInstanceOf($expectedClass, $widget);
+        $widget = WidgetFactory::create($widgetConfig['widget_type'], ['entity' => $entity]);
+
+        if ($widgetConfig['widget_type'] == 'foobar') {
+            $this->assertEquals($widget, null);
+        } else {
+            $this->assertInstanceOf($expectedClass, $widget);
+        }
     }
 
     public function dataProviderWidgets()
     {
         return [
-            ['saved_search', ['widget_type' => 'saved_search'], 'Search\Widgets\SavedSearchWidget'],
-            ['report', ['widget_type' => 'report'], 'Search\Widgets\ReportWidget'],
+            [['widget_type' => 'saved_search'], 'Search\Widgets\SavedSearchWidget'],
+            [['widget_type' => 'report'], 'Search\Widgets\ReportWidget'],
+            [['widget_type' => 'foobar'], ''],
         ];
     }
 }

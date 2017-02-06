@@ -20,6 +20,7 @@ class WidgetFactory
      */
     public static function create($type, array $options = [])
     {
+        $widget = null;
         $handlerName = Inflector::camelize($type);
 
         $className = __NAMESPACE__ . '\\' . $handlerName . self::WIDGET_SUFFIX;
@@ -27,10 +28,12 @@ class WidgetFactory
 
         try {
             if (class_exists($className) && in_array($interface, class_implements($className))) {
-                return new $className($options);
+                $widget = new $className($options);
             }
         } catch (\Exception $e) {
-            debug($e->getMessage());
+            throw new \RuntimeException("Widget with type [$type] not found");
         }
+
+        return $widget;
     }
 }
