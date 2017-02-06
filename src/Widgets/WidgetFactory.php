@@ -26,13 +26,15 @@ class WidgetFactory
         $className = __NAMESPACE__ . '\\' . $handlerName . self::WIDGET_SUFFIX;
         $interface = __NAMESPACE__ . '\\' . self::WIDGET_INTERFACE;
 
-        try {
-            if (class_exists($className) && in_array($interface, class_implements($className))) {
-                $widget = new $className($options);
-            }
-        } catch (\Exception $e) {
-            throw new \RuntimeException("Widget with type [$type] not found");
+        if (!class_exists($className)) {
+            throw new \RuntimeException("Class [$type] doesn't exist");
         }
+
+        if (!in_array($interface, class_implements($className))) {
+            throw new \RuntimeException("Class [$type] doesn't implement " . self::WIDGET_INTERFACE);
+        }
+
+        $widget = new $className($options);
 
         return $widget;
     }

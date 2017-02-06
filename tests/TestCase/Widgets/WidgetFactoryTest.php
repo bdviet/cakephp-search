@@ -22,12 +22,27 @@ class WidgetFactoryTest extends TestCase
 
         $widget = WidgetFactory::create($widgetConfig['widget_type'], ['entity' => $entity]);
 
-        if ($widgetConfig['widget_type'] == 'foobar') {
-            $this->assertEquals($widget, null);
-        } else {
-            $this->assertInstanceOf($expectedClass, $widget);
-        }
+        $this->assertInstanceOf($expectedClass, $widget);
     }
+
+    /**
+     * @expectedException \RuntimeException
+     */
+    public function testCreateException()
+    {
+        $config = ['widget_type' => 'foobar'];
+
+        $entity = (object)[
+            'widget_type' => $config['widget_type'],
+        ];
+
+        $widget = WidgetFactory::create($config['widget_type'], ['entity' => $entity]);
+
+        $this->expectedException(\RuntimeException::class);
+        $this->assertEquals($widget, null);
+    }
+
+
 
     /**
      * @dataProvider dataProviderWidgetTypes
@@ -48,7 +63,6 @@ class WidgetFactoryTest extends TestCase
         return [
             [['widget_type' => 'saved_search'], 'Search\Widgets\SavedSearchWidget'],
             [['widget_type' => 'report'], 'Search\Widgets\ReportWidget'],
-            [['widget_type' => 'foobar'], ''],
         ];
     }
 
