@@ -158,6 +158,39 @@ class ReportWidgetTest extends TestCase
         $this->assertEquals($validated['status'], true);
     }
 
+    public function testGetChartData()
+    {
+        $config = ['config' => ['slug' => 'barChartTest', 'info' => ['renderAs' => 'barChart']]];
+
+        $instance = $this->widget->getReportInstance($config);
+
+        $this->widget->_instance = $instance;
+
+        $expectedReport = [
+            'modelName' => 'Reports',
+            'slug' => 'bar_assigned_by_year',
+            'info' => [
+                'id' => '00000000-0000-0000-0000-000000000002',
+                'model' => 'Bar',
+                'widget_type' => 'report',
+                'name' => 'Report Bar',
+                'query' => 'SELECT * FROM bar',
+                'columns' => 'a,b',
+                'renderAs' => 'lineChart',
+                'y_axis' => 'a',
+                'x_axis' => 'b'
+            ]
+        ];
+
+        $validated = $this->widget->validate($expectedReport);
+        $this->widget->setConfig($expectedReport);
+        $this->assertEquals($validated['status'], true);
+        $chartData = $this->widget->getChartData([]);
+        $this->assertEquals(['A', 'B'], $chartData['options']['labels']);
+    }
+
+
+
     public function testGetReportsWithoutMock()
     {
         $result = $this->widget->getReports([]);
