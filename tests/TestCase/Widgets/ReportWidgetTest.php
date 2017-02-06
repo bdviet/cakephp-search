@@ -265,4 +265,39 @@ class ReportWidgetTest extends TestCase
         $result = $this->widget->getResults([]);
         $this->assertEquals($result, []);
     }
+
+    public function testGetQueryData()
+    {
+        $result = $this->widget->getQueryData([]);
+        $this->assertEquals($result, []);
+    }
+
+    /**
+     * @dataProvider getQueriesList
+     */
+    public function testGetQueryDataWithData($query, $expectedCount)
+    {
+        $config = [
+            'slug' => 'Test Foo',
+            'info' => [
+                'renderAs' => 'barChart',
+                'query' => $query,
+                'columns' => 'id,created',
+                'y_axis' => 'id',
+                'x_axis' => 'created',
+            ]
+        ];
+
+        $result = $this->widget->getQueryData($config);
+        $this->assertInternalType('array', $result);
+        $this->assertEquals(count($result), $expectedCount);
+    }
+
+    public function getQueriesList()
+    {
+        return [
+            ['SELECT id,created FROM widgets LIMIT 10', 2],
+            ['SELECT id,created FROM widgets WHERE id = 1', 0],
+        ];
+    }
 }

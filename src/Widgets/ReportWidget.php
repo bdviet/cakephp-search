@@ -166,6 +166,7 @@ class ReportWidget extends BaseWidget
      * Establish report data for the widgetHandler.
      *
      * @param array $options with entity and view data.
+     * @throws \RuntimeException
      * @return array $result containing $_data.
      */
     public function getResults(array $options = [])
@@ -210,6 +211,11 @@ class ReportWidget extends BaseWidget
     public function getQueryData($config = [])
     {
         $result = [];
+
+        if (empty($config)) {
+            return $result;
+        }
+
         $resultSet = ConnectionManager::get('default')
             ->execute($config['info']['query'])
             ->fetchAll('assoc');
