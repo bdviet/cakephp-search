@@ -171,50 +171,66 @@ class ReportWidget extends BaseWidget
     public function getResults(array $options = [])
     {
         $result = [];
-        $this->_instance = $this->getReportInstance($options);
 
+        $this->_instance = $this->getReportInstance($options);
         $config = $this->getReport($options);
 
         if (empty($config)) {
             return $result;
         }
 
+        $this->setConfig($config);
+        $this->setContainerId($config);
+
         $validated = $this->validate($config);
 
-        if ($validated['status']) {
-            $this->setConfig($config);
-
-            $this->containerId = $this->setContainerId($config);
-
-            $columns = explode(',', $config['info']['columns']);
-
-            $dbh = ConnectionManager::get('default');
-            $sth = $dbh->execute($config['info']['query']);
-            $resultSet = $sth->fetchAll('assoc');
-
-            if (!empty($resultSet)) {
-                foreach ($resultSet as $row) {
-                    $renderRow = [];
-                    foreach ($row as $column => $value) {
-                        if (in_array($column, $columns)) {
-                            $renderRow[$column] = $value;
-                        }
-                    }
-                    array_push($result, $renderRow);
-                }
-            }
-
-            if (!empty($result)) {
-                $this->_instance->getChartData($result);
-                $this->_instance->options['scripts'] = $this->_instance->getScripts();
-            }
-
-            return $this->getData();
-        } else {
-            throw new \Exception("Report validation failed");
+        if (!$validated['status']) {
+            throw new \RuntimeException("Report validation failed");
 
             return $validated;
         }
+
+        $result = $this->getQueryData($config);
+
+        if (!empty($result)) {
+            $this->_instance->getChartData($result);
+            $this->_instance->options['scripts'] = $this->_instance->getScripts();
+        }
+
+        return $result;
+    }
+
+    /**
+     * getQueryData method.
+     * Executes Query statement from the report.ini
+     * to retrieve actual report resultSet.
+     * @param array $config of the report.ini
+     * @return array $result containing required resultset fields.
+     */
+    public function getQueryData($config = [])
+    {
+        $result = [];
+        $resultSet = ConnectionManager::get('default')
+            ->execute($config['info']['query'])
+            ->fetchAll('assoc');
+
+        if (empty($resultSet)) {
+            return $result;
+        }
+
+        $columns = explode(',', $config['info']['columns']);
+
+        foreach ($resultSet as $item) {
+            $row = [];
+            foreach ($item as $column => $value) {
+                if (in_array($column, $columns)) {
+                    $row[$column] = $value;
+                }
+            }
+            array_push($result, $row);
+        }
+
+        return $result;
     }
 
     /**
