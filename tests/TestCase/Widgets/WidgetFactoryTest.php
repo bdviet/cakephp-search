@@ -29,12 +29,33 @@ class WidgetFactoryTest extends TestCase
         }
     }
 
+    /**
+     * @dataProvider dataProviderWidgetTypes
+     */
+    public function testGetType($widgetConfig, $expectedClass)
+    {
+        $entity = (object)[
+            'widget_type' => $widgetConfig['widget_type'],
+        ];
+
+        $widget = WidgetFactory::create($widgetConfig['widget_type'], ['entity' => $entity]);
+
+        $this->assertEquals($widgetConfig['widget_type'], $widget->getType());
+    }
+
     public function dataProviderWidgets()
     {
         return [
             [['widget_type' => 'saved_search'], 'Search\Widgets\SavedSearchWidget'],
             [['widget_type' => 'report'], 'Search\Widgets\ReportWidget'],
             [['widget_type' => 'foobar'], ''],
+        ];
+    }
+
+    public function dataProviderWidgetTypes()
+    {
+        return [
+            [['widget_type' => 'saved_search'], 'Search\Widgets\SavedSearchWidget'],
         ];
     }
 }
