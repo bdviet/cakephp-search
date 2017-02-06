@@ -94,6 +94,7 @@ class ReportWidgetTest extends TestCase
 
         $this->widget->setData($dummyData);
         $this->assertEquals($dummyData, $this->widget->getData());
+        $this->assertEquals([], $this->widget->getErrors());
     }
 
     public function getInstancesList()
@@ -155,6 +156,12 @@ class ReportWidgetTest extends TestCase
 
         $validated = $this->widget->validate($expectedReport);
         $this->assertEquals($validated['status'], true);
+    }
+
+    public function testGetReportsWithoutMock()
+    {
+        $result = $this->widget->getReports([]);
+        $this->assertEquals($result, []);
     }
 
     public function testGetReportWithMock()
@@ -225,4 +232,6 @@ class ReportWidgetTest extends TestCase
         $result = $this->widget->getResults([]);
         $this->assertEquals($result, []);
     }
+
+
 }

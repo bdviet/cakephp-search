@@ -21,6 +21,7 @@ class BarChartReportWidgetTest extends TestCase
     public function testGetScripts()
     {
         $content = $this->widget->getScripts([]);
+        $this->assertContains('post', array_keys($content));
         $this->assertNotEmpty($content);
     }
 
@@ -73,4 +74,40 @@ class BarChartReportWidgetTest extends TestCase
         //as the data passed in the method is empty
         $this->assertEquals([], $this->widget->getData());
     }
+
+    public function testGetChartDataWithData()
+    {
+        $config = [
+            'modelName' => 'Reports',
+            'slug' => 'bar_assigned_by_year',
+            'info' => [
+                'id' => '00000000-0000-0000-0000-000000000002',
+                'model' => 'Bar',
+                'widget_type' => 'report',
+                'name' => 'Report Bar',
+                'query' => '',
+                'columns' => 'x,y',
+                'renderAs' => 'barChart',
+                'y_axis' => 'y',
+                'x_axis' => 'x'
+            ]
+        ];
+
+        $data = [
+            [ 'x' => '1', 'y' => '2'],
+            [ 'x' => '2', 'y' => '3'],
+        ];
+
+        $this->widget->setConfig($config);
+        $this->widget->setContainerId($config);
+
+        $result = $this->widget->getChartData($data);
+        $this->assertNotEmpty($result['options']['element']);
+        $this->assertNotEmpty($result['options']['barColors']);
+
+        //as the data passed in the method is empty
+        $this->assertNotEmpty($this->widget->getData());
+        $this->assertEquals(['X','Y'], $result['options']['labels']);
+    }
+
 }
