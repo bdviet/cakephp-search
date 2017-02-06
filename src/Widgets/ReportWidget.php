@@ -116,8 +116,6 @@ class ReportWidget extends BaseWidget
             }
         }
 
-
-
         return $config;
     }
 
