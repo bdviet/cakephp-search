@@ -64,6 +64,17 @@ class SavedSearchesTableTest extends TestCase
         $this->assertEquals('result', $result);
     }
 
+    public function testGetDefaultSortByOrder()
+    {
+        $result = $this->SavedSearches->getDefaultSortByOrder();
+        $this->assertEquals($result, 'desc');
+    }
+
+    public function testGetDefaultLimit()
+    {
+        $this->assertEquals($this->SavedSearches->getDefaultLimit(), 10);
+    }
+
     public function testGetPrivateSharedStatus()
     {
         $result = $this->SavedSearches->getPrivateSharedStatus();
