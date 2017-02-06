@@ -129,6 +129,34 @@ class ReportWidgetTest extends TestCase
         $this->assertEventFired('Search.Report.getReports', $this->appView->EventManager());
     }
 
+    public function testValidates()
+    {
+        $config = ['config' => ['slug' => 'barChartTest', 'info' => ['renderAs' => 'barChart']]];
+
+        $instance = $this->widget->getReportInstance($config);
+
+        $this->widget->_instance = $instance;
+
+        $expectedReport = [
+            'modelName' => 'Reports',
+            'slug' => 'bar_assigned_by_year',
+            'info' => [
+                'id' => '00000000-0000-0000-0000-000000000002',
+                'model' => 'Bar',
+                'widget_type' => 'report',
+                'name' => 'Report Bar',
+                'query' => 'SELECT * FROM bar',
+                'columns' => 'a,b',
+                'renderAs' => 'lineChart',
+                'y_axis' => 'a',
+                'x_axis' => 'b'
+            ]
+        ];
+
+        $validated = $this->widget->validate($expectedReport);
+        $this->assertEquals($validated['status'], true);
+    }
+
     public function testGetReportWithMock()
     {
         $dummyReports = [
