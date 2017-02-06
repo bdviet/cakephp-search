@@ -107,7 +107,6 @@ class BarChartReportWidgetTest extends TestCase
 
         //as the data passed in the method is empty
         $this->assertNotEmpty($this->widget->getData());
-        $this->assertEquals(['X','Y'], $result['options']['labels']);
+        $this->assertEquals(['X', 'Y'], $result['options']['labels']);
     }
-
 }

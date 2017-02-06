@@ -232,6 +232,4 @@ class ReportWidgetTest extends TestCase
         $result = $this->widget->getResults([]);
         $this->assertEquals($result, []);
     }
-
-
 }
