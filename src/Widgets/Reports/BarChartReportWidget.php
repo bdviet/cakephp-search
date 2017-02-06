@@ -8,6 +8,8 @@ class BarChartReportWidget extends BaseReportGraphs
 {
     public $type = 'barChart';
 
+    public $requiredFields = ['query', 'columns', 'x_axis', 'y_axis'];
+
     /**
      * getChartData method
      *

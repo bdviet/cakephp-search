@@ -8,6 +8,8 @@ class DonutChartReportWidget extends BaseReportGraphs
 {
     public $type = 'donutChart';
 
+    public $requiredFields = ['query', 'label', 'value', 'columns'];
+
     /**
      * getChartData method
      *

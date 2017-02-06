@@ -21,6 +21,7 @@ class SavedSearchWidget extends BaseWidget
     public $options = [];
 
     public $type = 'saved_search';
+    public $errors = [];
 
     /**
      * construct method
@@ -165,5 +166,13 @@ class SavedSearchWidget extends BaseWidget
         ];
 
         return $content;
+    }
+
+    /**
+     * @return array $errors in case of validation
+     */
+    public function getErrors()
+    {
+        return $this->errors;
     }
 }

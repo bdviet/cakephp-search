@@ -31,6 +31,14 @@ class ReportWidget extends BaseWidget
     }
 
     /**
+     * @return array $validated with errors and validation check.
+     */
+    public function validate(array $data = [])
+    {
+        return $this->_instance->validate($data);
+    }
+
+    /**
      * @return array $options of widget instance.
      */
     public function getOptions()
@@ -171,34 +179,42 @@ class ReportWidget extends BaseWidget
             return $result;
         }
 
-        $this->setConfig($config);
+        $validated = $this->validate($config);
 
-        $this->containerId = $this->setContainerId($config);
+        if ($validated['status']) {
+            $this->setConfig($config);
 
-        $columns = explode(',', $config['info']['columns']);
+            $this->containerId = $this->setContainerId($config);
 
-        $dbh = ConnectionManager::get('default');
-        $sth = $dbh->execute($config['info']['query']);
-        $resultSet = $sth->fetchAll('assoc');
+            $columns = explode(',', $config['info']['columns']);
 
-        if (!empty($resultSet)) {
-            foreach ($resultSet as $row) {
-                $renderRow = [];
-                foreach ($row as $column => $value) {
-                    if (in_array($column, $columns)) {
-                        $renderRow[$column] = $value;
+            $dbh = ConnectionManager::get('default');
+            $sth = $dbh->execute($config['info']['query']);
+            $resultSet = $sth->fetchAll('assoc');
+
+            if (!empty($resultSet)) {
+                foreach ($resultSet as $row) {
+                    $renderRow = [];
+                    foreach ($row as $column => $value) {
+                        if (in_array($column, $columns)) {
+                            $renderRow[$column] = $value;
+                        }
                     }
+                    array_push($result, $renderRow);
                 }
-                array_push($result, $renderRow);
             }
-        }
 
-        if (!empty($result)) {
-            $this->_instance->getChartData($result);
-            $this->_instance->options['scripts'] = $this->_instance->getScripts();
-        }
+            if (!empty($result)) {
+                $this->_instance->getChartData($result);
+                $this->_instance->options['scripts'] = $this->_instance->getScripts();
+            }
 
-        return $this->getData();
+            return $this->getData();
+        } else {
+            throw new \Exception("Report validation failed");
+
+            return $validated;
+        }
     }
 
     /**
@@ -238,5 +254,13 @@ class ReportWidget extends BaseWidget
     public function setContainerId($config = [])
     {
         return $this->_instance->setContainerId($config);
+    }
+
+    /**
+     * @return array $errors in case validation failed
+     */
+    public function getErrors()
+    {
+        return $this->_instance->getErrors();
     }
 }

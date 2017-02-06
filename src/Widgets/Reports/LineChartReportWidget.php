@@ -8,6 +8,8 @@ class LineChartReportWidget extends BaseReportGraphs
 {
     public $type = 'lineChart';
 
+    public $requiredFields = ['query', 'columns', 'x_axis', 'y_axis'];
+
     /**
      * getChartData method
      *

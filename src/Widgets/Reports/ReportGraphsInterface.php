@@ -12,4 +12,14 @@ interface ReportGraphsInterface
      * @return array $chartData with all required info.
      */
     public function getChartData(array $data = []);
+
+
+    /**
+     * validate method.
+     * Validates report configuration
+     * to make sure all required fields are set
+     * @param array $data with report config
+     * @return bool $validated on the check.
+     */
+    public function validate(array $data = []);
 }

@@ -49,7 +49,7 @@ $this->eventManager()->dispatch($event);
 
                         echo $this->element('Search.Widgets/' . $widgetHandler->getRenderElement(), ['widget' => $widgetHandler]);
                     } catch (\Exception $e) {
-                        echo $this->element('Search.missing_element', ['exception' => $e]);
+                        echo $this->element('Search.missing_element', ['exception' => $e, 'messages' => $widgetHandler->getErrors()]);
                     }
                 }
                 ?>

@@ -7,6 +7,9 @@ class KnobChartReportWidget extends BaseReportGraphs
 {
     public $type = 'knobChart';
 
+    public $requiredFields = ['query', 'max', 'value', 'label', 'columns'];
+
+
     /**
      * getChartData method
      *

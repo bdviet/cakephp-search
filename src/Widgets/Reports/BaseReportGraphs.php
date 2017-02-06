@@ -12,6 +12,7 @@ abstract class BaseReportGraphs implements ReportGraphsInterface
     public $config = [];
     public $options = [];
     public $data = [];
+    public $errors = [];
     /**
      * getType
      *
@@ -90,5 +91,46 @@ abstract class BaseReportGraphs implements ReportGraphsInterface
     public function getData()
     {
         return $this->data;
+    }
+
+    /**
+     * @return array $errors in case any exists.
+     */
+    public function getErrors()
+    {
+        return $this->errors;
+    }
+
+    /**
+     * validate method.
+     * Checks all the required fields of the report if any.
+     */
+    public function validate(array $data = [])
+    {
+        $validated = false;
+        $errors = [];
+
+        if (!isset($this->requiredFields)) {
+            $errors[] = "Missing requiredFields in the report object";
+        }
+
+        foreach ($this->requiredFields as $field) {
+            if (!isset($data['info'][$field])) {
+                $errors[] = "Required field [$field] must be set";
+            }
+
+            if (empty($data['info'][$field])) {
+                $errors[] = "Required Field [$field] cannot be empty";
+            }
+        }
+
+        if (empty($errors)) {
+            $validated = true;
+            $this->errors = [];
+        } else {
+            $this->errors = $errors;
+        }
+
+        return ['status' => $validated, 'messages' => $errors];
     }
 }
