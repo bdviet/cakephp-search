@@ -64,6 +64,17 @@ class SavedSearchesTableTest extends TestCase
         $this->assertEquals('result', $result);
     }
 
+    public function testGetDefaultSortByOrder()
+    {
+        $result = $this->SavedSearches->getDefaultSortByOrder();
+        $this->assertEquals($result, 'desc');
+    }
+
+    public function testGetDefaultLimit()
+    {
+        $this->assertEquals($this->SavedSearches->getDefaultLimit(), 10);
+    }
+
     public function testGetPrivateSharedStatus()
     {
         $result = $this->SavedSearches->getPrivateSharedStatus();
@@ -75,6 +86,52 @@ class SavedSearchesTableTest extends TestCase
         $expected = ['id'];
         $result = $this->SavedSearches->getSkippedDisplayFields();
         $this->assertEquals($expected, $result);
+    }
+
+    /**
+     * @expectedException \RuntimeException
+     */
+    public function testGetSearchableFields()
+    {
+        $result = $this->SavedSearches->getSearchableFields('Widgets');
+        $this->assertEventFired('Search.Model.Search.searchabeFields', $this->EventManager());
+    }
+
+    public function testGetListingFields()
+    {
+        $result = $this->SavedSearches->getListingFields('Dashboards');
+        $this->assertNotEmpty($result);
+        $this->assertEquals($result, ['name', 'modified', 'created']);
+    }
+
+    /**
+     * @expectedException \RuntimeException
+     * @dataProvider dataProviderGetSearchCriteria
+     */
+    public function testGetSearchCriteria($config)
+    {
+        $result = $this->SavedSearches->getSearchCriteria(['query' => $config['query']], $config['table']);
+    }
+
+    public function dataProviderGetSearchCriteria()
+    {
+        return [
+            [['query' => 'SELECT id,created FROM dashboards LIMIT 2', 'table' => 'Dashboards']],
+        ];
+    }
+
+    public function test_prepareWhereStatement()
+    {
+        $class = new \ReflectionClass('Search\Model\Table\SavedSearchesTable');
+        $method = $class->getMethod('_prepareWhereStatement');
+        $method->setAccessible(true);
+
+        $result = $method->invokeArgs($this->SavedSearches, [
+            [],
+            'Dashboards'
+        ]);
+
+        $this->assertEquals($result, []);
     }
 
     public function testGetSavedSearchesFindAll()

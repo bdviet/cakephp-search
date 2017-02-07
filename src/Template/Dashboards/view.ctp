@@ -1,23 +1,10 @@
 <?php
 use Cake\Event\Event;
+use Search\Widgets\WidgetFactory;
 
-echo $this->Html->css([
-    'AdminLTE./plugins/datatables/dataTables.bootstrap',
-    ], [
-    'block' => 'css'
-    ]);
+$scripts = [];
+$chartData = [];
 
-echo $this->Html->script(
-    [
-        'AdminLTE./plugins/datatables/jquery.dataTables.min',
-        'AdminLTE./plugins/datatables/dataTables.bootstrap.min',
-        'Search.view-search-result',
-    ],
-    [
-        'block' => 'scriptBotton'
-    ]
-);
-$chartOptions = [];
 $event = new Event('Search.Dashboards.View.View.Menu.Top', $this, [
     'request' => $this->request,
     $dashboard
@@ -37,44 +24,39 @@ $this->eventManager()->dispatch($event);
 </section>
 <section class="content">
     <div class="row">
-    <?php if (!empty($widgets)) : ?>
         <?php $columnsCount = count($columns); for ($col = 0; $col < $columnsCount; $col++) : ?>
             <div class="col-md-<?= 12 / $columnsCount ?>">
-            <?php
-            foreach ($widgets as $widget) {
-                if ($widget->widgetObject->column !== $col) {
-                    continue;
-                }
-                $cell = $this->cell("Search.Widget::{$widget->widgetDisplayMethod}", [
-                    [$widget],
-                    ['user' => $user, 'rootView' => $this]
-                ]);
+            <?php if (!empty($dashboardWidgets)) : ?>
+                <?php
+                foreach ($dashboardWidgets as $dw) {
+                    if ($dw->column !== $col) {
+                        continue;
+                    }
 
-                echo $cell;
+                    try {
+                        $widgetHandler = WidgetFactory::create($dw->widget_type, ['entity' => $dw]);
 
-                if (!empty($cell->chartData)) {
-                    array_push($chartOptions, $cell->chartData);
+                        $widgetHandler->getResults(['entity' => $dw, 'user' => $user, 'rootView' => $this]);
+
+                        if ($widgetHandler->getRenderElement() == 'graph') {
+                            $chartData[] = $widgetHandler->getData();
+                        }
+
+                        $dataOptions = $widgetHandler->getOptions();
+                        if (!empty($dataOptions['scripts'])) {
+                            $scripts[] = $dataOptions['scripts'];
+                        }
+
+                        echo $this->element('Search.Widgets/' . $widgetHandler->getRenderElement(), ['widget' => $widgetHandler]);
+                    } catch (\Exception $e) {
+                        echo $this->element('Search.missing_element', ['exception' => $e, 'messages' => $widgetHandler->getErrors()]);
+                    }
                 }
-            }
-            ?>
+                ?>
+                <?php endif; ?>
             </div>
         <?php endfor; ?>
-    <?php endif; ?>
     </div>
 </section>
-<?php
-if (!empty($chartOptions)) {
-    echo $this->Html->css(['AdminLTE./plugins/morris/morris'], ['block' => 'css']);
-    echo $this->Html->script([
-        'https://cdnjs.cloudflare.com/ajax/libs/raphael/2.1.0/raphael-min.js',
-        'AdminLTE./plugins/morris/morris.min',
-        'AdminLTE./plugins/knob/jquery.knob',
-        'Search.reportGraphs',
-    ], [
-        'block' => 'scriptBotton'
-    ]);
 
-    //after we collected all required graph data we can do the rendering.
-    echo $this->Html->scriptBlock('var chartsData = ' . json_encode($chartOptions) . ';');
-}
-?>
+<?php echo $this->element('Search.widget_libraries', ['scripts' => $scripts, 'chartData' => $chartData]); ?>

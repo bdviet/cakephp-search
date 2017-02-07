@@ -54,28 +54,9 @@ class DashboardsController extends AppController
         if (method_exists($this, '_checkRoleAccess')) {
             $this->_checkRoleAccess($dashboard->role_id);
         }
-
-        $widgets = [];
-        if (!empty($dashboard->widgets)) {
-            foreach ($dashboard->widgets as $w) {
-                $widgetObject = WidgetFactory::create(
-                    $w,
-                    $this->request,
-                    $this->response,
-                    $this->eventManager()
-                );
-                // skip widgets without data
-                if (empty($widgetObject->widgetData)) {
-                    continue;
-                }
-
-                $widgets[] = $widgetObject;
-            }
-        }
-
+        $this->set('dashboardWidgets', $dashboard->widgets);
         $widgetsTable = TableRegistry::get('Search.Widgets');
         $this->set('columns', Configure::readOrFail('Search.dashboard.columns'));
-        $this->set('widgets', $widgets);
         $this->set('user', $this->Auth->user());
         $this->set('dashboard', $dashboard);
         $this->set('_serialize', ['dashboard']);
