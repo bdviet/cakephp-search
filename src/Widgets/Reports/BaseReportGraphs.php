@@ -13,6 +13,7 @@ abstract class BaseReportGraphs implements ReportGraphsInterface
     public $options = [];
     public $data = [];
     public $errors = [];
+    public $requiredFields = [];
     /**
      * getType
      *
@@ -110,7 +111,7 @@ abstract class BaseReportGraphs implements ReportGraphsInterface
         $validated = false;
         $errors = [];
 
-        if (!isset($this->requiredFields)) {
+        if (empty($this->requiredFields)) {
             $errors[] = "Missing requiredFields in the report object";
         }
 

@@ -130,6 +130,38 @@ class ReportWidgetTest extends TestCase
         $this->assertEventFired('Search.Report.getReports', $this->appView->EventManager());
     }
 
+
+    public function testValidatesWithoutRequiredFields()
+    {
+        $config = ['config' => ['slug' => 'barChartTest', 'info' => ['renderAs' => 'barChart']]];
+
+        $instance = $this->widget->getReportInstance($config);
+
+        $this->widget->_instance = $instance;
+
+        $expectedReport = [
+            'modelName' => 'Reports',
+            'slug' => 'bar_assigned_by_year',
+            'info' => [
+                'id' => '00000000-0000-0000-0000-000000000002',
+                'model' => 'Bar',
+                'widget_type' => 'report',
+                'name' => 'Report Bar',
+                'query' => 'SELECT * FROM bar',
+                'columns' => 'a,b',
+                'renderAs' => 'lineChart',
+                'y_axis' => 'a',
+                'x_axis' => 'b'
+            ]
+        ];
+
+        $this->widget->_instance->requiredFields = [];
+
+        $validated = $this->widget->validate($expectedReport);
+        $this->assertEquals($validated['status'], false);
+    }
+
+
     public function testValidates()
     {
         $config = ['config' => ['slug' => 'barChartTest', 'info' => ['renderAs' => 'barChart']]];
@@ -156,6 +188,26 @@ class ReportWidgetTest extends TestCase
 
         $validated = $this->widget->validate($expectedReport);
         $this->assertEquals($validated['status'], true);
+
+        $expectedReport = [
+            'modelName' => 'Reports',
+            'slug' => 'bar_assigned_by_year',
+            'info' => [
+                'id' => '00000000-0000-0000-0000-000000000002',
+                'model' => 'Bar',
+                'widget_type' => 'report',
+                'name' => 'Report Bar',
+                'query' => 'SELECT * FROM bar',
+                'columns' => 'a,b',
+                'renderAs' => 'lineChart',
+                'y_axis' => '',
+            ]
+        ];
+
+        $validated = $this->widget->validate($expectedReport);
+
+        $this->assertEquals($validated['status'], false);
+        $this->assertContains('Required Field [y_axis] cannot be empty', array_keys(array_flip($validated['messages'])));
     }
 
     public function testGetChartData()
