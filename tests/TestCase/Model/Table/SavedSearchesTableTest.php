@@ -196,6 +196,7 @@ class SavedSearchesTableTest extends TestCase
             'display_columns' => [
                 'name', 'modified', 'created'
             ],
+            'sort_by_field' => 'name',
             'sort_by_order' => 'asc',
             'limit' => '20'
         ];
@@ -218,6 +219,7 @@ class SavedSearchesTableTest extends TestCase
             'display_columns' => [
                 'foo'
             ],
+            'sort_by_field' => 'foo',
             'sort_by_order' => [
                 'foo'
             ],
@@ -229,6 +231,9 @@ class SavedSearchesTableTest extends TestCase
 
         $this->assertEmpty($result['criteria']);
         $this->assertEmpty($result['display_columns']);
+
+        $expected = TableRegistry::get('Dashboards')->displayField();
+        $this->assertEquals($expected, $result['sort_by_field']);
 
         $expected = $this->SavedSearches->getDefaultSortByOrder();
         $this->assertEquals($expected, $result['sort_by_order']);
