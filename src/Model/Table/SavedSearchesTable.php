@@ -51,6 +51,32 @@ class SavedSearchesTable extends Table
     const DEFAULT_SORT_BY_ORDER = 'desc';
 
     /**
+     * Search limit options.
+     *
+     * @var array
+     */
+    protected $_limitOptions = [
+        0 => 'Unlimited',
+        1 => 1,
+        3 => 3,
+        5 => 5,
+        10 => 10,
+        20 => 20,
+        50 => 50,
+        100 => 100
+    ];
+
+    /**
+     * Search sort by order options.
+     *
+     * @var array
+     */
+    protected $_sortByOrderOptions = [
+        'asc' => 'Ascending',
+        'desc' => 'Descending'
+    ];
+
+    /**
      * Target table searchable fields.
      *
      * @var array
@@ -205,6 +231,16 @@ class SavedSearchesTable extends Table
     }
 
     /**
+     * Getter method for default sql limit.
+     *
+     * @return string
+     */
+    public function getLimitOptions()
+    {
+        return $this->_limitOptions;
+    }
+
+    /**
      * Getter method for default sql sort by order.
      *
      * @return string
@@ -212,6 +248,16 @@ class SavedSearchesTable extends Table
     public function getDefaultSortByOrder()
     {
         return static::DEFAULT_SORT_BY_ORDER;
+    }
+
+    /**
+     * Getter method for default sql limit.
+     *
+     * @return string
+     */
+    public function getSortByOrderOptions()
+    {
+        return $this->_sortByOrderOptions;
     }
 
     /**

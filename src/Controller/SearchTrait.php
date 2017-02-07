@@ -137,6 +137,8 @@ trait SearchTrait
         $this->set('searchData', $data);
         $this->set('savedSearch', $savedSearch);
         $this->set('isEditable', $isEditable);
+        $this->set('limitOptions', $table->getLimitOptions());
+        $this->set('sortByOrderOptions', $table->getSortByOrderOptions());
 
         $this->render($this->_elementSearch);
     }
