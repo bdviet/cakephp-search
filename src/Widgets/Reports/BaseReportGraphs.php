@@ -67,9 +67,11 @@ abstract class BaseReportGraphs implements ReportGraphsInterface
 
     /**
      * setConfig.
+     *
      * Setting report configurations
+     *
      * @param array $data of report.
-     * @return array $_config of the report.
+     * @return void
      */
     public function setConfig($data = [])
     {
@@ -78,8 +80,9 @@ abstract class BaseReportGraphs implements ReportGraphsInterface
 
     /**
      * setData method.
+     *
      * @param array $data for the report widget.
-     * @return void.
+     * @return void
      */
     public function setData($data = [])
     {
@@ -104,7 +107,11 @@ abstract class BaseReportGraphs implements ReportGraphsInterface
 
     /**
      * validate method.
+     *
      * Checks all the required fields of the report if any.
+     *
+     * @param array $data with report configuration
+     * @return mixed result of validation
      */
     public function validate(array $data = [])
     {

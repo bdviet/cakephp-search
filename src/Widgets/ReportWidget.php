@@ -23,6 +23,7 @@ class ReportWidget extends BaseWidget
     }
 
     /**
+     * @param array $data for extra setup
      * @return array $data of the report.
      */
     public function getChartData($data = [])
@@ -31,6 +32,7 @@ class ReportWidget extends BaseWidget
     }
 
     /**
+     * @param array $data for extra settings
      * @return array $validated with errors and validation check.
      */
     public function validate(array $data = [])
@@ -57,20 +59,22 @@ class ReportWidget extends BaseWidget
     /**
      * Setting report configuration to the report instance.
      *
-     * @param array $report to be set for config property.
-     * @retrun array $report config of the widget.
+     * @param array $config to be set for config property.
+     * @return array $config config of the widget.
      */
     public function setConfig($config)
     {
-        $this->_instance->setConfig($config);
+        return $this->_instance->setConfig($config);
     }
 
     /**
-     * getReports method.
+     * Method retrieves all reports from ini files
+     *
      * Basic reports getter that uses Events
      * to get reports application-wise.
-     * @parram array $options containing \Cake\View\View.
-     * @retrun array $result with reports array.
+     *
+     * @param array $options containing \Cake\View\View.
+     * @return array $result with reports array.
      */
     public function getReports($options = [])
     {
@@ -89,8 +93,8 @@ class ReportWidget extends BaseWidget
     }
 
     /**
-     * getReport method
-     * Parses the config of the report for widgetHandler.
+     * Parses the config of the report for widgetHandler
+     *
      * @param array $options with entity data.
      * @return array $config of the widget.
      */
@@ -128,8 +132,11 @@ class ReportWidget extends BaseWidget
     }
 
     /**
+     * Initialize Report instance
+     *
      * ReportWidgetHandler operates via $_instance variable
      * that we set based on the renderAs parameter of the report.
+     *
      * @param array $options containing reports
      * @return mixed $className of the $_instance.
      */
@@ -161,7 +168,7 @@ class ReportWidget extends BaseWidget
     }
 
     /**
-     * getResults method
+     * Assembles results data for the report
      *
      * Establish report data for the widgetHandler.
      *
@@ -186,25 +193,27 @@ class ReportWidget extends BaseWidget
         $validated = $this->validate($config);
 
         if (!$validated['status']) {
+            $result = $validated;
+
             throw new \RuntimeException("Report validation failed");
+        } else {
+            $result = $this->getQueryData($config);
 
-            return $validated;
-        }
-
-        $result = $this->getQueryData($config);
-
-        if (!empty($result)) {
-            $this->_instance->getChartData($result);
-            $this->_instance->options['scripts'] = $this->_instance->getScripts();
+            if (!empty($result)) {
+                $this->_instance->getChartData($result);
+                $this->_instance->options['scripts'] = $this->_instance->getScripts();
+            }
         }
 
         return $result;
     }
 
     /**
-     * getQueryData method.
+     * Retrieve Query data for the report
+     *
      * Executes Query statement from the report.ini
      * to retrieve actual report resultSet.
+     *
      * @param array $config of the report.ini
      * @return array $result containing required resultset fields.
      */
@@ -241,6 +250,7 @@ class ReportWidget extends BaseWidget
 
     /**
      * Wrapper of report widget data.
+     *
      * @return array $data of the report widget instance.
      */
     public function getData()
@@ -250,13 +260,13 @@ class ReportWidget extends BaseWidget
 
     /**
      * setData for the widget.
+     *
      * @param array $data with information related
-     * to widget.
      * @return void.
      */
     public function setData($data = [])
     {
-        $this->_instance->setData($data);
+        return $this->_instance->setData($data);
     }
 
     /**
@@ -268,8 +278,10 @@ class ReportWidget extends BaseWidget
     }
 
     /**
-     * setContainerId method.
+     * Setup widget container identifier
+     *
      * Setting unique identifier of the Widget object.
+     *
      * @param array $config of the widget.
      * @return string $containerId property of widget instance.
      */

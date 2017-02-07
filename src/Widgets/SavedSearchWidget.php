@@ -25,6 +25,7 @@ class SavedSearchWidget extends BaseWidget
 
     /**
      * construct method
+     *
      * @param array $options containing widget entity.
      * @return void.
      */
@@ -38,6 +39,7 @@ class SavedSearchWidget extends BaseWidget
 
     /**
      * getOptions method.
+     *
      * @return array $options of the widget.
      */
     public function getOptions()
@@ -62,7 +64,8 @@ class SavedSearchWidget extends BaseWidget
     }
 
     /**
-     * getResults method
+     * Retrieve SavedSearch results for the widget
+     *
      * @param array $options containing entity and view params.
      * @return array $results from $this->_data.
      */
@@ -79,7 +82,7 @@ class SavedSearchWidget extends BaseWidget
                 $results = $resultSet;
             }
         } catch (\Exception $e) {
-            debug($e->getMessage());
+            echo $e->getMessage();
         }
 
         if (empty($this->_entity)) {
@@ -113,7 +116,9 @@ class SavedSearchWidget extends BaseWidget
 
     /**
      * setContainerId method.
+     *
      * Setting unique identifier of the widget.
+     *
      * @param array $entity used for setting id of widget.
      * @return string $containerId of the widget.
      */
@@ -126,7 +131,8 @@ class SavedSearchWidget extends BaseWidget
 
     /**
      * prepareChartOptions
-     * @param array $data passed
+     *
+     * @param array $options passed
      * @return array $content with CSS/JS libs.
      */
     public function getScripts(array $options = [])
