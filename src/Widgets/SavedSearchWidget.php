@@ -89,6 +89,7 @@ class SavedSearchWidget extends BaseWidget
             return $results;
         }
 
+
         switch ($results->type) {
             case $this->_tableInstance->getCriteriaType():
                 $search = $this->_tableInstance->search(
@@ -110,6 +111,12 @@ class SavedSearchWidget extends BaseWidget
 
         $this->_data = $results;
         $this->options['scripts'] = $this->getScripts(['data' => $this->_data]);
+
+        $fields = $this->_tableInstance->getSearchableFields($results->model);
+
+        if (!empty($fields)) {
+            $this->options['fields'] = $fields;
+        }
 
         return $results;
     }

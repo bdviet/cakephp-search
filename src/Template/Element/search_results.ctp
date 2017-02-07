@@ -50,7 +50,7 @@ $uid = uniqid();
             <thead>
                 <tr>
                 <?php foreach ($searchData['display_columns'] as $field) : ?>
-                    <th><?= Inflector::humanize($field); ?></th>
+                   <th><?= $searchFields[$field]['label']?></th>
                 <?php endforeach; ?>
                     <th class="actions"><?= __('Actions') ?></th>
                 </tr>
