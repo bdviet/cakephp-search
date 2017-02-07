@@ -166,4 +166,74 @@ class SavedSearchesTableTest extends TestCase
             $this->assertEquals($model, $entity->model);
         }
     }
+
+    public function testGetLimitOptions()
+    {
+        $result = $this->SavedSearches->getLimitOptions();
+        $this->assertNotEmpty($result);
+        $this->assertInternalType('array', $result);
+    }
+
+    public function testGetSortByOrderOptions()
+    {
+        $result = $this->SavedSearches->getSortByOrderOptions();
+        $this->assertNotEmpty($result);
+        $this->assertInternalType('array', $result);
+    }
+
+    public function testValidateData()
+    {
+        $data = [
+            'criteria' => [
+                'name' => [
+                    10 => [
+                        'type' => 'string',
+                        'operator' => 'contains',
+                        'value' => 'foo'
+                    ]
+                ]
+            ],
+            'display_columns' => [
+                'name', 'modified', 'created'
+            ],
+            'sort_by_order' => 'asc',
+            'limit' => '20'
+        ];
+        $result = $this->SavedSearches->validateData('Dashboards', $data);
+        $this->assertEquals($data, $result);
+    }
+
+    public function testValidateDataWrong()
+    {
+        $data = [
+            'criteria' => [
+                'foo' => [
+                    10 => [
+                        'type' => 'string',
+                        'operator' => 'contains',
+                        'value' => 'foo'
+                    ]
+                ]
+            ],
+            'display_columns' => [
+                'foo'
+            ],
+            'sort_by_order' => [
+                'foo'
+            ],
+            'limit' => [
+                '999'
+            ]
+        ];
+        $result = $this->SavedSearches->validateData('Dashboards', $data);
+
+        $this->assertEmpty($result['criteria']);
+        $this->assertEmpty($result['display_columns']);
+
+        $expected = $this->SavedSearches->getDefaultSortByOrder();
+        $this->assertEquals($expected, $result['sort_by_order']);
+
+        $expected = $this->SavedSearches->getDefaultLimit();
+        $this->assertEquals($expected, $result['limit']);
+    }
 }
