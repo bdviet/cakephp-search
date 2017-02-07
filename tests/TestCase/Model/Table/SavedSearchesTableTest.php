@@ -24,6 +24,7 @@ class SavedSearchesTableTest extends TestCase
      * @var array
      */
     public $fixtures = [
+        'plugin.search.users',
         'plugin.search.dashboards',
         'plugin.search.saved_searches',
     ];
@@ -241,12 +242,8 @@ class SavedSearchesTableTest extends TestCase
                 'foo'
             ],
             'sort_by_field' => 'foo',
-            'sort_by_order' => [
-                'foo'
-            ],
-            'limit' => [
-                '999'
-            ]
+            'sort_by_order' => 'foo',
+            'limit' => '999'
         ];
         $result = $this->SavedSearches->validateData('Dashboards', $data);
 
@@ -261,5 +258,67 @@ class SavedSearchesTableTest extends TestCase
 
         $expected = $this->SavedSearches->getDefaultLimit();
         $this->assertEquals($expected, $result['limit']);
+    }
+
+    public function testSearch()
+    {
+        // anonymous event listener that passes some dummy searchable fields
+        $this->SavedSearches->eventManager()->on('Search.Model.Search.searchabeFields', function ($event, $table) {
+            return [
+                'name' => [
+                    'type' => 'string',
+                    'operators' => [
+                        'contains' => [
+                            'label' => 'contains',
+                            'operator' => 'LIKE',
+                            'pattern' => '%{{value}}%'
+                        ]
+                    ]
+                ]
+            ];
+        });
+
+        $user = [
+            'id' => '00000000-0000-0000-0000-000000000001'
+        ];
+
+        $data = [
+            'criteria' => [
+                'name' => [
+                    10 => [
+                        'type' => 'string',
+                        'operator' => 'contains',
+                        'value' => 'user'
+                    ]
+                ]
+            ],
+            'display_columns' => [
+                'name',
+                'created',
+                'modified'
+            ],
+            'sort_by_field' => 'name',
+            'sort_by_order' => 'desc',
+            'limit' => '10'
+        ];
+
+        $result = $this->SavedSearches->search('Users', $user, $data);
+
+        $this->assertNotEmpty($result);
+        $this->assertInternalType('array', $result);
+
+        $this->assertArrayHasKey('saveSearchCriteriaId', $result);
+        $this->assertArrayHasKey('saveSearchResultsId', $result);
+
+        $this->assertNotEmpty($result['entities']);
+        $this->assertEquals($data['criteria'], $result['entities']['criteria']);
+        $this->assertEquals($data['sort_by_field'], $result['entities']['sort_by_field']);
+        $this->assertEquals($data['sort_by_order'], $result['entities']['sort_by_order']);
+        $this->assertEquals($data['limit'], $result['entities']['limit']);
+        $this->assertNotEquals($data['display_columns'], $result['entities']['display_columns']);
+
+        $this->assertNotEmpty($result['entities']['result']);
+        $this->assertInstanceOf(\Cake\ORM\ResultSet::class, $result['entities']['result']);
+        $this->assertGreaterThan(0, $result['entities']['result']->count());
     }
 }
