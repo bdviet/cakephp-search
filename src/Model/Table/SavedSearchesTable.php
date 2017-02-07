@@ -10,6 +10,7 @@ use Cake\ORM\Table;
 use Cake\ORM\TableRegistry;
 use Cake\Utility\Inflector;
 use Cake\Validation\Validator;
+use InvalidArgumentException;
 use RuntimeException;
 use Search\Model\Entity\SavedSearch;
 
@@ -329,9 +330,7 @@ class SavedSearchesTable extends Table
     public function getSearchableFields($table)
     {
         // get Table instance
-        if (is_string($table)) {
-            $table = TableRegistry::get($table);
-        }
+        $table = $this->_getTableInstance($table);
 
         $event = new Event('Search.Model.Search.searchabeFields', $this, [
             'table' => $table
@@ -357,9 +356,7 @@ class SavedSearchesTable extends Table
     {
         $result = [];
         // get Table instance
-        if (is_string($table)) {
-            $table = TableRegistry::get($table);
-        }
+        $table = $this->_getTableInstance($table);
 
         if (method_exists($table, 'getListingFields') && is_callable([$table, 'getListingFields'])) {
             $result = $table->getListingFields();
@@ -399,9 +396,7 @@ class SavedSearchesTable extends Table
             return $result;
         }
 
-        if (is_string($table)) {
-            $table = TableRegistry::get($table);
-        }
+        $table = $this->_getTableInstance($table);
 
         $displayField = $table->displayField();
 
@@ -435,6 +430,28 @@ class SavedSearchesTable extends Table
     }
 
     /**
+     * Instantiates and returns searchable Table instance.
+     *
+     * @param \Cake\ORM\Table|string $table Table name or Instance
+     * @return \Cake\ORM\Table
+     * @throws \InvalidArgumentException Thrown if table parameter is not a Table instance or string
+     */
+    protected function _getTableInstance($table)
+    {
+        if ($table instanceof Table) {
+            return $table;
+        }
+
+        if (is_string($table)) {
+            return TableRegistry::get($table);
+        }
+
+        throw new InvalidArgumentException(
+            'Parameter $table must be a string or Cake\\ORM\\Table instance, ' . gettype($table) . ' provided.'
+        );
+    }
+
+    /**
      * Method that fetches the search results.
      *
      * @param  array $data search data
@@ -443,7 +460,7 @@ class SavedSearchesTable extends Table
      */
     protected function _getResults(array $data, $tableName)
     {
-        $table = TableRegistry::get($tableName);
+        $table = $this->_getTableInstance($tableName);
 
         $query = $table
             ->find('all')
