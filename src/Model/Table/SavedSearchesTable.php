@@ -273,6 +273,8 @@ class SavedSearchesTable extends Table
     {
         $data = $requestData;
 
+        $data = $this->validateData($tableName, $data);
+
         if (empty($data['result'])) {
             // get search results
             $data['result'] = $this->_getResults($data, $tableName);
@@ -449,6 +451,142 @@ class SavedSearchesTable extends Table
         throw new InvalidArgumentException(
             'Parameter $table must be a string or Cake\\ORM\\Table instance, ' . gettype($table) . ' provided.'
         );
+    }
+
+    /**
+     * Base search data validation method.
+     *
+     * Retrieves current searchable table columns, validates and filters criteria, display columns
+     * and sort by field against them. Then validates sort by order and limit againt available options
+     * and sets them to the default options if they fail validation.
+     *
+     * @param \Cake\ORM\Table|string $table Table name or Instace
+     * @param array $data Search data
+     * @return array
+     */
+    public function validateData($table, array $data)
+    {
+        if (empty($data)) {
+            return $data;
+        }
+
+        $table = $this->_getTableInstance($table);
+
+        $columns = $table->schema()->columns();
+
+        if (empty($columns)) {
+            throw new RuntimeException('Table ' . $table->alias() . ' has no columns.');
+        }
+
+        if (!empty($data['criteria'])) {
+            $data['criteria'] = $this->_validateCriteria($data['criteria'], $columns);
+        }
+
+        if (!empty($data['display_columns'])) {
+            $data['display_columns'] = $this->_validateDisplayColumns($data['display_columns'], $columns);
+        }
+
+        if (!empty($data['sort_by_field'])) {
+            $data['sort_by_field'] = $this->_validateSortByField($data['sort_by_field'], $columns, $table);
+        }
+
+        if (!empty($data['sort_by_order'])) {
+            $data['sort_by_order'] = $this->_validateSortByOrder($data['sort_by_order'], $table);
+        }
+
+        if (!empty($data['limit'])) {
+            $data['limit'] = $this->_validateLimit($data['limit']);
+        }
+
+        return $data;
+    }
+
+    /**
+     * Validate search criteria.
+     *
+     * @param array $data Criteria values
+     * @param array $columns Table columns
+     * @return array
+     */
+    protected function _validateCriteria(array $data, array $columns)
+    {
+        foreach ($data as $k => $v) {
+            if (in_array($k, $columns)) {
+                continue;
+            }
+            unset($data[$k]);
+        }
+
+        return $data;
+    }
+
+    /**
+     * Validate search display field(s).
+     *
+     * @param array $data Display field(s) values
+     * @param array $columns Table columns
+     * @return array
+     */
+    protected function _validateDisplayColumns(array $data, array $columns)
+    {
+        foreach ($data as $k => $v) {
+            if (in_array($v, $columns)) {
+                continue;
+            }
+            unset($data[$k]);
+        }
+
+        return $data;
+    }
+
+    /**
+     * Validate search sort by field.
+     *
+     * @param string $data Sort by field value
+     * @param array $columns Table columns
+     * @param \Cake\ORM\Table $table Table instance
+     * @return string
+     */
+    protected function _validateSortByField($data, array $columns, Table $table)
+    {
+        if (!in_array($data, $columns)) {
+            $data = $table->displayField();
+        }
+
+        return $data;
+    }
+
+    /**
+     * Validate search sort by order.
+     *
+     * @param string $data Sort by order value
+     * @param \Cake\ORM\Table $table Table instance
+     * @return string
+     */
+    protected function _validateSortByOrder($data, Table $table)
+    {
+        $options = array_keys($this->getSortByOrderOptions());
+        if (!in_array($data, $options)) {
+            $data = $this->getDefaultSortByOrder();
+        }
+
+        return $data;
+    }
+
+    /**
+     * Validate search limit.
+     *
+     * @param string $data Limit value
+     * @return string
+     */
+    protected function _validateLimit($data)
+    {
+        $options = array_keys($this->getLimitOptions());
+        if (!in_array($data, $options)) {
+            $data = $this->getDefaultLimit();
+        }
+
+        return $data;
     }
 
     /**

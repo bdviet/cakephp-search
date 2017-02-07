@@ -111,6 +111,8 @@ trait SearchTrait
                 $data['limit'] = $table->getDefaultLimit();
             }
 
+            $data = $table->validateData($model, $data);
+
             $search = $table->search($model, $this->Auth->user(), $data);
 
             if (isset($search['saveSearchCriteriaId'])) {
