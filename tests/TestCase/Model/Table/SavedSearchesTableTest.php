@@ -109,7 +109,7 @@ class SavedSearchesTableTest extends TestCase
      * @expectedException \RuntimeException
      * @dataProvider dataProviderGetSearchCriteria
      */
-    public function testGetSearchCriteria($config)
+    public function testGetSearchCriteriaException($config)
     {
         $result = $this->SavedSearches->getSearchCriteria(['query' => $config['query']], $config['table']);
     }
@@ -320,5 +320,82 @@ class SavedSearchesTableTest extends TestCase
         $this->assertNotEmpty($result['entities']['result']);
         $this->assertInstanceOf(\Cake\ORM\ResultSet::class, $result['entities']['result']);
         $this->assertGreaterThan(0, $result['entities']['result']->count());
+    }
+
+    public function testGetSearchCriteriaEmptyQuery()
+    {
+        $result = $this->SavedSearches->getSearchCriteria(['query' => []], 'Dashboards');
+
+        $this->assertEmpty($result);
+    }
+
+    public function testGetSearchCriteria()
+    {
+        // anonymous event listener that passes some dummy searchable fields
+        $this->SavedSearches->eventManager()->on('Search.Model.Search.searchabeFields', function ($event, $table) {
+            return [
+                'name' => [
+                    'type' => 'string',
+                    'operators' => [
+                        'contains' => [
+                            'label' => 'contains',
+                            'operator' => 'LIKE',
+                            'pattern' => '%{{value}}%'
+                        ],
+                    ]
+                ],
+                'modified' => [
+                    'type' => 'datetime',
+                    'operators' => [
+                        'is' => [
+                            'label' => 'is',
+                            'operator' => 'IN'
+                        ]
+                    ]
+                ],
+                'created' => [
+                    'type' => 'datetime',
+                    'operators' => [
+                        'is' => [
+                            'label' => 'is',
+                            'operator' => 'IN'
+                        ]
+                    ]
+                ]
+            ];
+        });
+
+        $result = $this->SavedSearches->getSearchCriteria(['query' => ['foo']], 'Dashboards');
+        $this->assertNotEmpty($result);
+        $this->assertInternalType('array', $result);
+        $this->assertArrayHasKey('name', $result);
+    }
+
+
+    public function testGetSearchCriteriaVirtualField()
+    {
+        // anonymous event listener that passes some dummy searchable fields
+        $this->SavedSearches->eventManager()->on('Search.Model.Search.searchabeFields', function ($event, $table) {
+            return [
+                'foo' => [
+                    'type' => 'string',
+                    'operators' => [
+                        'contains' => [
+                            'label' => 'contains',
+                            'operator' => 'LIKE',
+                            'pattern' => '%{{value}}%'
+                        ],
+                    ]
+                ]
+            ];
+        });
+
+        // set display field to a virtual one
+        TableRegistry::get('Dashboards')->displayField('just_a_virtual_field');
+
+        $result = $this->SavedSearches->getSearchCriteria(['query' => ['foo']], 'Dashboards');
+        $this->assertNotEmpty($result);
+        $this->assertInternalType('array', $result);
+        $this->assertArrayHasKey('foo', $result);
     }
 }
