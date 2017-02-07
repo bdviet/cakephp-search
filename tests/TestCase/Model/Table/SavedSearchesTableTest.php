@@ -183,6 +183,15 @@ class SavedSearchesTableTest extends TestCase
 
     public function testValidateData()
     {
+        // anonymous event listener that passes some dummy searchable fields
+        $this->SavedSearches->eventManager()->on('Search.Model.Search.searchabeFields', function ($event, $table) {
+            return [
+                'name' => [],
+                'modified' => [],
+                'created' => []
+            ];
+        });
+
         $data = [
             'criteria' => [
                 'name' => [
@@ -206,6 +215,18 @@ class SavedSearchesTableTest extends TestCase
 
     public function testValidateDataWrong()
     {
+        // anonymous event listener that passes some dummy searchable fields
+        $this->SavedSearches->eventManager()->on(
+            'Search.Model.Search.searchabeFields',
+            function ($event, $table) {
+                return [
+                    'name' => [],
+                    'modified' => [],
+                    'created' => []
+                ];
+            }
+        );
+
         $data = [
             'criteria' => [
                 'foo' => [
