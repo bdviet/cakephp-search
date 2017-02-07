@@ -71,7 +71,7 @@ class SavedSearchWidget extends BaseWidget
      */
     public function getResults(array $options = [])
     {
-        $results = [];
+        $results = $fields = [];
 
         $this->setContainerId($options['entity']);
 
@@ -88,7 +88,6 @@ class SavedSearchWidget extends BaseWidget
         if (empty($this->_entity)) {
             return $results;
         }
-
 
         switch ($results->type) {
             case $this->_tableInstance->getCriteriaType():
@@ -112,11 +111,11 @@ class SavedSearchWidget extends BaseWidget
         $this->_data = $results;
         $this->options['scripts'] = $this->getScripts(['data' => $this->_data]);
 
-        $fields = $this->_tableInstance->getSearchableFields($results->model);
-
-        if (!empty($fields)) {
-            $this->options['fields'] = $fields;
+        if (method_exists($this->_tableInstance, 'getSearchableFields') && is_callable([$this->_tableInstance, 'getSearchableFields'])) {
+            $fields = $this->_tableInstance->getSearchableFields($results->model);
         }
+
+        $this->options['fields'] = $fields;
 
         return $results;
     }
