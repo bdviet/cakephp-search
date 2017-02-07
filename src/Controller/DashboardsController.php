@@ -55,7 +55,6 @@ class DashboardsController extends AppController
             $this->_checkRoleAccess($dashboard->role_id);
         }
         $this->set('dashboardWidgets', $dashboard->widgets);
-        $widgetsTable = TableRegistry::get('Search.Widgets');
         $this->set('columns', Configure::readOrFail('Search.dashboard.columns'));
         $this->set('user', $this->Auth->user());
         $this->set('dashboard', $dashboard);

@@ -5,6 +5,7 @@ use Cake\Utility\Inflector;
 $savedSearch = $widget->getData();
 $searchData = $savedSearch->entities;
 $savedSearchType = $widget->getSavedSearchType();
+$widgetOptions = $widget->getOptions();
 
 // get search information from the saved search (if is set) to construct search results title
 if (!empty($savedSearch)) {
@@ -54,7 +55,7 @@ if (!empty($url)) {
                 <thead>
                     <tr>
                     <?php foreach ($searchData['display_columns'] as $field) : ?>
-                        <th><?= Inflector::humanize($field); ?></th>
+                        <th><?php echo ((!empty($widgetOptions['fields'][$field])) ? $widgetOptions['fields'][$field]['label'] : Inflector::humanize($field)); ?></th>
                     <?php endforeach; ?>
                         <th class="actions"><?= __('Actions') ?></th>
                     </tr>
