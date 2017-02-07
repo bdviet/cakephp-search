@@ -472,22 +472,19 @@ class SavedSearchesTable extends Table
 
         $table = $this->_getTableInstance($table);
 
-        $columns = $table->schema()->columns();
-
-        if (empty($columns)) {
-            throw new RuntimeException('Table ' . $table->alias() . ' has no columns.');
-        }
+        $fields = !empty($this->_searchableFields) ? $this->_searchableFields : $this->getSearchableFields($table);
+        $fields = array_keys($fields);
 
         if (!empty($data['criteria'])) {
-            $data['criteria'] = $this->_validateCriteria($data['criteria'], $columns);
+            $data['criteria'] = $this->_validateCriteria($data['criteria'], $fields);
         }
 
         if (!empty($data['display_columns'])) {
-            $data['display_columns'] = $this->_validateDisplayColumns($data['display_columns'], $columns);
+            $data['display_columns'] = $this->_validateDisplayColumns($data['display_columns'], $fields);
         }
 
         if (!empty($data['sort_by_field'])) {
-            $data['sort_by_field'] = $this->_validateSortByField($data['sort_by_field'], $columns, $table);
+            $data['sort_by_field'] = $this->_validateSortByField($data['sort_by_field'], $fields, $table);
         }
 
         if (!empty($data['sort_by_order'])) {
@@ -505,13 +502,13 @@ class SavedSearchesTable extends Table
      * Validate search criteria.
      *
      * @param array $data Criteria values
-     * @param array $columns Table columns
+     * @param array $fields Searchable fields
      * @return array
      */
-    protected function _validateCriteria(array $data, array $columns)
+    protected function _validateCriteria(array $data, array $fields)
     {
         foreach ($data as $k => $v) {
-            if (in_array($k, $columns)) {
+            if (in_array($k, $fields)) {
                 continue;
             }
             unset($data[$k]);
@@ -524,13 +521,13 @@ class SavedSearchesTable extends Table
      * Validate search display field(s).
      *
      * @param array $data Display field(s) values
-     * @param array $columns Table columns
+     * @param array $fields Searchable fields
      * @return array
      */
-    protected function _validateDisplayColumns(array $data, array $columns)
+    protected function _validateDisplayColumns(array $data, array $fields)
     {
         foreach ($data as $k => $v) {
-            if (in_array($v, $columns)) {
+            if (in_array($v, $fields)) {
                 continue;
             }
             unset($data[$k]);
@@ -543,13 +540,13 @@ class SavedSearchesTable extends Table
      * Validate search sort by field.
      *
      * @param string $data Sort by field value
-     * @param array $columns Table columns
+     * @param array $fields Searchable fields
      * @param \Cake\ORM\Table $table Table instance
      * @return string
      */
-    protected function _validateSortByField($data, array $columns, Table $table)
+    protected function _validateSortByField($data, array $fields, Table $table)
     {
-        if (!in_array($data, $columns)) {
+        if (!in_array($data, $fields)) {
             $data = $table->displayField();
         }
 
