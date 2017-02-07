@@ -281,7 +281,7 @@ class SavedSearchesTable extends Table
         }
 
         // pre-save search criteria and results
-        $preSaveIds = $this->preSaveSearchCriteriaAndResults(
+        $preSaveIds = $this->_preSaveSearchCriteriaAndResults(
             $tableName,
             $data,
             $requestData,
@@ -755,7 +755,7 @@ class SavedSearchesTable extends Table
      * @param  string $userId user id
      * @return array
      */
-    public function preSaveSearchCriteriaAndResults($model, array $results, $data, $userId)
+    protected function _preSaveSearchCriteriaAndResults($model, array $results, $data, $userId)
     {
         $result = [];
         /*
