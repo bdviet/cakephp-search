@@ -130,7 +130,7 @@ class SavedSearchWidget extends BaseWidget
     }
 
     /**
-     * prepareChartOptions
+     * Retrieve the list of scripts needed to render the widget
      *
      * @param array $options passed
      * @return array $content with CSS/JS libs.
