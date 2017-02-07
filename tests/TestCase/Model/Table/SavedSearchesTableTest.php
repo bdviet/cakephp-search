@@ -120,6 +120,20 @@ class SavedSearchesTableTest extends TestCase
         ];
     }
 
+    public function test_prepareWhereStatement()
+    {
+        $class = new \ReflectionClass('Search\Model\Table\SavedSearchesTable');
+        $method = $class->getMethod('_prepareWhereStatement');
+        $method->setAccessible(true);
+
+        $result = $method->invokeArgs($this->SavedSearches, [
+            [],
+            'Dashboards'
+        ]);
+
+        $this->assertEquals($result, []);
+    }
+
     public function testGetSavedSearchesFindAll()
     {
         $resultset = $this->SavedSearches->getSavedSearches();
