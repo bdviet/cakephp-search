@@ -111,6 +111,8 @@ trait SearchTrait
                 $data['limit'] = $table->getDefaultLimit();
             }
 
+            $data = $table->validateData($model, $data);
+
             $search = $table->search($model, $this->Auth->user(), $data);
 
             if (isset($search['saveSearchCriteriaId'])) {
@@ -137,6 +139,8 @@ trait SearchTrait
         $this->set('searchData', $data);
         $this->set('savedSearch', $savedSearch);
         $this->set('isEditable', $isEditable);
+        $this->set('limitOptions', $table->getLimitOptions());
+        $this->set('sortByOrderOptions', $table->getSortByOrderOptions());
 
         $this->render($this->_elementSearch);
     }

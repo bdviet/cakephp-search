@@ -10,6 +10,7 @@ use Cake\ORM\Table;
 use Cake\ORM\TableRegistry;
 use Cake\Utility\Inflector;
 use Cake\Validation\Validator;
+use InvalidArgumentException;
 use RuntimeException;
 use Search\Model\Entity\SavedSearch;
 
@@ -49,6 +50,32 @@ class SavedSearchesTable extends Table
      * Default sql order by direction
      */
     const DEFAULT_SORT_BY_ORDER = 'desc';
+
+    /**
+     * Search limit options.
+     *
+     * @var array
+     */
+    protected $_limitOptions = [
+        0 => 'Unlimited',
+        1 => 1,
+        3 => 3,
+        5 => 5,
+        10 => 10,
+        20 => 20,
+        50 => 50,
+        100 => 100
+    ];
+
+    /**
+     * Search sort by order options.
+     *
+     * @var array
+     */
+    protected $_sortByOrderOptions = [
+        'asc' => 'Ascending',
+        'desc' => 'Descending'
+    ];
 
     /**
      * Target table searchable fields.
@@ -205,6 +232,16 @@ class SavedSearchesTable extends Table
     }
 
     /**
+     * Getter method for default sql limit.
+     *
+     * @return string
+     */
+    public function getLimitOptions()
+    {
+        return $this->_limitOptions;
+    }
+
+    /**
      * Getter method for default sql sort by order.
      *
      * @return string
@@ -212,6 +249,16 @@ class SavedSearchesTable extends Table
     public function getDefaultSortByOrder()
     {
         return static::DEFAULT_SORT_BY_ORDER;
+    }
+
+    /**
+     * Getter method for default sql limit.
+     *
+     * @return string
+     */
+    public function getSortByOrderOptions()
+    {
+        return $this->_sortByOrderOptions;
     }
 
     /**
@@ -226,13 +273,15 @@ class SavedSearchesTable extends Table
     {
         $data = $requestData;
 
+        $data = $this->validateData($tableName, $data);
+
         if (empty($data['result'])) {
             // get search results
             $data['result'] = $this->_getResults($data, $tableName);
         }
 
         // pre-save search criteria and results
-        $preSaveIds = $this->preSaveSearchCriteriaAndResults(
+        $preSaveIds = $this->_preSaveSearchCriteriaAndResults(
             $tableName,
             $data,
             $requestData,
@@ -283,9 +332,7 @@ class SavedSearchesTable extends Table
     public function getSearchableFields($table)
     {
         // get Table instance
-        if (is_string($table)) {
-            $table = TableRegistry::get($table);
-        }
+        $table = $this->_getTableInstance($table);
 
         $event = new Event('Search.Model.Search.searchabeFields', $this, [
             'table' => $table
@@ -311,9 +358,7 @@ class SavedSearchesTable extends Table
     {
         $result = [];
         // get Table instance
-        if (is_string($table)) {
-            $table = TableRegistry::get($table);
-        }
+        $table = $this->_getTableInstance($table);
 
         if (method_exists($table, 'getListingFields') && is_callable([$table, 'getListingFields'])) {
             $result = $table->getListingFields();
@@ -353,9 +398,7 @@ class SavedSearchesTable extends Table
             return $result;
         }
 
-        if (is_string($table)) {
-            $table = TableRegistry::get($table);
-        }
+        $table = $this->_getTableInstance($table);
 
         $displayField = $table->displayField();
 
@@ -389,6 +432,161 @@ class SavedSearchesTable extends Table
     }
 
     /**
+     * Instantiates and returns searchable Table instance.
+     *
+     * @param \Cake\ORM\Table|string $table Table name or Instance
+     * @return \Cake\ORM\Table
+     * @throws \InvalidArgumentException Thrown if table parameter is not a Table instance or string
+     */
+    protected function _getTableInstance($table)
+    {
+        if ($table instanceof Table) {
+            return $table;
+        }
+
+        if (is_string($table)) {
+            return TableRegistry::get($table);
+        }
+
+        throw new InvalidArgumentException(
+            'Parameter $table must be a string or Cake\\ORM\\Table instance, ' . gettype($table) . ' provided.'
+        );
+    }
+
+    /**
+     * Base search data validation method.
+     *
+     * Retrieves current searchable table columns, validates and filters criteria, display columns
+     * and sort by field against them. Then validates sort by order and limit againt available options
+     * and sets them to the default options if they fail validation.
+     *
+     * @param \Cake\ORM\Table|string $table Table name or Instace
+     * @param array $data Search data
+     * @return array
+     */
+    public function validateData($table, array $data)
+    {
+        if (empty($data)) {
+            return $data;
+        }
+
+        $table = $this->_getTableInstance($table);
+
+        $fields = !empty($this->_searchableFields) ? $this->_searchableFields : $this->getSearchableFields($table);
+        $fields = array_keys($fields);
+
+        if (!empty($data['criteria'])) {
+            $data['criteria'] = $this->_validateCriteria($data['criteria'], $fields);
+        }
+
+        if (!empty($data['display_columns'])) {
+            $data['display_columns'] = $this->_validateDisplayColumns($data['display_columns'], $fields);
+        }
+
+        if (!empty($data['sort_by_field'])) {
+            $data['sort_by_field'] = $this->_validateSortByField($data['sort_by_field'], $fields, $table);
+        }
+
+        if (!empty($data['sort_by_order'])) {
+            $data['sort_by_order'] = $this->_validateSortByOrder($data['sort_by_order'], $table);
+        }
+
+        if (!empty($data['limit'])) {
+            $data['limit'] = $this->_validateLimit($data['limit']);
+        }
+
+        return $data;
+    }
+
+    /**
+     * Validate search criteria.
+     *
+     * @param array $data Criteria values
+     * @param array $fields Searchable fields
+     * @return array
+     */
+    protected function _validateCriteria(array $data, array $fields)
+    {
+        foreach ($data as $k => $v) {
+            if (in_array($k, $fields)) {
+                continue;
+            }
+            unset($data[$k]);
+        }
+
+        return $data;
+    }
+
+    /**
+     * Validate search display field(s).
+     *
+     * @param array $data Display field(s) values
+     * @param array $fields Searchable fields
+     * @return array
+     */
+    protected function _validateDisplayColumns(array $data, array $fields)
+    {
+        foreach ($data as $k => $v) {
+            if (in_array($v, $fields)) {
+                continue;
+            }
+            unset($data[$k]);
+        }
+
+        return $data;
+    }
+
+    /**
+     * Validate search sort by field.
+     *
+     * @param string $data Sort by field value
+     * @param array $fields Searchable fields
+     * @param \Cake\ORM\Table $table Table instance
+     * @return string
+     */
+    protected function _validateSortByField($data, array $fields, Table $table)
+    {
+        if (!in_array($data, $fields)) {
+            $data = $table->displayField();
+        }
+
+        return $data;
+    }
+
+    /**
+     * Validate search sort by order.
+     *
+     * @param string $data Sort by order value
+     * @param \Cake\ORM\Table $table Table instance
+     * @return string
+     */
+    protected function _validateSortByOrder($data, Table $table)
+    {
+        $options = array_keys($this->getSortByOrderOptions());
+        if (!in_array($data, $options)) {
+            $data = $this->getDefaultSortByOrder();
+        }
+
+        return $data;
+    }
+
+    /**
+     * Validate search limit.
+     *
+     * @param string $data Limit value
+     * @return string
+     */
+    protected function _validateLimit($data)
+    {
+        $options = array_keys($this->getLimitOptions());
+        if (!in_array($data, $options)) {
+            $data = $this->getDefaultLimit();
+        }
+
+        return $data;
+    }
+
+    /**
      * Method that fetches the search results.
      *
      * @param  array $data search data
@@ -397,7 +595,7 @@ class SavedSearchesTable extends Table
      */
     protected function _getResults(array $data, $tableName)
     {
-        $table = TableRegistry::get($tableName);
+        $table = $this->_getTableInstance($tableName);
 
         $query = $table
             ->find('all')
@@ -554,7 +752,7 @@ class SavedSearchesTable extends Table
      * @param  string $userId user id
      * @return array
      */
-    public function preSaveSearchCriteriaAndResults($model, array $results, $data, $userId)
+    protected function _preSaveSearchCriteriaAndResults($model, array $results, $data, $userId)
     {
         $result = [];
         /*
