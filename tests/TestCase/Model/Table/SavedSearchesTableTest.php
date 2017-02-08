@@ -24,7 +24,6 @@ class SavedSearchesTableTest extends TestCase
      * @var array
      */
     public $fixtures = [
-        'plugin.search.users',
         'plugin.search.dashboards',
         'plugin.search.saved_searches',
     ];
@@ -288,7 +287,7 @@ class SavedSearchesTableTest extends TestCase
                     10 => [
                         'type' => 'string',
                         'operator' => 'contains',
-                        'value' => 'user'
+                        'value' => 'ipsum'
                     ]
                 ]
             ],
@@ -302,7 +301,7 @@ class SavedSearchesTableTest extends TestCase
             'limit' => '10'
         ];
 
-        $result = $this->SavedSearches->search('Users', $user, $data);
+        $result = $this->SavedSearches->search('Dashboards', $user, $data);
 
         $this->assertNotEmpty($result);
         $this->assertInternalType('array', $result);
