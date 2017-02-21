@@ -442,7 +442,7 @@ class SavedSearchesTable extends Table
         }
 
         // skip display fields
-        $result = array_diff($result, $this->_skipDisplayFields);
+        $result = array_diff((array)$result, $this->_skipDisplayFields);
 
         // reset numeric indexes
         $result = array_values($result);
@@ -514,9 +514,16 @@ class SavedSearchesTable extends Table
             $result = $table->displayField();
         }
 
+        $result = (array)$result;
+
         $columns = $table->schema()->columns();
         // remove non-existing database fields (virtual field for example)
-        $result = in_array($result, $columns) ? $result : [];
+        foreach ($result as $key => $field) {
+            if (in_array($field, $columns)) {
+                continue;
+            }
+            unset($result[$key]);
+        }
 
         if (!empty($result)) {
             return $result;
