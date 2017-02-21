@@ -75,10 +75,13 @@ trait SearchTrait
         // saved search instance, null by default
         $savedSearch = null;
 
+        $isBasicSearch = Hash::get($data, 'criteria.query') ? true : false;
+
         if ($this->request->is(['post', 'get'])) {
             // basic search query, converted to search criteria
-            if (Hash::get($data, 'criteria.query')) {
+            if ($isBasicSearch) {
                 $data['criteria'] = $table->getSearchCriteria(Hash::get($data, 'criteria'), $model);
+                $data['aggregator'] = 'OR';
             }
 
             // id of saved search has been provided
@@ -141,6 +144,7 @@ trait SearchTrait
         $this->set('isEditable', $isEditable);
         $this->set('limitOptions', $table->getLimitOptions());
         $this->set('sortByOrderOptions', $table->getSortByOrderOptions());
+        $this->set('aggregatorOptions', $table->getAggregatorOptions());
 
         $this->render($this->_elementSearch);
     }

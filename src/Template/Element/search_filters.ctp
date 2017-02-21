@@ -24,13 +24,24 @@ if (!empty($searchFields)) :
         </div>
     </div>
     <div class="box-body">
+        <?= $this->Form->create(null, [
+            'id' => 'SearchFilterForm',
+            'class' => 'search-form',
+            'novalidate' => 'novalidate',
+            'url' => [
+                'plugin' => $this->request->plugin,
+                'controller' => $this->request->controller,
+                'action' => 'search',
+                $this->request->param('pass.0')
+            ]
+        ]); ?>
         <div class="row">
             <div class="col-xs-12">
                 <h4><?= __('Filters') ?></h4>
             </div>
             <div class="col-lg-3 col-lg-push-9">
+                <div class="form-group">
                 <?php
-                echo $this->Form->label(__('Add Filter'));
                 $selectOptions = array_combine(
                     array_keys($searchFields),
                     array_map(function ($v) {
@@ -42,25 +53,27 @@ if (!empty($searchFields)) :
 
                 echo $this->Form->select(
                     'fields',
-                    $selectOptions,
+                    array_merge(['' => __('-- Add filter --')], $selectOptions),
                     [
                         'class' => 'form-control input-sm',
                         'id' => 'addFilter',
-                        'empty' => true
+                        // 'empty' => true
                      ]
                 ); ?>
+                </div>
+                <div class="form-group">
+                <?php
+                    echo $this->Form->select(
+                        'aggregator',
+                        $aggregatorOptions,
+                        [
+                            'default' => isset($searchData['aggregator']) ? $searchData['aggregator'] : key($aggregatorOptions),
+                            'class' => 'form-control input-sm'
+                         ]
+                    );
+                ?>
+                </div>
             </div>
-            <?= $this->Form->create(null, [
-                'id' => 'SearchFilterForm',
-                'class' => 'search-form',
-                'novalidate' => 'novalidate',
-                'url' => [
-                    'plugin' => $this->request->plugin,
-                    'controller' => $this->request->controller,
-                    'action' => 'search',
-                    $this->request->param('pass.0')
-                ]
-            ]); ?>
             <hr class="visible-xs visible-sm visible-md" />
             <div class="col-lg-9 col-lg-pull-3">
                 <fieldset></fieldset>

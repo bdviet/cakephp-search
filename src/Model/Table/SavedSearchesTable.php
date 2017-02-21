@@ -52,6 +52,11 @@ class SavedSearchesTable extends Table
     const DEFAULT_SORT_BY_ORDER = 'desc';
 
     /**
+     * Default sql aggregator
+     */
+    const DEFAULT_AGGREGATOR = 'AND';
+
+    /**
      * Search limit options.
      *
      * @var array
@@ -75,6 +80,16 @@ class SavedSearchesTable extends Table
     protected $_sortByOrderOptions = [
         'asc' => 'Ascending',
         'desc' => 'Descending'
+    ];
+
+    /**
+     * Search aggregator options.
+     *
+     * @var array
+     */
+    protected $_aggregatorOptions = [
+        'AND' => 'Match all filters',
+        'OR' => 'Match any filter'
     ];
 
     /**
@@ -232,7 +247,7 @@ class SavedSearchesTable extends Table
     }
 
     /**
-     * Getter method for default sql limit.
+     * Getter method for sql limit options.
      *
      * @return string
      */
@@ -252,13 +267,33 @@ class SavedSearchesTable extends Table
     }
 
     /**
-     * Getter method for default sql limit.
+     * Getter method for sql sort by order options.
      *
      * @return string
      */
     public function getSortByOrderOptions()
     {
         return $this->_sortByOrderOptions;
+    }
+
+    /**
+     * Getter method for default sql aggragator.
+     *
+     * @return string
+     */
+    public function getDefaultAggregator()
+    {
+        return static::DEFAULT_AGGREGATOR;
+    }
+
+    /**
+     * Getter method for sql aggregator options.
+     *
+     * @return string
+     */
+    public function getAggregatorOptions()
+    {
+        return $this->_aggregatorOptions;
     }
 
     /**
@@ -375,6 +410,7 @@ class SavedSearchesTable extends Table
                 }
             }
         }
+
         // skip display fields
         $result = array_diff($result, $this->_skipDisplayFields);
 
@@ -587,6 +623,22 @@ class SavedSearchesTable extends Table
     }
 
     /**
+     * Validate search aggregator.
+     *
+     * @param string $data Aggregator value
+     * @return string
+     */
+    protected function _validateAggregator($data)
+    {
+        $options = array_keys($this->getAggregatorOptions());
+        if (!in_array($data, $options)) {
+            $data = $this->getDefaultAggregator();
+        }
+
+        return $data;
+    }
+
+    /**
      * Method that fetches the search results.
      *
      * @param  array $data search data
@@ -600,7 +652,7 @@ class SavedSearchesTable extends Table
         $query = $table
             ->find('all')
             ->select($this->_getQueryFields($data, $table))
-            ->where($this->_prepareWhereStatement($data, $tableName))
+            ->where([$data['aggregator'] => $this->_prepareWhereStatement($data, $tableName)])
             ->order([$data['sort_by_field'] => $data['sort_by_order']]);
 
         // set limit if not 0
