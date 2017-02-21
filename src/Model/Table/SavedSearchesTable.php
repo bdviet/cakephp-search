@@ -107,6 +107,13 @@ class SavedSearchesTable extends Table
     protected $_skipDisplayFields = ['id'];
 
     /**
+     * Fields used in basic search.
+     *
+     * @var array
+     */
+    protected $_basicSearchFields = [];
+
+    /**
      * Filter basic search allowed field types
      *
      * @var array
@@ -397,7 +404,13 @@ class SavedSearchesTable extends Table
 
         if (method_exists($table, 'getListingFields') && is_callable([$table, 'getListingFields'])) {
             $result = $table->getListingFields();
-        } else {
+        }
+
+        if (empty($result)) {
+            $result = $this->_getBasicSearchFields($table);
+        }
+
+        if (empty($result)) {
             $result[] = $table->primaryKey();
             $displayField = $table->displayField();
             // add display field to the result only if not a virtual field
@@ -434,34 +447,75 @@ class SavedSearchesTable extends Table
             return $result;
         }
 
+        // get Table instance
         $table = $this->_getTableInstance($table);
 
-        $displayField = $table->displayField();
-
-        $fields = $this->getSearchableFields($table);
+        $fields = $this->_getBasicSearchFields($table);
         if (empty($fields)) {
             return $result;
         }
 
-        // if display field is not a virtual field, use that for basic search
-        if (in_array($displayField, $table->schema()->columns())) {
-            $result[$displayField][] = [
-                'type' => $fields[$displayField]['type'],
-                'operator' => key($fields[$displayField]['operators']),
+        $searchableFields = $this->getSearchableFields($table);
+        if (empty($searchableFields)) {
+            return $result;
+        }
+
+        foreach ($fields as $field) {
+            if (!array_key_exists($field, $searchableFields)) {
+                continue;
+            }
+
+            $result[$field][] = [
+                'type' => $searchableFields[$field]['type'],
+                'operator' => key($searchableFields[$field]['operators']),
                 'value' => $data['query']
             ];
-        } else {
-            foreach ($fields as $field => $properties) {
-                if (!in_array($properties['type'], $this->_basicSearchFieldTypes)) {
-                    continue;
-                }
+        }
 
-                $result[$field][] = [
-                    'type' => $properties['type'],
-                    'operator' => key($fields[$field]['operators']),
-                    'value' => $data['query']
-                ];
+        return $result;
+    }
+
+    /**
+     * Method that broadcasts an Event to generate the basic search fields.
+     * If the Event result is empty then it falls back to using the display field.
+     * If the display field is a virtual one then if falls back to searchable fields,
+     * using the ones that their type matches the _basicSearchFieldTypes list.
+     *
+     * @param \Cake\ORM\Table $table Table instance
+     * @return array
+     */
+    protected function _getBasicSearchFields(Table $table)
+    {
+        $event = new Event('Search.Model.Search.basicSearchFields', $this, [
+            'table' => $table
+        ]);
+        $this->eventManager()->dispatch($event);
+
+        $result = $event->result;
+
+        if (empty($result)) {
+            $result = $table->displayField();
+        }
+
+        $columns = $table->schema()->columns();
+        // remove non-existing database fields (virtual field for example)
+        $result = in_array($result, $columns) ? $result : [];
+
+        if (!empty($result)) {
+            return $result;
+        }
+
+        $searchableFields = $this->getSearchableFields($table);
+        if (empty($searchableFields)) {
+            return $result;
+        }
+
+        foreach ($searchableFields as $field => $properties) {
+            if (!in_array($properties['type'], $this->_basicSearchFieldTypes)) {
+                continue;
             }
+
+            $result[] = $field;
         }
 
         return $result;
