@@ -338,6 +338,23 @@ class SavedSearchesTable extends Table
     }
 
     /**
+     * Default search options.
+     *
+     * @param string $tableName Table name
+     * @return array
+     */
+    public function getDefaultOptions($tableName)
+    {
+        $result['display_columns'] = $this->getListingFields($tableName);
+        $result['sort_by_field'] = current($result['display_columns']);
+        $result['sort_by_order'] = $this->getDefaultSortByOrder();
+        $result['limit'] = $this->getDefaultLimit();
+        $result['aggregator'] = $this->getDefaultAggregator();
+
+        return $result;
+    }
+
+    /**
      * Returns saved searches filtered by users and models.
      *
      * @param  array  $users  users ids
@@ -562,28 +579,21 @@ class SavedSearchesTable extends Table
 
         $table = $this->_getTableInstance($table);
 
-        $fields = !empty($this->_searchableFields) ? $this->_searchableFields : $this->getSearchableFields($table);
+        $fields = $this->getSearchableFields($table);
         $fields = array_keys($fields);
+
+        // merge default options
+        $data += $this->getDefaultOptions($table);
 
         if (!empty($data['criteria'])) {
             $data['criteria'] = $this->_validateCriteria($data['criteria'], $fields);
         }
 
-        if (!empty($data['display_columns'])) {
-            $data['display_columns'] = $this->_validateDisplayColumns($data['display_columns'], $fields);
-        }
-
-        if (!empty($data['sort_by_field'])) {
-            $data['sort_by_field'] = $this->_validateSortByField($data['sort_by_field'], $fields, $table);
-        }
-
-        if (!empty($data['sort_by_order'])) {
-            $data['sort_by_order'] = $this->_validateSortByOrder($data['sort_by_order'], $table);
-        }
-
-        if (!empty($data['limit'])) {
-            $data['limit'] = $this->_validateLimit($data['limit']);
-        }
+        $data['display_columns'] = $this->_validateDisplayColumns($data['display_columns'], $fields);
+        $data['sort_by_field'] = $this->_validateSortByField($data['sort_by_field'], $fields, $table);
+        $data['sort_by_order'] = $this->_validateSortByOrder($data['sort_by_order'], $table);
+        $data['limit'] = $this->_validateLimit($data['limit']);
+        $data['aggregator'] = $this->_validateAggregator($data['aggregator']);
 
         return $data;
     }
