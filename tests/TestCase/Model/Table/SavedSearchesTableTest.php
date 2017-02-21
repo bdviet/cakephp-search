@@ -101,7 +101,7 @@ class SavedSearchesTableTest extends TestCase
     {
         $result = $this->SavedSearches->getListingFields('Dashboards');
         $this->assertNotEmpty($result);
-        $this->assertEquals($result, ['name', 'modified', 'created']);
+        $this->assertEquals($result, ['name']);
     }
 
     /**
