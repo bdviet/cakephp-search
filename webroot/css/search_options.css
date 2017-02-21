@@ -3,21 +3,16 @@
     max-height: 150px;
     overflow: auto;
     list-style-type: none;
-    margin: 0 0 20px 0;
-    margin-right: 10px;
-    border: 1px dashed #aaa;
-    border-radius: 3px;
+    border: 2px dashed #ddd;
     padding: 5px;
 }
 
 #availableColumns li,
 #displayColumns li {
     margin: 2px;
-    padding: 2px;
+    padding: 4px 8px;
     width: auto;
-    background-color: #ccc;
-    color: #555;
-    border: 1px solid #666;
-    border-radius: 3px;
+    background-color: #ddd;
+    border: 1px solid #aaa;
     cursor: pointer;
 }
