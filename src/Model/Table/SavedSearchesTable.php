@@ -52,6 +52,11 @@ class SavedSearchesTable extends Table
     const DEFAULT_SORT_BY_ORDER = 'desc';
 
     /**
+     * Default sql aggregator
+     */
+    const DEFAULT_AGGREGATOR = 'AND';
+
+    /**
      * Search limit options.
      *
      * @var array
@@ -78,6 +83,16 @@ class SavedSearchesTable extends Table
     ];
 
     /**
+     * Search aggregator options.
+     *
+     * @var array
+     */
+    protected $_aggregatorOptions = [
+        'AND' => 'Match all filters',
+        'OR' => 'Match any filter'
+    ];
+
+    /**
      * Target table searchable fields.
      *
      * @var array
@@ -90,6 +105,13 @@ class SavedSearchesTable extends Table
      * @var array
      */
     protected $_skipDisplayFields = ['id'];
+
+    /**
+     * Fields used in basic search.
+     *
+     * @var array
+     */
+    protected $_basicSearchFields = [];
 
     /**
      * Filter basic search allowed field types
@@ -232,7 +254,7 @@ class SavedSearchesTable extends Table
     }
 
     /**
-     * Getter method for default sql limit.
+     * Getter method for sql limit options.
      *
      * @return string
      */
@@ -252,13 +274,33 @@ class SavedSearchesTable extends Table
     }
 
     /**
-     * Getter method for default sql limit.
+     * Getter method for sql sort by order options.
      *
      * @return string
      */
     public function getSortByOrderOptions()
     {
         return $this->_sortByOrderOptions;
+    }
+
+    /**
+     * Getter method for default sql aggragator.
+     *
+     * @return string
+     */
+    public function getDefaultAggregator()
+    {
+        return static::DEFAULT_AGGREGATOR;
+    }
+
+    /**
+     * Getter method for sql aggregator options.
+     *
+     * @return string
+     */
+    public function getAggregatorOptions()
+    {
+        return $this->_aggregatorOptions;
     }
 
     /**
@@ -293,6 +335,23 @@ class SavedSearchesTable extends Table
             'saveSearchResultsId' => $preSaveIds['saveSearchResultsId'],
             'entities' => $data
         ];
+    }
+
+    /**
+     * Default search options.
+     *
+     * @param string $tableName Table name
+     * @return array
+     */
+    public function getDefaultOptions($tableName)
+    {
+        $result['display_columns'] = $this->getListingFields($tableName);
+        $result['sort_by_field'] = current($result['display_columns']);
+        $result['sort_by_order'] = $this->getDefaultSortByOrder();
+        $result['limit'] = $this->getDefaultLimit();
+        $result['aggregator'] = $this->getDefaultAggregator();
+
+        return $result;
     }
 
     /**
@@ -362,7 +421,13 @@ class SavedSearchesTable extends Table
 
         if (method_exists($table, 'getListingFields') && is_callable([$table, 'getListingFields'])) {
             $result = $table->getListingFields();
-        } else {
+        }
+
+        if (empty($result)) {
+            $result = $this->_getBasicSearchFields($table);
+        }
+
+        if (empty($result)) {
             $result[] = $table->primaryKey();
             $displayField = $table->displayField();
             // add display field to the result only if not a virtual field
@@ -375,8 +440,9 @@ class SavedSearchesTable extends Table
                 }
             }
         }
+
         // skip display fields
-        $result = array_diff($result, $this->_skipDisplayFields);
+        $result = array_diff((array)$result, $this->_skipDisplayFields);
 
         // reset numeric indexes
         $result = array_values($result);
@@ -398,34 +464,82 @@ class SavedSearchesTable extends Table
             return $result;
         }
 
+        // get Table instance
         $table = $this->_getTableInstance($table);
 
-        $displayField = $table->displayField();
-
-        $fields = $this->getSearchableFields($table);
+        $fields = $this->_getBasicSearchFields($table);
         if (empty($fields)) {
             return $result;
         }
 
-        // if display field is not a virtual field, use that for basic search
-        if (in_array($displayField, $table->schema()->columns())) {
-            $result[$displayField][] = [
-                'type' => $fields[$displayField]['type'],
-                'operator' => key($fields[$displayField]['operators']),
+        $searchableFields = $this->getSearchableFields($table);
+        if (empty($searchableFields)) {
+            return $result;
+        }
+
+        foreach ($fields as $field) {
+            if (!array_key_exists($field, $searchableFields)) {
+                continue;
+            }
+
+            $result[$field][] = [
+                'type' => $searchableFields[$field]['type'],
+                'operator' => key($searchableFields[$field]['operators']),
                 'value' => $data['query']
             ];
-        } else {
-            foreach ($fields as $field => $properties) {
-                if (!in_array($properties['type'], $this->_basicSearchFieldTypes)) {
-                    continue;
-                }
+        }
 
-                $result[$field][] = [
-                    'type' => $properties['type'],
-                    'operator' => key($fields[$field]['operators']),
-                    'value' => $data['query']
-                ];
+        return $result;
+    }
+
+    /**
+     * Method that broadcasts an Event to generate the basic search fields.
+     * If the Event result is empty then it falls back to using the display field.
+     * If the display field is a virtual one then if falls back to searchable fields,
+     * using the ones that their type matches the _basicSearchFieldTypes list.
+     *
+     * @param \Cake\ORM\Table $table Table instance
+     * @return array
+     */
+    protected function _getBasicSearchFields(Table $table)
+    {
+        $event = new Event('Search.Model.Search.basicSearchFields', $this, [
+            'table' => $table
+        ]);
+        $this->eventManager()->dispatch($event);
+
+        $result = $event->result;
+
+        if (empty($result)) {
+            $result = $table->displayField();
+        }
+
+        $result = (array)$result;
+
+        $columns = $table->schema()->columns();
+        // remove non-existing database fields (virtual field for example)
+        foreach ($result as $key => $field) {
+            if (in_array($field, $columns)) {
+                continue;
             }
+            unset($result[$key]);
+        }
+
+        if (!empty($result)) {
+            return $result;
+        }
+
+        $searchableFields = $this->getSearchableFields($table);
+        if (empty($searchableFields)) {
+            return $result;
+        }
+
+        foreach ($searchableFields as $field => $properties) {
+            if (!in_array($properties['type'], $this->_basicSearchFieldTypes)) {
+                continue;
+            }
+
+            $result[] = $field;
         }
 
         return $result;
@@ -472,28 +586,21 @@ class SavedSearchesTable extends Table
 
         $table = $this->_getTableInstance($table);
 
-        $fields = !empty($this->_searchableFields) ? $this->_searchableFields : $this->getSearchableFields($table);
+        $fields = $this->getSearchableFields($table);
         $fields = array_keys($fields);
+
+        // merge default options
+        $data += $this->getDefaultOptions($table);
 
         if (!empty($data['criteria'])) {
             $data['criteria'] = $this->_validateCriteria($data['criteria'], $fields);
         }
 
-        if (!empty($data['display_columns'])) {
-            $data['display_columns'] = $this->_validateDisplayColumns($data['display_columns'], $fields);
-        }
-
-        if (!empty($data['sort_by_field'])) {
-            $data['sort_by_field'] = $this->_validateSortByField($data['sort_by_field'], $fields, $table);
-        }
-
-        if (!empty($data['sort_by_order'])) {
-            $data['sort_by_order'] = $this->_validateSortByOrder($data['sort_by_order'], $table);
-        }
-
-        if (!empty($data['limit'])) {
-            $data['limit'] = $this->_validateLimit($data['limit']);
-        }
+        $data['display_columns'] = $this->_validateDisplayColumns($data['display_columns'], $fields);
+        $data['sort_by_field'] = $this->_validateSortByField($data['sort_by_field'], $fields, $table);
+        $data['sort_by_order'] = $this->_validateSortByOrder($data['sort_by_order'], $table);
+        $data['limit'] = $this->_validateLimit($data['limit']);
+        $data['aggregator'] = $this->_validateAggregator($data['aggregator']);
 
         return $data;
     }
@@ -587,6 +694,22 @@ class SavedSearchesTable extends Table
     }
 
     /**
+     * Validate search aggregator.
+     *
+     * @param string $data Aggregator value
+     * @return string
+     */
+    protected function _validateAggregator($data)
+    {
+        $options = array_keys($this->getAggregatorOptions());
+        if (!in_array($data, $options)) {
+            $data = $this->getDefaultAggregator();
+        }
+
+        return $data;
+    }
+
+    /**
      * Method that fetches the search results.
      *
      * @param  array $data search data
@@ -600,7 +723,7 @@ class SavedSearchesTable extends Table
         $query = $table
             ->find('all')
             ->select($this->_getQueryFields($data, $table))
-            ->where($this->_prepareWhereStatement($data, $tableName))
+            ->where([$data['aggregator'] => $this->_prepareWhereStatement($data, $tableName)])
             ->order([$data['sort_by_field'] => $data['sort_by_order']]);
 
         // set limit if not 0

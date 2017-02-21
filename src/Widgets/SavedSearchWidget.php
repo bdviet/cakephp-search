@@ -168,7 +168,7 @@ class SavedSearchWidget extends BaseWidget
                 'scriptBlock' => [
                     'type' => 'scriptBlock',
                     'content' => 'view_search_result.init({
-                        table_id: \'#table-datatable-' . $uid . '\',
+                        table_id: \'#' . $uid . '\',
                         sort_by_field: \'' . (int)array_search($entities['sort_by_field'], $entities['display_columns']) . '\',
                         sort_by_order: \'' . $entities['sort_by_order'] . '\'
                         });',

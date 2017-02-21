@@ -75,10 +75,13 @@ trait SearchTrait
         // saved search instance, null by default
         $savedSearch = null;
 
+        $isBasicSearch = Hash::get($data, 'criteria.query') ? true : false;
+
         if ($this->request->is(['post', 'get'])) {
             // basic search query, converted to search criteria
-            if (Hash::get($data, 'criteria.query')) {
+            if ($isBasicSearch) {
                 $data['criteria'] = $table->getSearchCriteria(Hash::get($data, 'criteria'), $model);
+                $data['aggregator'] = 'OR';
             }
 
             // id of saved search has been provided
@@ -91,24 +94,6 @@ trait SearchTrait
                 } else { // INFO: this is valid when a saved search was modified and the form was re-submitted
                     $isEditable = true;
                 }
-            }
-
-            // set display columns before the pre-saving, fixes bug
-            // with missing display columns when saving a basic search
-            if (!Hash::get($data, 'display_columns')) {
-                $data['display_columns'] = $table->getListingFields($model);
-            }
-            // use first field of display columns as sort by field, if empty
-            if (!Hash::get($data, 'sort_by_field')) {
-                $data['sort_by_field'] = current($data['display_columns']);
-            }
-            // set default sort by order, if empty
-            if (!Hash::get($data, 'sort_by_order')) {
-                $data['sort_by_order'] = $table->getDefaultSortByOrder();
-            }
-            // set default limit, if empty
-            if (is_null(Hash::get($data, 'limit'))) {
-                $data['limit'] = $table->getDefaultLimit();
             }
 
             $data = $table->validateData($model, $data);
@@ -141,6 +126,7 @@ trait SearchTrait
         $this->set('isEditable', $isEditable);
         $this->set('limitOptions', $table->getLimitOptions());
         $this->set('sortByOrderOptions', $table->getSortByOrderOptions());
+        $this->set('aggregatorOptions', $table->getAggregatorOptions());
 
         $this->render($this->_elementSearch);
     }
