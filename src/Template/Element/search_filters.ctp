@@ -14,17 +14,20 @@ if (!empty($searchFields)) :
         );
     }
 ?>
-<div class="box box-default">
+<div class="box box-default collapsed-box">
     <div class="box-header with-border">
-        <h3 class="box-title"><?= __('Filters') ?></h3>
+        <h3 class="box-title"><?= __('Advanced Search') ?></h3>
         <div class="box-tools pull-right">
             <button type="button" class="btn btn-box-tool" data-widget="collapse">
-                <i class="fa fa-minus"></i>
+                <i class="fa fa-plus"></i>
             </button>
         </div>
     </div>
     <div class="box-body">
         <div class="row">
+            <div class="col-xs-12">
+                <h4><?= __('Filters') ?></h4>
+            </div>
             <div class="col-lg-3 col-lg-push-9">
                 <?php
                 echo $this->Form->label(__('Add Filter'));
@@ -63,19 +66,10 @@ if (!empty($searchFields)) :
                 <fieldset></fieldset>
             </div>
         </div>
-    </div>
-</div>
-<div class="box box-default">
-    <div class="box-header with-border">
-        <h3 class="box-title"><?= __('Options') ?></h3>
-        <div class="box-tools pull-right">
-            <button type="button" class="btn btn-box-tool" data-widget="collapse">
-                <i class="fa fa-minus"></i>
-            </button>
-        </div>
-    </div>
-    <div class="box-body">
         <div class="row">
+            <div class="col-xs-12">
+                <h4><?= __('Options') ?></h4>
+            </div>
             <div class="col-md-8 col-lg-9">
                 <?php
                 if (!empty($searchFields)) {
