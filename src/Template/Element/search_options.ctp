@@ -46,7 +46,8 @@ asort($sortByOptions);
         </ul>
     </div>
     <div class="col-md-4">
-    <?php
+        <div class="form-group">
+        <?php
         echo $this->Form->label(__('Sort Field'));
         echo $this->Form->select(
             'sort_by_field',
@@ -56,6 +57,10 @@ asort($sortByOptions);
                 'class' => 'form-control input-sm'
              ]
         );
+        ?>
+        </div>
+        <div class="form-group">
+        <?php
         echo $this->Form->label(__('Sort Order'));
         echo $this->Form->select(
             'sort_by_order',
@@ -65,6 +70,10 @@ asort($sortByOptions);
                 'class' => 'form-control input-sm'
              ]
         );
+        ?>
+        </div>
+        <div class="form-group">
+        <?php
         echo $this->Form->label(__('Limit results'));
         echo $this->Form->select(
             'limit',
@@ -74,6 +83,7 @@ asort($sortByOptions);
                 'class' => 'form-control input-sm'
              ]
         );
-    ?>
+        ?>
+        </div>
     </div>
 </div>
