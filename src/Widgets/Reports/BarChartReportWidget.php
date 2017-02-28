@@ -39,7 +39,7 @@ class BarChartReportWidget extends BaseReportGraphs
 
         $options = [
             'data' => $data,
-            'barColors' => ['#00a65a', '#f56954','#3c8ba8','#543cf4','#6954f5'],
+            'barColors' => ['#00a65a', '#f56954', '#3c8ba8', '#543cf4', '#6954f5'],
             'labels' => $labels,
             'xkey' => explode(',', $report['info']['x_axis']),
             'ykeys' => explode(',', $report['info']['y_axis'])
