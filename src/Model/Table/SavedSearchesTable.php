@@ -843,6 +843,7 @@ class SavedSearchesTable extends Table
                     switch ($type) {
                         case 'uuid':
                         case 'list':
+                        case 'related':
                             if (is_array($result[$key])) {
                                 array_push($result[$key], $value);
                             } else {
