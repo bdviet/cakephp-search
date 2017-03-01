@@ -106,14 +106,18 @@ class SavedSearchesTableTest extends TestCase
 
     /**
      * @expectedException \RuntimeException
-     * @dataProvider dataProviderGetSearchCriteria
+     * @dataProvider dataProviderGetBasicSearchCriteria
      */
-    public function testGetSearchCriteriaException($config)
+    public function testGetBasicSearchCriteriaException($config)
     {
-        $result = $this->SavedSearches->getSearchCriteria(['query' => $config['query']], $config['table']);
+        $result = $this->SavedSearches->getBasicSearchCriteria(
+            ['query' => $config['query']],
+            $config['table'],
+            ['id' => '00000000-0000-0000-0000-000000000001']
+        );
     }
 
-    public function dataProviderGetSearchCriteria()
+    public function dataProviderGetBasicSearchCriteria()
     {
         return [
             [['query' => 'SELECT id,created FROM dashboards LIMIT 2', 'table' => 'Dashboards']],
@@ -324,9 +328,13 @@ class SavedSearchesTableTest extends TestCase
         $this->assertGreaterThan(0, $result['entities']['result']->count());
     }
 
-    public function testGetSearchCriteriaEmptyQuery()
+    public function testGetBasicSearchCriteriaEmptyQuery()
     {
-        $result = $this->SavedSearches->getSearchCriteria(['query' => []], 'Dashboards');
+        $result = $this->SavedSearches->getBasicSearchCriteria(
+            ['query' => []],
+            'Dashboards',
+            ['id' => '00000000-0000-0000-0000-000000000001']
+        );
 
         $this->assertEmpty($result);
     }
