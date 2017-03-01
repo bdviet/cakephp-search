@@ -493,6 +493,44 @@ class SavedSearchesTable extends Table
     }
 
     /**
+     * Gets basic search values from Related module.
+     *
+     * This method is useful when you do a basic search on a related field,
+     * in which the values are always uuid's. What this method will do is
+     * run a basic search in the related module (recursively) to fetch and
+     * return the entities IDs matching the search string.
+     *
+     * @param string $module Related module name
+     * @param array $data Search string
+     * @param array $user User info
+     * @return array
+     */
+    protected function _getRelatedModuleValues($module, $data, $user)
+    {
+        $result = [];
+        if (!is_string($module) || empty($module) || empty($data) || empty($user)) {
+            return $result;
+        }
+
+        $data = [
+            'aggregator' => 'OR',
+            'criteria' => $this->getBasicSearchCriteria($data, $module, $user)
+        ];
+
+        $search = $this->search(
+            $module,
+            $user,
+            $data
+        );
+
+        foreach ($search['entities']['result'] as $entity) {
+            $result[] = $entity->id;
+        }
+
+        return $result;
+    }
+
+    /**
      * Method that broadcasts an Event to generate the basic search fields.
      * If the Event result is empty then it falls back to using the display field.
      * If the display field is a virtual one then if falls back to searchable fields,
