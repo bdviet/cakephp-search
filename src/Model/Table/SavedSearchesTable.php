@@ -453,11 +453,12 @@ class SavedSearchesTable extends Table
     /**
      * Prepare basic search query's where statement
      *
-     * @param  array                  $data  search fields
-     * @param  \Cake\ORM\Table|string $table Table object or name
+     * @param array $data search fields
+     * @param \Cake\ORM\Table|string $table Table object or name
+     * @param array $user User info
      * @return array
      */
-    public function getBasicSearchCriteria(array $data, $table)
+    public function getBasicSearchCriteria(array $data, $table, $user)
     {
         $result = [];
         if (empty($data['query'])) {
@@ -482,11 +483,27 @@ class SavedSearchesTable extends Table
                 continue;
             }
 
-            $result[$field][] = [
-                'type' => $searchableFields[$field]['type'],
-                'operator' => key($searchableFields[$field]['operators']),
-                'value' => $data['query']
-            ];
+            $type = $searchableFields[$field]['type'];
+            $operator = key($searchableFields[$field]['operators']);
+            $value = $data['query'];
+
+            if ('related' === $type) {
+                $value = $this->_getRelatedModuleValues($searchableFields[$field]['source'], $data, $user);
+            }
+
+            $value = (array)$value;
+
+            if (empty($value)) {
+                continue;
+            }
+
+            foreach ($value as $val) {
+                $result[$field][] = [
+                    'type' => $type,
+                    'operator' => $operator,
+                    'value' => $val
+                ];
+            }
         }
 
         return $result;
