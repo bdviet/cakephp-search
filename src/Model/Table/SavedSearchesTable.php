@@ -457,7 +457,7 @@ class SavedSearchesTable extends Table
      * @param  \Cake\ORM\Table|string $table Table object or name
      * @return array
      */
-    public function getSearchCriteria(array $data, $table)
+    public function getBasicSearchCriteria(array $data, $table)
     {
         $result = [];
         if (empty($data['query'])) {
