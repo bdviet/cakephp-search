@@ -14,6 +14,15 @@ abstract class BaseReportGraphs implements ReportGraphsInterface
     public $data = [];
     public $errors = [];
     public $requiredFields = [];
+
+    public $chartColors = [
+        '#0874c7',
+        '#04645e',
+        '#5661f8',
+        '#8298c1',
+        '#c6ba08',
+        '#07ada3',
+    ];
     /**
      * getType
      *
@@ -39,6 +48,41 @@ abstract class BaseReportGraphs implements ReportGraphsInterface
     public function getOptions()
     {
         return $this->options;
+    }
+
+
+    /**
+     * Get Chart Colors for the graph
+     *
+     * @throws RuntimeException Color doesn't match HEX notation.
+     * @return array $result with colors in hex.
+     */
+    public function getChartColors()
+    {
+        $valid = true;
+        $result = $this->chartColors;
+
+        if (empty($this->config) || !isset($this->config['info']['colors'])) {
+            return $result;
+        }
+
+        $colors = array_filter(explode(',', $this->config['info']['colors']));
+        if (empty($colors)) {
+            return $result;
+        }
+
+        foreach ($colors as $color) {
+            if (!preg_match('/^#[a-f0-9]{6}$/i', $color)) {
+                $valid = false;
+                throw new \RuntimeException("Color {$color} doesn't match HEX notation");
+            }
+        }
+
+        if ($valid) {
+            $result = $colors;
+        }
+
+        return $result;
     }
 
     /**
