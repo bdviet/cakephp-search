@@ -82,7 +82,8 @@ trait SearchTrait
             if ($isBasicSearch) {
                 $data['criteria'] = $table->getBasicSearchCriteria(
                     Hash::get($data, 'criteria'),
-                    $model
+                    $model,
+                    $this->Auth->user()
                 );
                 $data['aggregator'] = 'OR';
             }
