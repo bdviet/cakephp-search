@@ -80,7 +80,11 @@ trait SearchTrait
         if ($this->request->is(['post', 'get'])) {
             // basic search query, converted to search criteria
             if ($isBasicSearch) {
-                $data['criteria'] = $table->getSearchCriteria(Hash::get($data, 'criteria'), $model);
+                $data['criteria'] = $table->getBasicSearchCriteria(
+                    Hash::get($data, 'criteria'),
+                    $model,
+                    $this->Auth->user()
+                );
                 $data['aggregator'] = 'OR';
             }
 
