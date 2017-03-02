@@ -635,10 +635,6 @@ class SavedSearchesTable extends Table
      */
     public function validateData($table, array $data)
     {
-        if (empty($data)) {
-            return $data;
-        }
-
         $table = $this->_getTableInstance($table);
 
         $fields = $this->getSearchableFields($table);
