@@ -192,7 +192,7 @@ class DashboardsController extends AppController
                 $this->Flash->success(__('The dashboard has been saved.'));
 
                 $widgetTable = TableRegistry::get('Search.Widgets');
-                $widgetTable->deleteAll([
+                $widgetTable->trashAll([
                     'dashboard_id' => $dashboard->id
                 ]);
 
@@ -231,7 +231,7 @@ class DashboardsController extends AppController
 
         if ($this->Dashboards->delete($dashboard)) {
             $widgetTable = TableRegistry::get('Search.Widgets');
-            $widgetTable->deleteAll([
+            $widgetTable->trashAll([
                 'dashboard_id' => $id
             ]);
 
