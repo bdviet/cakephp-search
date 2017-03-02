@@ -50,7 +50,6 @@ abstract class BaseReportGraphs implements ReportGraphsInterface
         return $this->options;
     }
 
-
     /**
      * Get Chart Colors for the graph
      *

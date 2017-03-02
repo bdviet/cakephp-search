@@ -13,7 +13,6 @@ interface ReportGraphsInterface
      */
     public function getChartData(array $data = []);
 
-
     /**
      * validate method.
      * Validates report configuration

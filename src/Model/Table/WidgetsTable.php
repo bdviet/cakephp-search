@@ -46,7 +46,6 @@ class WidgetsTable extends Table
         $this->addBehavior('Timestamp');
         $this->addBehavior('Muffin/Trash.Trash');
 
-
         $this->belongsTo('Dashboards', [
             'foreignKey' => 'dashboard_id',
             'joinType' => 'INNER',

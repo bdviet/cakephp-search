@@ -61,8 +61,6 @@ class DashboardsController extends AppController
         $this->set('_serialize', ['dashboard']);
     }
 
-
-
     /**
      * Add method
      *
@@ -231,14 +229,11 @@ class DashboardsController extends AppController
         $this->request->allowMethod(['post', 'delete']);
         $dashboard = $this->Dashboards->get($id);
 
-
-
         if ($this->Dashboards->delete($dashboard)) {
             $widgetTable = TableRegistry::get('Widgets');
             $widgetTable->deleteAll([
                 'dashboard_id' => $id
             ]);
-
 
             $this->Flash->success(__('The dashboard has been deleted.'));
         } else {

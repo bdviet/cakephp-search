@@ -42,8 +42,6 @@ class WidgetFactoryTest extends TestCase
         $this->assertEquals($widget, null);
     }
 
-
-
     /**
      * @dataProvider dataProviderWidgetTypes
      */

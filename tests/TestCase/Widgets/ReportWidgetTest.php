@@ -42,7 +42,6 @@ class ReportWidgetTest extends TestCase
         $config = TableRegistry::exists('Widgets') ? [] : ['className' => 'Search\Model\Table\WidgetsTable'];
         $this->Widgets = TableRegistry::get('Widgets', $config);
 
-
         $this->fixtureManager->load($this);
     }
 
@@ -130,7 +129,6 @@ class ReportWidgetTest extends TestCase
         $this->assertEventFired('Search.Report.getReports', $this->appView->EventManager());
     }
 
-
     public function testValidatesWithoutRequiredFields()
     {
         $config = ['config' => ['slug' => 'barChartTest', 'info' => ['renderAs' => 'barChart']]];
@@ -160,7 +158,6 @@ class ReportWidgetTest extends TestCase
         $validated = $this->widget->validate($expectedReport);
         $this->assertEquals($validated['status'], false);
     }
-
 
     public function testValidates()
     {
@@ -240,8 +237,6 @@ class ReportWidgetTest extends TestCase
         $chartData = $this->widget->getChartData([]);
         $this->assertEquals(['A', 'B'], $chartData['options']['labels']);
     }
-
-
 
     public function testGetReportsWithoutMock()
     {
