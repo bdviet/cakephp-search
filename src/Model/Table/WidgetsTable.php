@@ -66,12 +66,16 @@ class WidgetsTable extends Table
             ->allowEmpty('id', 'create');
 
         $validator
-            ->requirePresence('widget_type', 'create')
-            ->notEmpty('widget_type');
+            ->requirePresence('dashboard_id', 'create')
+            ->notEmpty('dashboard_id');
 
         $validator
-            ->requirePresence('widget_options', 'create')
-            ->notEmpty('widget_options');
+            ->requirePresence('widget_id', 'create')
+            ->notEmpty('widget_id');
+
+        $validator
+            ->requirePresence('widget_type', 'create')
+            ->notEmpty('widget_type');
 
         $validator
             ->integer('column')
@@ -82,11 +86,6 @@ class WidgetsTable extends Table
             ->integer('row')
             ->requirePresence('row', 'create')
             ->notEmpty('row');
-
-        $validator
-            ->dateTime('trashed')
-            ->requirePresence('trashed', 'create')
-            ->notEmpty('trashed');
 
         return $validator;
     }
@@ -101,7 +100,6 @@ class WidgetsTable extends Table
     public function buildRules(RulesChecker $rules)
     {
         $rules->add($rules->existsIn(['dashboard_id'], 'Dashboards'));
-        $rules->add($rules->existsIn(['widget_id'], 'Widgets'));
 
         return $rules;
     }

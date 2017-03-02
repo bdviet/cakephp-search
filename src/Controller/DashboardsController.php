@@ -103,7 +103,7 @@ class DashboardsController extends AppController
                         ]);
                     }
 
-                    $widgetTable = TableRegistry::get('Widgets');
+                    $widgetTable = TableRegistry::get('Search.Widgets');
                     foreach ($widgets as $w) {
                         $widget = $widgetTable->newEntity();
                         $widget = $widgetTable->patchEntity($widget, $w);
@@ -191,8 +191,8 @@ class DashboardsController extends AppController
             if ($this->Dashboards->save($dashboard)) {
                 $this->Flash->success(__('The dashboard has been saved.'));
 
-                $widgetTable = TableRegistry::get('Widgets');
-                $widgetTable->deleteAll([
+                $widgetTable = TableRegistry::get('Search.Widgets');
+                $widgetTable->trashAll([
                     'dashboard_id' => $dashboard->id
                 ]);
 
@@ -230,8 +230,8 @@ class DashboardsController extends AppController
         $dashboard = $this->Dashboards->get($id);
 
         if ($this->Dashboards->delete($dashboard)) {
-            $widgetTable = TableRegistry::get('Widgets');
-            $widgetTable->deleteAll([
+            $widgetTable = TableRegistry::get('Search.Widgets');
+            $widgetTable->trashAll([
                 'dashboard_id' => $id
             ]);
 
