@@ -382,7 +382,6 @@ class SavedSearchesTableTest extends TestCase
         $this->assertArrayHasKey('name', $result);
     }
 
-
     public function testGetSearchCriteriaVirtualField()
     {
         $this->markTestSkipped();

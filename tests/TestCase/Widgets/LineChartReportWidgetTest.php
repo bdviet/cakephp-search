@@ -24,7 +24,6 @@ class LineChartReportWidgetTest extends TestCase
         $this->assertNotEmpty($content);
     }
 
-
     public function testGetContainerId()
     {
         $config = [
@@ -91,8 +90,6 @@ class LineChartReportWidgetTest extends TestCase
 
         $this->assertEquals($result, ['#08c6ba', '#08c6bc']);
     }
-
-
 
     public function testGetChartColors()
     {
